@@ -1,0 +1,30 @@
+name: Build and push to TdA
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build
+        uses: docker/build-push-action@v6.8.0
+        with:
+          context: ./
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          tags: tda-generic:latest
+          outputs: type=docker,dest=/tmp/tda-generic.tar
+
+      - name: Upload to TdA
+        uses: Tour-de-App/upload-app@tda-25
+        with:
+          team_token: ${{ secrets.TEAM_TOKEN }}
+          image_name: tda-generic
+          image_path: /tmp/tda-generic.tar
