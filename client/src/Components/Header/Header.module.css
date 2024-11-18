@@ -1,0 +1,54 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  width: 65vw;
+  max-width: 1100px;
+  margin: 0 auto;
+  user-select: none;
+  padding: 7px 10px;
+  color: var(--textColor);
+}
+
+.headerBackground {
+  background-color: var(--firstBackground);
+}
+
+button {
+  border: none;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.logo {
+  width: 190px;
+}
+
+nav {
+  display: flex;
+  column-gap: 30px;
+  align-items: center;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+nav:nth-child(n) {
+  cursor: pointer;
+}
+
+.darkModeBtn {
+  width: 15px;
+  height: min-content;
+  background-color: var(--colorModeChange);
+  padding: 7px;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+.playBtn {
+  color: #0070bb;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 4px 13px;
+  border: 3px solid #0070bb;
+  border-radius: 5px;
+  filter: brightness(var(--brightness));
+}
