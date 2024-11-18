@@ -1,24 +1,46 @@
 * {
   user-select: none;
+  background-color: var(--thirdBackground);
 }
+
+:root {
+  --cellSize: 2.4vw;
+}
+
+/* ****************************** */
 
 .game {
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 97vh;
+}
+
+.title {
+  text-align: center;
+  margin-block: 30px;
+}
+
+.gameMenu {
+  display: block;
+  margin: 20px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .gameGrid {
   display: grid;
-  grid-template-columns: repeat(15, 30px);
+  grid-template-columns: repeat(15, var(--cellSize));
+  border: 1px solid var(--player);
+  box-shadow: 0px 0px 12px 2px var(--player);
+  transition: 0.4s ease;
+  padding-right: 2px;
+  border-radius: 10px;
 }
 
 .cell {
-  width: 30px;
-  height: 30px;
-  background-color: #b5b5b5;
-  border: 1px solid black;
+  width: var(--cellSize);
+  aspect-ratio: 1/1;
+  background-color: #1a1a1a;
+  border: 1px solid #5b5b5b;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -39,17 +61,18 @@
 }
 
 .symbol {
-  width: 17px;
+  width: 24px;
+  background-color: rgba(0, 0, 0, 0);
 }
 .arrow {
-  width: 27px;
+  width: 32px;
 }
 
 .darkModeBtn {
-  width: 15px;
-  height: min-content;
-  background-color: var(--colorModeChange);
+  width: 20px;
+  aspect-ratio: 1/1;
+  background-color: var(--darkModeBtn);
   padding: 7px;
-  border-radius: 50px;
+  border-radius: 50%;
   cursor: pointer;
 }

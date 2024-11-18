@@ -85,13 +85,19 @@ export default function GamePage() {
       return;
     }
 
-    setPlayer((prev) => !prev);
+    setPlayer(!player);
+    if (player) {
+      document.documentElement.classList.add("secondPlayer");
+    } else {
+      document.documentElement.classList.remove("secondPlayer");
+    }
   };
 
   const resetGame = () => {
     setPlayer(true);
     setGrid(Array.from({ length: 15 }, () => Array(15).fill(null)));
     setWinner(null);
+    document.documentElement.classList.remove("secondPlayer");
   };
 
   return (
@@ -107,28 +113,34 @@ export default function GamePage() {
         </button>
       </div>
 
-      <div className={styles.game}>
-        <button onClick={resetGame}>Reset</button>
+      <div>
+        <h2 className={styles.title}>Lokální multiplayer</h2>
 
-        {winner && <div className={styles.winnerMessage}>{winner} vyhrál!</div>}
+        <div className={styles.game}>
+          <button onClick={resetGame}>Reset</button>
 
-        <div className={styles.gameGrid}>
-          {grid.map((row, rowIndex) =>
-            row.map((cell, colIndex) => (
-              <div
-                className={styles.cell}
-                onClick={() => cellClick(rowIndex, colIndex)}
-                key={`${rowIndex}-${colIndex}`}
-              >
-                {cell === "X" && (
-                  <img src={symbolX} alt="X" className={styles.symbol} />
-                )}
-                {cell === "O" && (
-                  <img src={symbolO} alt="O" className={styles.symbol} />
-                )}
-              </div>
-            ))
+          {winner && (
+            <div className={styles.winnerMessage}>{winner} vyhrál!</div>
           )}
+
+          <div className={styles.gameGrid}>
+            {grid.map((row, rowIndex) =>
+              row.map((cell, colIndex) => (
+                <div
+                  className={styles.cell}
+                  onClick={() => cellClick(rowIndex, colIndex)}
+                  key={`${rowIndex}-${colIndex}`}
+                >
+                  {cell === "X" && (
+                    <img src={symbolX} alt="X" className={styles.symbol} />
+                  )}
+                  {cell === "O" && (
+                    <img src={symbolO} alt="O" className={styles.symbol} />
+                  )}
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>

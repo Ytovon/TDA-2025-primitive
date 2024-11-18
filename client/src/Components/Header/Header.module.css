@@ -30,16 +30,21 @@ nav {
   font-weight: 600;
 }
 
+.navLink {
+  color: var(--textColor);
+  text-decoration: none;
+}
+
 nav:nth-child(n) {
   cursor: pointer;
 }
 
 .darkModeBtn {
-  width: 15px;
-  height: min-content;
-  background-color: var(--colorModeChange);
+  width: 17px;
+  aspect-ratio: 1/1;
+  background-color: var(--darkModeBtn);
   padding: 7px;
-  border-radius: 50px;
+  border-radius: 50%;
   cursor: pointer;
 }
 
