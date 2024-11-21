@@ -17,6 +17,8 @@
   --darkModeBtn: #c7c7c7;
   --cardShadow: 0px 6px 37.5px 0px #948d8d78;
   --player: #e21836b5;
+  --gameBackground: #ebebeb;
+  --gameBorder: #ffffff;
 }
 
 .dark-mode {
@@ -28,6 +30,8 @@
   --brightness: 2;
   --darkModeBtn: #e1e1e1;
   --cardShadow: none;
+  --gameBackground: #1a1a1a;
+  --gameBorder: #5b5b5b;
 }
 
 .secondPlayer {

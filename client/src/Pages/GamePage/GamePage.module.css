@@ -4,7 +4,8 @@
 }
 
 :root {
-  --cellSize: 2.4vw;
+  --cellSize: 2.35vw;
+  --cellSizeClamped: clamp(10px, var(--cellSize), 50px);
 }
 
 /* ****************************** */
@@ -15,8 +16,10 @@
 }
 
 .title {
+  color: var(--textColor);
+  font-size: 26px;
   text-align: center;
-  margin-block: 30px;
+  margin-block: 35px;
 }
 
 .gameMenu {
@@ -28,19 +31,18 @@
 
 .gameGrid {
   display: grid;
-  grid-template-columns: repeat(15, var(--cellSize));
-  border: 1px solid var(--player);
-  box-shadow: 0px 0px 12px 2px var(--player);
-  transition: 0.4s ease;
+  grid-template-columns: repeat(15, var(--cellSizeClamped));
+  border: 1px solid black;
+  box-shadow: 0px 0px 12px 2px black;
   padding-right: 2px;
   border-radius: 10px;
 }
 
 .cell {
-  width: var(--cellSize);
-  aspect-ratio: 1/1;
-  background-color: #1a1a1a;
-  border: 1px solid #5b5b5b;
+  width: var(--cellSizeClamped);
+  aspect-ratio: 1/0.95;
+  background-color: var(--gameBackground);
+  border: 1px solid var(--gameBorder);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -61,11 +63,32 @@
 }
 
 .symbol {
-  width: 24px;
+  width: 65%;
+  max-width: 26px;
   background-color: rgba(0, 0, 0, 0);
 }
 .arrow {
   width: 32px;
+}
+
+.winnerMessage {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  font-size: 60px;
+  font-weight: 700;
+  color: var(--textColor);
+  background-color: #fafafa00;
+}
+
+.gameBtns {
+  display: flex;
+  gap: 20px;
+}
+
+.resetBtn {
+  width: 32px;
+  cursor: pointer;
 }
 
 .darkModeBtn {

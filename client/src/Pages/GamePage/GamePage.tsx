@@ -5,10 +5,12 @@ import symbolX from "../../assets/images/X_cervene.png";
 import symbolO from "../../assets/images/O_modre.png";
 import arrowBlack from "../../assets/images/arrow-left-solid-black.svg";
 import arrowWhite from "../../assets/images/arrow-left-solid-white.svg";
+import resetBtnBlack from "../../assets/images/rotate-right-solid.svg";
+import resetBtnWhite from "../../assets/images/rotate-right-solid-white.svg";
 import darkModeButton from "../../assets/images/Primary.svg";
 
 export default function GamePage() {
-  const [darkMode, setColorMode] = useState(false);
+  const [darkMode, setColorMode] = useState(true);
 
   const changePageColor = () => {
     setColorMode(!darkMode);
@@ -86,18 +88,12 @@ export default function GamePage() {
     }
 
     setPlayer(!player);
-    if (player) {
-      document.documentElement.classList.add("secondPlayer");
-    } else {
-      document.documentElement.classList.remove("secondPlayer");
-    }
   };
 
   const resetGame = () => {
     setPlayer(true);
     setGrid(Array.from({ length: 15 }, () => Array(15).fill(null)));
     setWinner(null);
-    document.documentElement.classList.remove("secondPlayer");
   };
 
   return (
@@ -105,20 +101,32 @@ export default function GamePage() {
       <div className={styles.gameMenu}>
         <button>
           <Link to="/">
-            <img className={styles.arrow} src={arrowBlack} alt="" />
+            <img
+              className={styles.arrow}
+              src={darkMode ? arrowBlack : arrowWhite}
+              alt=""
+            />
           </Link>
         </button>
-        <button onClick={changePageColor}>
-          <img className={styles.darkModeBtn} src={darkModeButton} />
-        </button>
+
+        <div className={styles.gameBtns}>
+          <button onClick={resetGame}>
+            <img
+              className={styles.resetBtn}
+              src={darkMode ? resetBtnBlack : resetBtnWhite}
+              alt=""
+            />
+          </button>
+          <button onClick={changePageColor}>
+            <img className={styles.darkModeBtn} src={darkModeButton} />
+          </button>
+        </div>
       </div>
 
       <div>
         <h2 className={styles.title}>Lokální multiplayer</h2>
 
         <div className={styles.game}>
-          <button onClick={resetGame}>Reset</button>
-
           {winner && (
             <div className={styles.winnerMessage}>{winner} vyhrál!</div>
           )}
