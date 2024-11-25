@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styles from "./GamePage.module.css";
 import symbolX from "../../assets/images/X_cervene.png";
@@ -7,11 +7,21 @@ import arrowBlack from "../../assets/images/arrow-left-solid-black.svg";
 import arrowWhite from "../../assets/images/arrow-left-solid-white.svg";
 import resetBtnBlack from "../../assets/images/rotate-right-solid.svg";
 import resetBtnWhite from "../../assets/images/rotate-right-solid-white.svg";
+import winnerBlue from "../../assets/images/vyherniZarovkaModra.svg";
+import winnerRed from "../../assets/images/vyherniZarovkaCervena.svg";
+import cervenaZarovkaX from "../../assets/images/cervenaZarovkaX.svg";
+import modraZarovkaO from "../../assets/images/modraZarovkaO.svg";
 import darkModeButton from "../../assets/images/Primary.svg";
 
 export default function GamePage() {
+  useEffect(() => {
+    // Odebere třídu "winnerRed" z HTML elementu při načtení stránky
+    document.documentElement.classList.remove("winnerRed");
+  }, []);
+
   const [darkMode, setColorMode] = useState(true);
 
+  // Změní barvu stránky při zmáčknutí tlačítka
   const changePageColor = () => {
     setColorMode(!darkMode);
     if (darkMode) {
@@ -21,6 +31,7 @@ export default function GamePage() {
     }
   };
 
+  // Vytvoří pole / hru
   const [grid, setGrid] = useState<string[][]>(
     Array.from({ length: 15 }, () => Array(15).fill(null))
   );
@@ -60,8 +71,11 @@ export default function GamePage() {
 
       // Pokud je spojeno pět symbolů, vrátí vítězství
       if (count >= 5) {
-        if (symbol === "X") setWinner("První hráč");
-        if (symbol === "O") setWinner("Druhý hráč");
+        if (symbol === "X") setWinner("red");
+        if (symbol === "O") setWinner("blue");
+        if (symbol === "X") {
+          document.documentElement.classList.add("winnerRed");
+        }
         return true;
       }
     }
@@ -94,63 +108,93 @@ export default function GamePage() {
     setPlayer(true);
     setGrid(Array.from({ length: 15 }, () => Array(15).fill(null)));
     setWinner(null);
+    document.documentElement.classList.remove("winnerRed");
   };
 
   return (
-    <div className={styles.gamePage}>
-      <div className={styles.gameMenu}>
-        <button>
-          <Link to="/">
-            <img
-              className={styles.arrow}
-              src={darkMode ? arrowBlack : arrowWhite}
-              alt=""
-            />
-          </Link>
-        </button>
+    <body>
+      <div className={styles.gamePage}>
+        <div className={styles.gameMenu}>
+          <button>
+            <Link to="/">
+              <img
+                className={styles.arrow}
+                src={darkMode ? arrowBlack : arrowWhite}
+                alt=""
+              />
+            </Link>
+          </button>
 
-        <div className={styles.gameBtns}>
-          <button onClick={resetGame}>
-            <img
-              className={styles.resetBtn}
-              src={darkMode ? resetBtnBlack : resetBtnWhite}
-              alt=""
-            />
-          </button>
-          <button onClick={changePageColor}>
-            <img className={styles.darkModeBtn} src={darkModeButton} />
-          </button>
+          <div className={styles.gameBtns}>
+            <button onClick={resetGame}>
+              <img
+                className={styles.resetBtn}
+                src={darkMode ? resetBtnBlack : resetBtnWhite}
+                alt=""
+              />
+            </button>
+            <button onClick={changePageColor}>
+              <img className={styles.darkModeBtn} src={darkModeButton} />
+            </button>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <h2 className={styles.title}>Lokální multiplayer</h2>
+        <div>
+          <h2 className={styles.title}>Lokální multiplayer</h2>
 
-        <div className={styles.game}>
-          {winner && (
-            <div className={styles.winnerMessage}>{winner} vyhrál!</div>
-          )}
-
-          <div className={styles.gameGrid}>
-            {grid.map((row, rowIndex) =>
-              row.map((cell, colIndex) => (
-                <div
-                  className={styles.cell}
-                  onClick={() => cellClick(rowIndex, colIndex)}
-                  key={`${rowIndex}-${colIndex}`}
-                >
-                  {cell === "X" && (
-                    <img src={symbolX} alt="X" className={styles.symbol} />
-                  )}
-                  {cell === "O" && (
-                    <img src={symbolO} alt="O" className={styles.symbol} />
-                  )}
-                </div>
-              ))
-            )}
+          <div className={styles.game}>
+            <img className={styles.imgNextToGame} src={cervenaZarovkaX} />
+            <div className={styles.gameGrid}>
+              {grid.map((row, rowIndex) =>
+                row.map((cell, colIndex) => (
+                  <div
+                    className={styles.cell}
+                    onClick={() => cellClick(rowIndex, colIndex)}
+                    key={`${rowIndex}-${colIndex}`}
+                  >
+                    {cell === "X" && (
+                      <img src={symbolX} alt="X" className={styles.symbol} />
+                    )}
+                    {cell === "O" && (
+                      <img src={symbolO} alt="O" className={styles.symbol} />
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+            <img className={styles.imgNextToGame} src={modraZarovkaO} />
           </div>
         </div>
       </div>
-    </div>
+
+      <div
+        className={`${styles.winnerCardWrapper} ${winner ? styles.active : ""}`}
+      >
+        <div className={styles.winnerCard}>
+          <div className={styles.winnerCardTextImg}>
+            <div className={styles.winnerCardText}>
+              <h2 className={styles.winnerCardTitle}>Gratulujeme</h2>
+              <p className={styles.winnerCardSubtitle}>
+                k výhře{" "}
+                {winner === "red" ? "hráči v červeném" : "hráči v modrém"}
+              </p>
+            </div>
+            <img
+              className={styles.winnerCardImg}
+              src={winner === "red" ? winnerRed : winnerBlue}
+            />
+          </div>
+
+          <div className={styles.winnerCardBtns}>
+            <p className={styles.winnerCardBtn} onClick={resetGame}>
+              odveta
+            </p>
+            <Link className={styles.winnerCardBtn} to="/">
+              Ukončit
+            </Link>
+          </div>
+        </div>
+      </div>
+    </body>
   );
 }
