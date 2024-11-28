@@ -7,8 +7,8 @@ body {
 }
 
 :root {
-  --cellSize: 2.35vw;
-  --cellSizeClamped: clamp(17px, var(--cellSize), 50px);
+  --cellSize: 2.7vw;
+  --cellSizeClamped: clamp(18px, var(--cellSize), 48px);
 }
 
 /* ****************************** */
@@ -20,7 +20,7 @@ body {
 }
 
 .imgNextToGame {
-  width: 20vw;
+  width: 19vw;
 }
 
 .title {
@@ -74,7 +74,7 @@ body {
   background-color: rgba(0, 0, 0, 0);
 }
 .arrow {
-  width: 32px;
+  width: 2rem;
 }
 
 .gameBtns {
@@ -83,12 +83,12 @@ body {
 }
 
 .resetBtn {
-  width: 32px;
+  width: 2rem;
   cursor: pointer;
 }
 
 .darkModeBtn {
-  width: 20px;
+  width: 1.25rem;
   aspect-ratio: 1/1;
   background-color: var(--darkModeBtn);
   padding: 7px;
@@ -185,5 +185,38 @@ body {
   filter: brightness(var(--halfBrightness));
 }
 
+/* ************************* */
+
+@media screen and (max-width: 1400px) {
+  .gameBtns {
+    grid-template-columns: repeat(15, 50px);
+  }
+}
+
 @media screen and (max-width: 1000px) {
+  :root {
+    font-size: 14px;
+  }
+
+  .title {
+    margin-block: 25px;
+  }
+
+  .gameBtns {
+    gap: 15px;
+  }
+
+  .symbol {
+    width: 58%;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  :root {
+    font-size: 13px;
+  }
+
+  .imgNextToGame {
+    display: none;
+  }
 }
