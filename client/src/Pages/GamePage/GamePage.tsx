@@ -139,7 +139,7 @@ export default function GamePage() {
           </div>
         </div>
 
-        <div>
+        <div className={styles.gameWrapper}>
           <h2 className={styles.title}>Lokální multiplayer</h2>
 
           <div className={styles.game}>

@@ -4,14 +4,24 @@
 
 body {
   background-color: var(--thirdBackground);
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
 
 :root {
-  --cellSize: 2.7vw;
+  --cellSize: 5.5vh;
   --cellSizeClamped: clamp(18px, var(--cellSize), 48px);
 }
 
 /* ****************************** */
+.gameWrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
 .game {
   display: flex;
@@ -191,11 +201,15 @@ body {
   .gameBtns {
     grid-template-columns: repeat(15, 50px);
   }
+
+  .game {
+    gap: 1vw;
+  }
 }
 
 @media screen and (max-width: 1000px) {
   :root {
-    font-size: 14px;
+    font-size: 15px;
   }
 
   .title {
@@ -209,14 +223,28 @@ body {
   .symbol {
     width: 58%;
   }
-}
-
-@media screen and (max-width: 750px) {
-  :root {
-    font-size: 13px;
-  }
 
   .imgNextToGame {
     display: none;
+  }
+}
+
+@media screen and (max-height: 800px) {
+  .gameMenu {
+    margin-block: 10px;
+  }
+
+  .title {
+    margin-block: 10px;
+  }
+}
+
+@media screen and (max-aspect-ratio: 1/1) {
+  .gameGrid {
+    grid-template-columns: repeat(15, 6vw);
+  }
+
+  .cell {
+    width: 6vw;
   }
 }
