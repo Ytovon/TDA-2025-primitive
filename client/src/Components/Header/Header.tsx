@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import lightModeLogo from "../../assets/images/Think-different-Academy_LOGO_oficialni_1.png";
-import darkModeLogo from "../../assets/images/Think-different-Academy_LOGO_oficialni_1_dark-mode.png";
-import darkModeButton from "../../assets/images/Primary.svg";
+import {
+  darkModeButton,
+  lightModeLogo,
+  darkModeLogo,
+} from "../../assets/assets";
 import styles from "./Header.module.css";
 
 export default function Header() {
