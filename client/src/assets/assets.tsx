@@ -20,6 +20,11 @@ import modraZarovkaO from "./images/modraZarovkaO.svg";
 import lightModeLogo from "./images/Think-different-Academy_LOGO_oficialni_1.png";
 import darkModeLogo from "./images/Think-different-Academy_LOGO_oficialni_1_dark-mode.png";
 
+/* Card */
+
+import nahledPiskvorek from "../assets/images/piskvorky.png";
+import settingsButton from "../assets/images/setting.png";
+
 export {
   symbolX,
   symbolO,
@@ -34,4 +39,6 @@ export {
   darkModeButton,
   lightModeLogo,
   darkModeLogo,
+  nahledPiskvorek,
+  settingsButton,
 };
