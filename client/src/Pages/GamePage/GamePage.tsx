@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styles from "./GamePage.module.css";
-import symbolX from "../../assets/images/X_cervene.png";
-import symbolO from "../../assets/images/O_modre.png";
-import arrowBlack from "../../assets/images/arrow-left-solid-black.svg";
-import arrowWhite from "../../assets/images/arrow-left-solid-white.svg";
-import resetBtnBlack from "../../assets/images/rotate-right-solid.svg";
-import resetBtnWhite from "../../assets/images/rotate-right-solid-white.svg";
-import winnerBlue from "../../assets/images/vyherniZarovkaModra.svg";
-import winnerRed from "../../assets/images/vyherniZarovkaCervena.svg";
-import cervenaZarovkaX from "../../assets/images/cervenaZarovkaX.svg";
-import modraZarovkaO from "../../assets/images/modraZarovkaO.svg";
-import darkModeButton from "../../assets/images/Primary.svg";
+import {
+  symbolX,
+  symbolO,
+  arrowBlack,
+  arrowWhite,
+  resetBtnBlack,
+  resetBtnWhite,
+  winnerBlue,
+  winnerRed,
+  cervenaZarovkaX,
+  modraZarovkaO,
+  darkModeButton,
+} from "../../assets/assets";
+import boardData from "../../test.json";
 
 export default function GamePage() {
   useEffect(() => {
@@ -32,9 +35,7 @@ export default function GamePage() {
   };
 
   // Vytvoří pole / hru
-  const [grid, setGrid] = useState<string[][]>(
-    Array.from({ length: 15 }, () => Array(15).fill(null))
-  );
+  const [grid, setGrid] = useState<string[][]>(boardData);
 
   const [player, setPlayer] = useState(true); // true = hráč X, false = hráč O
   const [winner, setWinner] = useState<string | null>(null);
@@ -85,7 +86,7 @@ export default function GamePage() {
 
   // Funkce pro kliknutí na buňku
   const cellClick = (row: number, col: number) => {
-    if (grid[row][col] !== null || winner) return;
+    if (grid[row][col] !== "" || winner) return;
 
     const symbol = player ? "X" : "O";
 
@@ -106,7 +107,7 @@ export default function GamePage() {
 
   const resetGame = () => {
     setPlayer(true);
-    setGrid(Array.from({ length: 15 }, () => Array(15).fill(null)));
+    setGrid(Array.from({ length: 15 }, () => Array(15).fill("")));
     setWinner(null);
     document.documentElement.classList.remove("winnerRed");
   };
