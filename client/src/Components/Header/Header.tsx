@@ -27,8 +27,12 @@ export default function Header() {
         />
 
         <nav className={styles.nav}>
-          <a>O nás</a>
-          <a>Tréninkové úlohy</a>
+          <Link className={styles.navLink} to="/">
+            <p>O nás</p>
+          </Link>
+          <Link className={styles.navLink} to="/">
+            <p>Tréninkové úlohy</p>
+          </Link>
           <button onClick={changePageColor}>
             <img className={styles.darkModeBtn} src={darkModeButton} />
           </button>

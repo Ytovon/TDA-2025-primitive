@@ -2,27 +2,67 @@
   user-select: none;
 }
 
+body {
+  background-color: var(--thirdBackground);
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+:root {
+  --cellSize: 5.5vh;
+  --cellSizeClamped: clamp(18px, var(--cellSize), 48px);
+}
+
+/* ****************************** */
+.gameWrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .game {
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 97vh;
+  gap: 3vw;
+}
+
+.imgNextToGame {
+  width: 19vw;
+}
+
+.title {
+  color: var(--textColor);
+  font-size: 1.65rem;
+  text-align: center;
+  margin-block: 35px;
+}
+
+.gameMenu {
+  display: block;
+  margin: 20px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .gameGrid {
   display: grid;
-  grid-template-columns: repeat(15, 30px);
+  grid-template-columns: repeat(15, var(--cellSizeClamped));
+  border: 1px solid var(--gameBorder);
+  padding-right: 2px;
+  border-radius: 10px;
 }
 
 .cell {
-  width: 30px;
-  height: 30px;
-  background-color: #b5b5b5;
-  border: 1px solid black;
+  width: var(--cellSizeClamped);
+  aspect-ratio: 1/0.95;
+  background-color: var(--gameBackground);
+  border: 1px solid var(--gameBorder);
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 12px;
 }
 
 .cell:nth-child(1) {
@@ -39,17 +79,172 @@
 }
 
 .symbol {
-  width: 17px;
+  width: 65%;
+  max-width: 26px;
+  background-color: rgba(0, 0, 0, 0);
 }
 .arrow {
-  width: 27px;
+  width: 2rem;
+}
+
+.gameBtns {
+  display: flex;
+  gap: 20px;
+}
+
+.resetBtn {
+  width: 2rem;
+  cursor: pointer;
 }
 
 .darkModeBtn {
-  width: 15px;
-  height: min-content;
-  background-color: var(--colorModeChange);
+  width: 1.25rem;
+  aspect-ratio: 1/1;
+  background-color: var(--darkModeBtn);
   padding: 7px;
-  border-radius: 50px;
+  border-radius: 50%;
   cursor: pointer;
+}
+
+/* Card styles */
+
+.winnerCardWrapper {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.winnerCardWrapper.active {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.winnerCard {
+  width: 25vw;
+  max-width: 620px;
+  color: var(--textColor);
+  background-color: var(--thirdBackground);
+  border-radius: 10px;
+  padding: 30px;
+}
+
+.winnerCardTextImg {
+  display: flex;
+  justify-content: space-between;
+}
+
+.winnerCardText {
+  margin: auto 0;
+}
+
+.winnerCardTitle {
+  padding-block: 15px;
+  font-size: 2.25rem;
+}
+
+.winnerCardSubtitle {
+  font-size: 1.3rem;
+}
+
+.winnerCardImg {
+  width: 10vw;
+  position: sticky;
+  filter: brightness(var(--halfBrightness));
+  animation: moveUpDown 4s infinite ease-in-out;
+}
+
+@keyframes moveUpDown {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.winnerCardBtns {
+  display: flex;
+  gap: 3%;
+}
+
+.winnerCardBtn {
+  padding: 8px 32px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.winnerCardBtn:nth-child(1) {
+  color: white;
+  letter-spacing: 0.5px;
+  background-color: var(--winnerColor);
+  filter: brightness(var(--halfBrightness));
+}
+
+.winnerCardBtn:nth-child(2) {
+  color: var(--winnerColor);
+  text-decoration: none;
+  border: 2px solid var(--winnerColor);
+  filter: brightness(var(--halfBrightness));
+}
+
+/* ************************* */
+
+@media screen and (max-width: 1400px) {
+  .gameBtns {
+    grid-template-columns: repeat(15, 50px);
+  }
+
+  .game {
+    gap: 1vw;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  :root {
+    font-size: 15px;
+  }
+
+  .title {
+    margin-block: 25px;
+  }
+
+  .gameBtns {
+    gap: 15px;
+  }
+
+  .symbol {
+    width: 58%;
+  }
+
+  .imgNextToGame {
+    display: none;
+  }
+}
+
+@media screen and (max-height: 800px) {
+  .gameMenu {
+    margin-block: 10px;
+  }
+
+  .title {
+    margin-block: 10px;
+  }
+}
+
+@media screen and (max-aspect-ratio: 1/1) {
+  .gameGrid {
+    grid-template-columns: repeat(15, 6vw);
+  }
+
+  .cell {
+    width: 6vw;
+  }
 }

@@ -9,29 +9,34 @@
 :root {
   --firstBackground: white;
   --secondBackground: #f4f4f4;
+  --thirdBackground: white;
   --textColor: black;
   --textColorInverted: white;
   --startBtnColor: #e81837;
+  --halfBrightness: 1;
   --brightness: 1;
-  --colorModeChange: #c7c7c7;
+  --darkModeBtn: #c7c7c7;
   --cardShadow: 0px 6px 37.5px 0px #948d8d78;
+  --player: #e21836b5;
+  --gameBackground: #cacaca;
+  --gameBorder: #ffffff;
+  --winnerColor: #0070bb;
 }
 
 .dark-mode {
   --firstBackground: #3e3e3e;
   --secondBackground: #1a1a1a;
+  --thirdBackground: #1a1a1a;
   --textColor: white;
   --textColorInverted: black;
+  --halfBrightness: 1.5;
   --brightness: 2;
-  --colorModeChange: #e1e1e1;
+  --darkModeBtn: #e1e1e1;
   --cardShadow: none;
+  --gameBackground: #1a1a1a;
+  --gameBorder: #5b5b5b;
 }
 
-.error {
-  margin: 40px;
-  font-size: 30px;
-  font-weight: 600;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.winnerRed {
+  --winnerColor: #e31838;
 }
