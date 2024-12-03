@@ -22,7 +22,7 @@ const router = createBrowserRouter([
     element: <GamePage />,
   },
   {
-    path: "/Game/UUID",
+    path: "/Game/uuid",
     element: <GamePage uuid="uuid" />,
   },
 ]);

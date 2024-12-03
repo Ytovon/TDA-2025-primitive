@@ -40,7 +40,7 @@ function Card(props: { name: string; type: string }) {
       <p className={styles.cardType} style={typeStyle}>
         {props.type}
       </p>
-      <Link className={styles.cardStart} to="/Game/UUID">
+      <Link className={styles.cardStart} to="/Game/uuid">
         <p>Spustit úlohu</p>
       </Link>
     </div>

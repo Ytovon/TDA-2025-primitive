@@ -42,12 +42,13 @@ export default function GamePage(props: { uuid: string }) {
   useEffect(() => {
     if (props.uuid !== "") {
       setGrid(boardData);
-      if (name !== "Lokální multiplayer" || "") {
+      if (name !== "") {
         setGameName(name);
       }
     }
   }, []);
 
+  let gameType = "Jednoduchá";
   let name = "Puzzle";
   const [gameName, setGameName] = useState("Lokální multiplayer");
 
@@ -122,6 +123,9 @@ export default function GamePage(props: { uuid: string }) {
   const resetGame = () => {
     setPlayer(true);
     setGrid(Array.from({ length: 15 }, () => Array(15).fill("")));
+    if (props.uuid !== "") {
+      setGrid(boardData);
+    }
     setWinner(null);
     document.documentElement.classList.remove("winnerRed");
   };
@@ -155,7 +159,9 @@ export default function GamePage(props: { uuid: string }) {
         </div>
 
         <div className={styles.gameWrapper}>
-          <h2 className={styles.title}>{gameName}</h2>
+          <h2 className={styles.title}>
+            {props.uuid !== "" ? gameName + " | " + gameType : gameName}
+          </h2>
 
           <div className={styles.game}>
             <img className={styles.imgNextToGame} src={cervenaZarovkaX} />
