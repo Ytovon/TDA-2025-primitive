@@ -67,6 +67,7 @@
   white-space: nowrap;
   border-radius: 5px;
   cursor: pointer;
+  text-decoration: none;
 }
 
 @media screen and (max-width: 1300px) {

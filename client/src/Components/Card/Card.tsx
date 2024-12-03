@@ -1,5 +1,6 @@
 import styles from "./Card.module.css";
 import { nahledPiskvorek, settingsButton } from "../../assets/assets";
+import { Link } from "react-router-dom";
 
 function Card(props: { name: string; type: string }) {
   let typeStyle: React.CSSProperties = {};
@@ -39,7 +40,9 @@ function Card(props: { name: string; type: string }) {
       <p className={styles.cardType} style={typeStyle}>
         {props.type}
       </p>
-      <p className={styles.cardStart}>Spustit úlohu</p>
+      <Link className={styles.cardStart} to="/Game/UUID">
+        <p>Spustit úlohu</p>
+      </Link>
     </div>
   );
 }

@@ -16,7 +16,7 @@ import {
 } from "../../assets/assets";
 import boardData from "../../test.json";
 
-export default function GamePage() {
+export default function GamePage(props: { uuid: string }) {
   useEffect(() => {
     // Odebere třídu "winnerRed" z HTML elementu při načtení stránky
     document.documentElement.classList.remove("winnerRed");
@@ -35,7 +35,21 @@ export default function GamePage() {
   };
 
   // Vytvoří pole / hru
-  const [grid, setGrid] = useState<string[][]>(boardData);
+  const [grid, setGrid] = useState<string[][]>(
+    Array.from({ length: 15 }, () => Array(15).fill(""))
+  );
+  //Pokud to je úloha, použije grid z Json
+  useEffect(() => {
+    if (props.uuid !== "") {
+      setGrid(boardData);
+      if (name !== "Lokální multiplayer" || "") {
+        setGameName(name);
+      }
+    }
+  }, []);
+
+  let name = "Puzzle";
+  const [gameName, setGameName] = useState("Lokální multiplayer");
 
   const [player, setPlayer] = useState(true); // true = hráč X, false = hráč O
   const [winner, setWinner] = useState<string | null>(null);
@@ -141,7 +155,7 @@ export default function GamePage() {
         </div>
 
         <div className={styles.gameWrapper}>
-          <h2 className={styles.title}>Lokální multiplayer</h2>
+          <h2 className={styles.title}>{gameName}</h2>
 
           <div className={styles.game}>
             <img className={styles.imgNextToGame} src={cervenaZarovkaX} />
@@ -199,3 +213,7 @@ export default function GamePage() {
     </body>
   );
 }
+
+GamePage.defaultProps = {
+  uuid: "",
+};

@@ -38,7 +38,7 @@ export default function HomePage() {
       </div>
 
       <div>
-        <Card />
+        <Card name="Puzzle" type="Pokročilá" />
       </div>
     </body>
   );
