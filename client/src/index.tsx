@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
+import { DarkModeProvider } from "./DarkModeContext";
 import GamePage from "./Pages/GamePage/GamePage";
 import HomePage from "./Pages/HomePage/HomePage";
 import NotFoundPage from "./Components/NotFoundPage/NotFoundPage";
@@ -29,7 +30,9 @@ const router = createBrowserRouter([
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <DarkModeProvider>
+      <RouterProvider router={router} />
+    </DarkModeProvider>
   </React.StrictMode>
 );
 

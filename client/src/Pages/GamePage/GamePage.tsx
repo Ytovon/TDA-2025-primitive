@@ -15,6 +15,7 @@ import {
   darkModeButton,
 } from "../../assets/assets";
 import boardData from "../../test.json";
+import { useDarkMode } from "../../DarkModeContext";
 
 export default function GamePage(props: { uuid: string }) {
   useEffect(() => {
@@ -22,7 +23,8 @@ export default function GamePage(props: { uuid: string }) {
     document.documentElement.classList.remove("winnerRed");
   }, []);
 
-  const [darkMode, setColorMode] = useState(true);
+  const { darkMode, toggleDarkMode } = useDarkMode();
+  /*const [darkMode, setColorMode] = useState(true);
 
   // Změní barvu stránky při zmáčknutí tlačítka
   const changePageColor = () => {
@@ -32,7 +34,7 @@ export default function GamePage(props: { uuid: string }) {
     } else {
       document.documentElement.classList.remove("dark-mode");
     }
-  };
+  }; */
 
   // Vytvoří pole / hru
   const [grid, setGrid] = useState<string[][]>(
@@ -152,7 +154,7 @@ export default function GamePage(props: { uuid: string }) {
                 alt=""
               />
             </button>
-            <button onClick={changePageColor}>
+            <button onClick={toggleDarkMode}>
               <img className={styles.darkModeBtn} src={darkModeButton} />
             </button>
           </div>

@@ -6,18 +6,10 @@ import {
   darkModeLogo,
 } from "../../assets/assets";
 import styles from "./Header.module.css";
+import { useDarkMode } from "../../DarkModeContext";
 
 export default function Header() {
-  const [darkMode, setColorMode] = useState(true);
-
-  const changePageColor = () => {
-    setColorMode(!darkMode);
-    if (darkMode) {
-      document.documentElement.classList.add("dark-mode");
-    } else {
-      document.documentElement.classList.remove("dark-mode");
-    }
-  };
+  const { darkMode, toggleDarkMode } = useDarkMode();
 
   return (
     <div className={styles.headerBackground}>
@@ -35,7 +27,7 @@ export default function Header() {
           <Link className={styles.navLink} to="/">
             <p>Tréninkové úlohy</p>
           </Link>
-          <button onClick={changePageColor}>
+          <button onClick={toggleDarkMode}>
             <img className={styles.darkModeBtn} src={darkModeButton} />
           </button>
           <p>
