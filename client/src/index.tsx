@@ -4,9 +4,10 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { DarkModeProvider } from "./DarkModeContext";
+import CardsPage from "./Pages/CardsPage/CardsPage";
 import GamePage from "./Pages/GamePage/GamePage";
-import HomePage from "./Pages/HomePage/HomePage";
 import NotFoundPage from "./Components/NotFoundPage/NotFoundPage";
+import HomePage from "./Pages/HomePage/HomePage";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
     path: "/",
     element: <HomePage />,
     errorElement: <NotFoundPage />,
+  },
+  {
+    path: "/Games",
+    element: <CardsPage />,
   },
   {
     path: "/Game",

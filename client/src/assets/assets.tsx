@@ -2,6 +2,15 @@
 
 import darkModeButton from "./images/Primary.svg";
 
+/* CardsPage */
+
+import xMarkWhite from "./images/xmark-solid-white.svg";
+import xMarkBlack from "./images/xmark-solid-black.svg";
+import chevronUpWhite from "./images/chevron-up-solid-white.svg";
+import chevronUpBlack from "./images/chevron-up-solid-black.svg";
+import chevronDownWhite from "./images/chevron-down-solid-white.svg";
+import chevronDownBlack from "./images/chevron-down-solid-black.svg";
+
 /* GamePage */
 
 import symbolX from "./images/X_cervene.png";
@@ -41,4 +50,10 @@ export {
   darkModeLogo,
   nahledPiskvorek,
   settingsButton,
+  xMarkWhite,
+  xMarkBlack,
+  chevronUpWhite,
+  chevronUpBlack,
+  chevronDownWhite,
+  chevronDownBlack,
 };

@@ -14,17 +14,19 @@ export default function Header() {
   return (
     <div className={styles.headerBackground}>
       <header className={styles.header}>
-        <img
-          className={styles.logo}
-          src={darkMode ? lightModeLogo : darkModeLogo}
-          alt="logo"
-        />
+        <Link to="">
+          <img
+            className={styles.logo}
+            src={darkMode ? lightModeLogo : darkModeLogo}
+            alt="logo"
+          />
+        </Link>
 
         <nav className={styles.nav}>
           <Link className={styles.navLink} to="/">
             <p>O nás</p>
           </Link>
-          <Link className={styles.navLink} to="/">
+          <Link className={styles.navLink} to="/Games">
             <p>Tréninkové úlohy</p>
           </Link>
           <button onClick={toggleDarkMode}>

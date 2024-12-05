@@ -57,7 +57,7 @@
 }
 
 .cardStart {
-  color: var(--textColorInverted);
+  color: white;
   background-color: var(--startBtnColor);
   font-size: 1rem;
   font-weight: 600;

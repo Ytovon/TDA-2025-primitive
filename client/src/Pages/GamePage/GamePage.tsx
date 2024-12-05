@@ -24,17 +24,6 @@ export default function GamePage(props: { uuid: string }) {
   }, []);
 
   const { darkMode, toggleDarkMode } = useDarkMode();
-  /*const [darkMode, setColorMode] = useState(true);
-
-  // Změní barvu stránky při zmáčknutí tlačítka
-  const changePageColor = () => {
-    setColorMode(!darkMode);
-    if (darkMode) {
-      document.documentElement.classList.add("dark-mode");
-    } else {
-      document.documentElement.classList.remove("dark-mode");
-    }
-  }; */
 
   // Vytvoří pole / hru
   const [grid, setGrid] = useState<string[][]>(
