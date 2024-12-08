@@ -33,16 +33,35 @@ export default function CardsPage() {
             <div className={styles.filtrationSections}>
               <div className={styles.filtrationSection}>
                 <h5>Obtížnosti</h5>
+                <form action="">
+                  <input type="button" value="Začátečník" />
+                  <input type="button" value="Jednoduchá" />
+                  <input type="button" value="Pokročilá" />
+                  <input type="button" value="Těžká" />
+                  <input type="button" value="Nejtěžší" />
+                </form>
               </div>
               <div className={styles.filtrationSection}>
                 <h5>Název</h5>
+                <input type="text" placeholder="Zadejte název úlohy:" />
+                <label htmlFor=""> Více názvů úloh oddělujte středníkem</label>
               </div>
               <div className={styles.filtrationSection}>
                 <h5>Datum poslední úpravy</h5>
-                <option value="day">24 hodin</option>
-                <option value="7days">7 dní</option>
-                <option value="1month">1 měsíc</option>
-                <option value="3months">3 měsíce</option>
+                <form action="">
+                  <label>
+                    <input type="radio" name="dates" /> 24 hodin
+                  </label>
+                  <label>
+                    <input type="radio" name="dates" /> 7 dní
+                  </label>
+                  <label>
+                    <input type="radio" name="dates" /> 1 měsíc
+                  </label>
+                  <label>
+                    <input type="radio" name="dates" /> 3 měsíce
+                  </label>
+                </form>
               </div>
             </div>
           </div>
