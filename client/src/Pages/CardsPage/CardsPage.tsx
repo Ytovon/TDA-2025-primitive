@@ -1,6 +1,8 @@
 import {
   chevronUpBlack,
   chevronUpWhite,
+  chevronDownWhite,
+  chevronDownBlack,
   xMarkBlack,
   xMarkWhite,
 } from "../../assets/assets";
@@ -8,9 +10,16 @@ import Card from "../../Components/Card/Card";
 import Header from "../../Components/Header/Header";
 import styles from "./CardsPage.module.css";
 import { useDarkMode } from "../../DarkModeContext";
+import { useState } from "react";
 
 export default function CardsPage() {
   const { darkMode, toggleDarkMode } = useDarkMode();
+  const [isFiltrationOpen, toggleIsFiltrationOpen] = useState(true);
+
+  const openFiltration = () => {
+    toggleIsFiltrationOpen(!isFiltrationOpen);
+  };
+
   return (
     <div>
       <Header />
@@ -27,27 +36,66 @@ export default function CardsPage() {
               <div className={styles.filtrationMenuBtns}>
                 <img src={darkMode ? xMarkBlack : xMarkWhite} />
                 <span className={styles.lineBtns}></span>
-                <img src={darkMode ? chevronUpBlack : chevronUpWhite} />
+                <img
+                  onClick={openFiltration}
+                  src={
+                    isFiltrationOpen
+                      ? darkMode
+                        ? chevronUpBlack
+                        : chevronUpWhite
+                      : darkMode
+                      ? chevronDownBlack
+                      : chevronDownWhite
+                  }
+                />
               </div>
             </div>
-            <div className={styles.filtrationSections}>
+            <div
+              style={
+                isFiltrationOpen ? { display: "flex" } : { display: "none" }
+              }
+              className={styles.filtrationSections}
+            >
               <div className={styles.filtrationSection}>
-                <h5>Obtížnosti</h5>
-                <form action="">
-                  <input type="button" value="Začátečník" />
-                  <input type="button" value="Jednoduchá" />
-                  <input type="button" value="Pokročilá" />
-                  <input type="button" value="Těžká" />
-                  <input type="button" value="Nejtěžší" />
+                <h5 className={styles.filtrationSectionTitle}>Obtížnosti</h5>
+                <form className={styles.difficultyBtns} action="">
+                  <input
+                    className={`${styles.difficultyBtn} ${styles.difficultyColor1}`}
+                    type="button"
+                    value="Začátečník"
+                  />
+                  <input
+                    className={`${styles.difficultyBtn} ${styles.difficultyColor2}`}
+                    type="button"
+                    value="Jednoduchá"
+                  />
+                  <input
+                    className={`${styles.difficultyBtn} ${styles.difficultyColor3}`}
+                    type="button"
+                    value="Pokročilá"
+                  />
+                  <input
+                    className={`${styles.difficultyBtn} ${styles.difficultyColor4}`}
+                    type="button"
+                    value="Těžká"
+                  />
+                  <input
+                    className={`${styles.difficultyBtn} ${styles.difficultyColor5}`}
+                    type="button"
+                    value="Nejtěžší"
+                  />
                 </form>
               </div>
               <div className={styles.filtrationSection}>
-                <h5>Název</h5>
+                <h5 className={styles.filtrationSectionTitle}>Název</h5>
                 <input type="text" placeholder="Zadejte název úlohy:" />
+                <br />
                 <label htmlFor=""> Více názvů úloh oddělujte středníkem</label>
               </div>
               <div className={styles.filtrationSection}>
-                <h5>Datum poslední úpravy</h5>
+                <h5 className={styles.filtrationSectionTitle}>
+                  Datum poslední úpravy
+                </h5>
                 <form action="">
                   <label>
                     <input type="radio" name="dates" /> 24 hodin

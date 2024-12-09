@@ -58,3 +58,65 @@
   margin-block: 3px;
   background-color: rgb(230, 230, 230);
 }
+
+.filtrationSections {
+  display: flex;
+}
+
+.filtrationSection {
+  padding: 15px 25px;
+  width: 33%;
+  height: 15vh;
+  position: relative;
+}
+
+.filtrationSection label {
+  color: var(--textColor);
+}
+
+.filtrationSection:not(:first-child):not(:last-child) {
+  border-inline: 1px solid rgb(230, 230, 230);
+}
+
+.filtrationSectionTitle {
+  font-size: 17px;
+  font-weight: 600;
+  margin-block: 3% 4%;
+  color: var(--textColor);
+}
+
+.difficultyBtns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 11px 7px;
+}
+
+.difficultyBtn {
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.difficultyColor1 {
+  background-color: #0070bbb2;
+}
+
+.difficultyColor2 {
+  background-color: #395a9ab2;
+}
+
+.difficultyColor3 {
+  background-color: #724479b5;
+}
+
+.difficultyColor4 {
+  background-color: #ab2e58b2;
+}
+
+.difficultyColor5 {
+  background-color: #e31837b2;
+}
