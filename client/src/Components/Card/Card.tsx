@@ -33,7 +33,9 @@ function Card(props: { name: string; type: string }) {
           src={nahledPiskvorek}
           alt="Piškvorky"
         />
-        <img className={styles.cardUpdate} src={settingsButton} alt="" />
+        <Link to="/EditPage">
+          <img className={styles.cardUpdate} src={settingsButton} alt="" />
+        </Link>
       </div>
 
       <h2 className={styles.cardTitle}>{props.name}</h2>

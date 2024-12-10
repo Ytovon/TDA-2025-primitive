@@ -122,7 +122,7 @@ export default function GamePage(props: { uuid: string }) {
   };
 
   return (
-    <body>
+    <body className={styles.body}>
       <div className={styles.gamePage}>
         <div className={styles.gameMenu}>
           <button>

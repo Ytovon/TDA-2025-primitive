@@ -6,6 +6,11 @@
   font-family: dosis;
 }
 
+body {
+  background-color: var(--thirdBackground);
+  position: relative;
+}
+
 :root {
   --firstBackground: white;
   --secondBackground: #f4f4f4;

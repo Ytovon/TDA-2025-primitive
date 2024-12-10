@@ -8,6 +8,7 @@ import CardsPage from "./Pages/CardsPage/CardsPage";
 import GamePage from "./Pages/GamePage/GamePage";
 import NotFoundPage from "./Components/NotFoundPage/NotFoundPage";
 import HomePage from "./Pages/HomePage/HomePage";
+import EditorPage from "./Pages/EditorPage/EditorPage";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
   {
     path: "/Game/uuid",
     element: <GamePage uuid="uuid" />,
+  },
+  {
+    path: "/EditPage",
+    element: <EditorPage />,
   },
 ]);
 

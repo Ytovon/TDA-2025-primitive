@@ -31,7 +31,16 @@ export default function CardsPage() {
           </div>
 
           <div className={styles.filtration}>
-            <div className={styles.filtrationMenu}>
+            <div
+              style={
+                isFiltrationOpen
+                  ? {
+                      borderBottom: "",
+                    }
+                  : { borderBottom: "none" }
+              }
+              className={styles.filtrationMenu}
+            >
               <h4 className={styles.filtrationMenuTitle}>Filtrace</h4>
               <div className={styles.filtrationMenuBtns}>
                 <img src={darkMode ? xMarkBlack : xMarkWhite} />
