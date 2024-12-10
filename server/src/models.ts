@@ -1,36 +1,30 @@
-import { DataTypes, Model } from "sequelize";
-import { sequelize } from "./database.ts"; // Import Sequelize instance
+import { DataTypes, Sequelize } from "sequelize"; // Import DataTypes and Sequelize
+import { sequelize } from "./database"; // Your Sequelize instance
 
-class Game extends Model {}
+let a = DataTypes.String;
 
-Game.init(
-  {
-    uuid: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    difficulty: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    board: {
-      type: DataTypes.TEXT, // Store board as JSON string
-      allowNull: false,
-    },
-    gameState: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
+const Game = sequelize.define("Game", {
+  uuid: {
+    type: DataTypes.UUID, // Directly use DataTypes.UUID
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true,
   },
-  {
-    sequelize,
-    modelName: "Game",
-  }
-);
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  difficulty: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  board: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
+  gameState: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+});
 
-export { Game }; // Export the Game model
+export { Game };
