@@ -1,0 +1,43 @@
+.body {
+  background-color: var(--secondBackground);
+  margin: 0;
+  padding: 0;
+}
+
+.editorPageMenu {
+  width: 98vw;
+  margin: 0 auto;
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.arrow {
+  width: 2rem;
+}
+
+.darkModeBtn {
+  width: 1.25rem;
+  aspect-ratio: 1/1;
+  background-color: var(--darkModeBtn);
+  padding: 7px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.editorPageTitle {
+  text-align: center;
+  font-size: 1.8rem;
+  color: var(--textColor);
+  margin-bottom: 3vh;
+}
+
+.leftSide {
+  width: 28vw;
+  color: var(--textColor);
+  border: 1px solid black;
+}
+
+.leftSideTitle {
+  font-size: 24px;
+}

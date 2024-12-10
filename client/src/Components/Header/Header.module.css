@@ -41,7 +41,9 @@ nav {
   text-decoration: none;
 }
 
-nav:nth-child(n) {
+nav p,
+img,
+a {
   cursor: pointer;
 }
 

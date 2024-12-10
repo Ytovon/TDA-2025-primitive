@@ -24,6 +24,11 @@ import winnerRed from "./images/vyherniZarovkaCervena.svg";
 import cervenaZarovkaX from "./images/cervenaZarovkaX.svg";
 import modraZarovkaO from "./images/modraZarovkaO.svg";
 
+/* editorPage */
+
+import blueBulb from "./images/modraZarovka.svg";
+import redBulb from "./images/cervenaZarovka.svg";
+
 /* Header */
 
 import lightModeLogo from "./images/Think-different-Academy_LOGO_oficialni_1.png";
@@ -56,4 +61,6 @@ export {
   chevronUpBlack,
   chevronDownWhite,
   chevronDownBlack,
+  blueBulb,
+  redBulb,
 };
