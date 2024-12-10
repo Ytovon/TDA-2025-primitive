@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "target": "ESNext",
     "module": "ESNext", // Use ESNext for ECMAScript module syntax
     "outDir": "./dist",
     "rootDir": "./src",
     "sourceMap": true,
     "strict": true,
-    "esModuleInterop": true,
-    "noEmit": false // This ensures TypeScript outputs JavaScript
+    "noEmit": false, // This ensures TypeScript outputs JavaScript
+    "esModuleInterop": true, // Allows default-like import compatibility
+    "moduleResolution": "node"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
