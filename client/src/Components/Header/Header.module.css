@@ -19,7 +19,7 @@ header * {
 }
 
 button {
-  border: none;
+  border: unset;
   background-color: rgba(0, 0, 0, 0);
 }
 

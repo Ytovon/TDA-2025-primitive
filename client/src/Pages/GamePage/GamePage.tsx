@@ -17,7 +17,11 @@ import {
 import boardData from "../../test.json";
 import { useDarkMode } from "../../DarkModeContext";
 
-export default function GamePage(props: { uuid: string }) {
+interface GamePageProps {
+  uuid?: string;
+}
+
+export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
   useEffect(() => {
     // Odebere třídu "winnerRed" z HTML elementu při načtení stránky
     document.documentElement.classList.remove("winnerRed");
@@ -31,7 +35,7 @@ export default function GamePage(props: { uuid: string }) {
   );
   //Pokud to je úloha, použije grid z Json
   useEffect(() => {
-    if (props.uuid !== "") {
+    if (uuid !== "") {
       setGrid(boardData);
       if (name !== "") {
         setGameName(name);
@@ -114,7 +118,7 @@ export default function GamePage(props: { uuid: string }) {
   const resetGame = () => {
     setPlayer(true);
     setGrid(Array.from({ length: 15 }, () => Array(15).fill("")));
-    if (props.uuid !== "") {
+    if (uuid !== "") {
       setGrid(boardData);
     }
     setWinner(null);
@@ -151,7 +155,7 @@ export default function GamePage(props: { uuid: string }) {
 
         <div className={styles.gameWrapper}>
           <h2 className={styles.title}>
-            {props.uuid !== "" ? gameName + " | " + gameType : gameName}
+            {uuid !== "" ? gameName + " | " + gameType : gameName}
           </h2>
 
           <div className={styles.game}>
@@ -209,8 +213,4 @@ export default function GamePage(props: { uuid: string }) {
       </div>
     </body>
   );
-}
-
-GamePage.defaultProps = {
-  uuid: "",
 };

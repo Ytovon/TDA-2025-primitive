@@ -25,7 +25,7 @@
   object-fit: cover;
   border-radius: 10px 10px 0 0;
   filter: blur(0.6px);
-  transition: 0.5s;
+  transition: 0.3s;
 }
 
 .cardImage:hover {

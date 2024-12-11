@@ -28,6 +28,8 @@ import modraZarovkaO from "./images/modraZarovkaO.svg";
 
 import blueBulb from "./images/modraZarovka.svg";
 import redBulb from "./images/cervenaZarovka.svg";
+import check from "./images/check-solid.svg";
+import trashBin from "./images/trash-solid.svg";
 
 /* Header */
 
@@ -63,4 +65,6 @@ export {
   chevronDownBlack,
   blueBulb,
   redBulb,
+  check,
+  trashBin,
 };

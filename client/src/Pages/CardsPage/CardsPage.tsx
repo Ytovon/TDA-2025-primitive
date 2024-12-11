@@ -6,7 +6,7 @@ import {
   xMarkBlack,
   xMarkWhite,
 } from "../../assets/assets";
-import Card from "../../Components/Card/Card";
+import { Card } from "../../Components/Card/Card";
 import Header from "../../Components/Header/Header";
 import styles from "./CardsPage.module.css";
 import { useDarkMode } from "../../DarkModeContext";
