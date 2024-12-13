@@ -4,6 +4,13 @@
   padding: 0;
 }
 
+:root {
+  --cellSize: 5.5vh;
+  --cellSizeClamped: clamp(18px, var(--cellSize), 48px);
+}
+
+/* ********************************** */
+
 .editorPageMenu {
   width: 98vw;
   margin: 0 auto;
@@ -37,6 +44,7 @@
   flex-direction: column;
   justify-content: space-evenly;
   width: 15vw;
+  min-width: 280px;
   height: 80vh;
   position: relative;
   color: var(--textColor);
@@ -111,4 +119,49 @@ input::placeholder {
   display: flex;
   justify-content: space-between;
   gap: 5px;
+}
+
+/* ******************************* */
+
+.gameGrid {
+  display: grid;
+  grid-template-columns: repeat(15, var(--cellSizeClamped));
+  border: 1px solid var(--gameBorder);
+  padding-right: 2px;
+  border-radius: 10px;
+}
+
+.cell {
+  width: var(--cellSizeClamped);
+  aspect-ratio: 1/0.95;
+  background-color: var(--gameBackground);
+  border: 1px solid var(--gameBorder);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cell:nth-child(1) {
+  border-radius: 8px 0 0 0;
+}
+.cell:nth-child(15) {
+  border-radius: 0 8px 0 0;
+}
+.cell:nth-last-child(15) {
+  border-radius: 0 0 0 8px;
+}
+.cell:nth-last-child(1) {
+  border-radius: 0 0 8px 0;
+}
+
+.symbol {
+  width: 65%;
+  max-width: 26px;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+@media screen and (max-witdh: 750px) {
+  .leftSide {
+    margin: 10px auto;
+  }
 }

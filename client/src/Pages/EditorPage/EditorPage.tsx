@@ -12,6 +12,8 @@ import {
   darkModeButton,
   redBulb,
   trashBin,
+  symbolX,
+  symbolO,
 } from "../../assets/assets";
 import { Button } from "../../Components/Button/Button";
 import { useDarkMode } from "../../DarkModeContext";
@@ -19,14 +21,31 @@ import { Link } from "react-router-dom";
 
 export default function EditorPage() {
   const { darkMode, toggleDarkMode } = useDarkMode();
-  const [player, changePlayer] = useState(true);
+  const [player, setPlayer] = useState(true);
 
   const changePlayerOnRed = () => {
-    changePlayer(false);
+    setPlayer(false);
   };
 
   const changePlayerOnBlue = () => {
-    changePlayer(true);
+    setPlayer(true);
+  };
+
+  const [grid, setGrid] = useState<string[][]>(
+    Array.from({ length: 15 }, () => Array(15).fill(""))
+  );
+
+  const cellClick = (row: number, col: number) => {
+    if (grid[row][col] !== "") return;
+
+    const symbol = player ? "X" : "O";
+
+    setGrid((prevGrid) => {
+      const newGrid = [...prevGrid];
+      newGrid[row] = [...prevGrid[row]]; // Vytvoří kopii řádku.
+      newGrid[row][col] = symbol; // Nastaví symbol podle hráče.
+      return newGrid;
+    });
   };
 
   return (
@@ -121,7 +140,26 @@ export default function EditorPage() {
         </div>
       </div>
 
-      <div></div>
+      <div className={styles.rightSide}>
+        <div className={styles.gameGrid}>
+          {grid.map((row, rowIndex) =>
+            row.map((cell, colIndex) => (
+              <div
+                className={styles.cell}
+                onClick={() => cellClick(rowIndex, colIndex)}
+                key={`${rowIndex}-${colIndex}`}
+              >
+                {cell === "X" && (
+                  <img src={symbolX} alt="X" className={styles.symbol} />
+                )}
+                {cell === "O" && (
+                  <img src={symbolO} alt="O" className={styles.symbol} />
+                )}
+              </div>
+            ))
+          )}
+        </div>
+      </div>
     </div>
   );
 }
