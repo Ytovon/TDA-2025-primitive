@@ -3,9 +3,12 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import GamePage from "./Pages/GamePage/GamePage";
-import HomePage from "./Pages/HomePage/HomePage";
+import { DarkModeProvider } from "./DarkModeContext";
+import CardsPage from "./Pages/CardsPage/CardsPage";
+import { GamePage } from "./Pages/GamePage/GamePage";
 import NotFoundPage from "./Components/NotFoundPage/NotFoundPage";
+import HomePage from "./Pages/HomePage/HomePage";
+import EditorPage from "./Pages/EditorPage/EditorPage";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -18,14 +21,28 @@ const router = createBrowserRouter([
     errorElement: <NotFoundPage />,
   },
   {
+    path: "/Games",
+    element: <CardsPage />,
+  },
+  {
     path: "/Game",
     element: <GamePage />,
+  },
+  {
+    path: "/Game/uuid",
+    element: <GamePage uuid="uuid" />,
+  },
+  {
+    path: "/EditorPage",
+    element: <EditorPage />,
   },
 ]);
 
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <DarkModeProvider>
+      <RouterProvider router={router} />
+    </DarkModeProvider>
   </React.StrictMode>
 );
 

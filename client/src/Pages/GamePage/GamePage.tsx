@@ -15,27 +15,37 @@ import {
   darkModeButton,
 } from "../../assets/assets";
 import boardData from "../../test.json";
+import { useDarkMode } from "../../DarkModeContext";
 
-export default function GamePage() {
+interface GamePageProps {
+  uuid?: string;
+}
+
+export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
   useEffect(() => {
     // Odebere třídu "winnerRed" z HTML elementu při načtení stránky
     document.documentElement.classList.remove("winnerRed");
   }, []);
 
-  const [darkMode, setColorMode] = useState(true);
-
-  // Změní barvu stránky při zmáčknutí tlačítka
-  const changePageColor = () => {
-    setColorMode(!darkMode);
-    if (darkMode) {
-      document.documentElement.classList.add("dark-mode");
-    } else {
-      document.documentElement.classList.remove("dark-mode");
-    }
-  };
+  const { darkMode, toggleDarkMode } = useDarkMode();
 
   // Vytvoří pole / hru
-  const [grid, setGrid] = useState<string[][]>(boardData);
+  const [grid, setGrid] = useState<string[][]>(
+    Array.from({ length: 15 }, () => Array(15).fill(""))
+  );
+  //Pokud to je úloha, použije grid z Json
+  useEffect(() => {
+    if (uuid !== "") {
+      setGrid(boardData);
+      if (name !== "") {
+        setGameName(name);
+      }
+    }
+  }, []);
+
+  let gameType = "Jednoduchá";
+  let name = "Puzzle";
+  const [gameName, setGameName] = useState("Lokální multiplayer");
 
   const [player, setPlayer] = useState(true); // true = hráč X, false = hráč O
   const [winner, setWinner] = useState<string | null>(null);
@@ -108,12 +118,15 @@ export default function GamePage() {
   const resetGame = () => {
     setPlayer(true);
     setGrid(Array.from({ length: 15 }, () => Array(15).fill("")));
+    if (uuid !== "") {
+      setGrid(boardData);
+    }
     setWinner(null);
     document.documentElement.classList.remove("winnerRed");
   };
 
   return (
-    <body>
+    <body className={styles.body}>
       <div className={styles.gamePage}>
         <div className={styles.gameMenu}>
           <button>
@@ -134,14 +147,16 @@ export default function GamePage() {
                 alt=""
               />
             </button>
-            <button onClick={changePageColor}>
+            <button onClick={toggleDarkMode}>
               <img className={styles.darkModeBtn} src={darkModeButton} />
             </button>
           </div>
         </div>
 
         <div className={styles.gameWrapper}>
-          <h2 className={styles.title}>Lokální multiplayer</h2>
+          <h2 className={styles.title}>
+            {uuid !== "" ? gameName + " | " + gameType : gameName}
+          </h2>
 
           <div className={styles.game}>
             <img className={styles.imgNextToGame} src={cervenaZarovkaX} />
@@ -198,4 +213,4 @@ export default function GamePage() {
       </div>
     </body>
   );
-}
+};

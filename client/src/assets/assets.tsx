@@ -2,6 +2,15 @@
 
 import darkModeButton from "./images/Primary.svg";
 
+/* CardsPage */
+
+import xMarkWhite from "./images/xmark-solid-white.svg";
+import xMarkBlack from "./images/xmark-solid-black.svg";
+import chevronUpWhite from "./images/chevron-up-solid-white.svg";
+import chevronUpBlack from "./images/chevron-up-solid-black.svg";
+import chevronDownWhite from "./images/chevron-down-solid-white.svg";
+import chevronDownBlack from "./images/chevron-down-solid-black.svg";
+
 /* GamePage */
 
 import symbolX from "./images/X_cervene.png";
@@ -14,6 +23,13 @@ import winnerBlue from "./images/vyherniZarovkaModra.svg";
 import winnerRed from "./images/vyherniZarovkaCervena.svg";
 import cervenaZarovkaX from "./images/cervenaZarovkaX.svg";
 import modraZarovkaO from "./images/modraZarovkaO.svg";
+
+/* editorPage */
+
+import blueBulb from "./images/modraZarovka.svg";
+import redBulb from "./images/cervenaZarovka.svg";
+import check from "./images/check-solid.svg";
+import trashBin from "./images/trash-solid.svg";
 
 /* Header */
 
@@ -41,4 +57,14 @@ export {
   darkModeLogo,
   nahledPiskvorek,
   settingsButton,
+  xMarkWhite,
+  xMarkBlack,
+  chevronUpWhite,
+  chevronUpBlack,
+  chevronDownWhite,
+  chevronDownBlack,
+  blueBulb,
+  redBulb,
+  check,
+  trashBin,
 };

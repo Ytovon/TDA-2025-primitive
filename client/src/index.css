@@ -6,6 +6,11 @@
   font-family: dosis;
 }
 
+body {
+  background-color: var(--thirdBackground);
+  position: relative;
+}
+
 :root {
   --firstBackground: white;
   --secondBackground: #f4f4f4;
@@ -21,6 +26,7 @@
   --gameBackground: #cacaca;
   --gameBorder: #ffffff;
   --winnerColor: #0070bb;
+  --grey: #363636;
 }
 
 .dark-mode {
@@ -35,6 +41,7 @@
   --cardShadow: none;
   --gameBackground: #1a1a1a;
   --gameBorder: #5b5b5b;
+  --grey: #dcdcdc;
 }
 
 .winnerRed {

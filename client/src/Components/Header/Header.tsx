@@ -6,36 +6,30 @@ import {
   darkModeLogo,
 } from "../../assets/assets";
 import styles from "./Header.module.css";
+import { useDarkMode } from "../../DarkModeContext";
 
 export default function Header() {
-  const [darkMode, setColorMode] = useState(true);
-
-  const changePageColor = () => {
-    setColorMode(!darkMode);
-    if (darkMode) {
-      document.documentElement.classList.add("dark-mode");
-    } else {
-      document.documentElement.classList.remove("dark-mode");
-    }
-  };
+  const { darkMode, toggleDarkMode } = useDarkMode();
 
   return (
     <div className={styles.headerBackground}>
       <header className={styles.header}>
-        <img
-          className={styles.logo}
-          src={darkMode ? lightModeLogo : darkModeLogo}
-          alt="logo"
-        />
+        <Link to="">
+          <img
+            className={styles.logo}
+            src={darkMode ? lightModeLogo : darkModeLogo}
+            alt="logo"
+          />
+        </Link>
 
         <nav className={styles.nav}>
           <Link className={styles.navLink} to="/">
             <p>O nás</p>
           </Link>
-          <Link className={styles.navLink} to="/">
+          <Link className={styles.navLink} to="/Games">
             <p>Tréninkové úlohy</p>
           </Link>
-          <button onClick={changePageColor}>
+          <button onClick={toggleDarkMode}>
             <img className={styles.darkModeBtn} src={darkModeButton} />
           </button>
           <p>

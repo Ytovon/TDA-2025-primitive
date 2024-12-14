@@ -2,12 +2,9 @@
   user-select: none;
 }
 
-body {
-  background-color: var(--thirdBackground);
-  position: relative;
+.body {
   width: 100%;
-  height: 100vh;
-  overflow: hidden;
+  height: 97vh;
 }
 
 :root {
