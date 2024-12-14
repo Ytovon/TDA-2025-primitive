@@ -26,6 +26,7 @@ body {
   --gameBackground: #cacaca;
   --gameBorder: #ffffff;
   --winnerColor: #0070bb;
+  --grey: #363636;
 }
 
 .dark-mode {
@@ -40,6 +41,7 @@ body {
   --cardShadow: none;
   --gameBackground: #1a1a1a;
   --gameBorder: #5b5b5b;
+  --grey: #dcdcdc;
 }
 
 .winnerRed {

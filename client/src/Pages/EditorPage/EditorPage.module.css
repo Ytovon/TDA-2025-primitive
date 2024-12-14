@@ -39,16 +39,23 @@
   margin-bottom: 3vh;
 }
 
+.editWrapper {
+  display: flex;
+  gap: 1vw;
+  justify-content: center;
+  margin-top: 7vh;
+}
+
+/* ****************************** */
+
 .leftSide {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: space-around;
   width: 15vw;
   min-width: 280px;
-  height: 80vh;
   position: relative;
   color: var(--textColor);
-  border: 1px solid black;
   margin: 1%;
   padding: 1%;
 }
@@ -118,10 +125,14 @@ input::placeholder {
 .leftSideBtns {
   display: flex;
   justify-content: space-between;
-  gap: 5px;
+  gap: 10px;
 }
 
 /* ******************************* */
+
+.rightSide {
+  position: relative;
+}
 
 .gameGrid {
   display: grid;
@@ -158,6 +169,15 @@ input::placeholder {
   width: 65%;
   max-width: 26px;
   background-color: rgba(0, 0, 0, 0);
+}
+
+.clearGame {
+  position: absolute;
+  color: var(--grey);
+  font-size: 1.1rem;
+  right: 8px;
+  top: -27px;
+  cursor: pointer;
 }
 
 @media screen and (max-witdh: 750px) {
