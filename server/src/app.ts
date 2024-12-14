@@ -7,6 +7,13 @@ import path from "path";
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
+
 // Middleware
 app.use(express.json());
 
@@ -26,15 +33,13 @@ sequelize
     console.error("Error syncing database:", err.message);
   });
 
-// Define __filename and __dirname for ES module scope
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Define filename and dirname for ES module scope
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
 
 // Serve the React app on all other routes
 app.get("*", (req, res) => {
-  res.sendFile(
-    path.resolve(__dirname, "../..", "client", "build", "index.html")
-  );
+  res.sendFile(path.resolve(dirname, "../..", "client", "build", "index.html"));
 });
 
 export { gameRoutes };
