@@ -30,7 +30,7 @@ const createGame = async (req: any, res: any) => {
     const newGame = await Game.create({
       name,
       difficulty,
-      board: JSON.stringify(board || Array(15).fill(Array(15).fill(null))),
+      board: JSON.stringify(board || Array(15).fill(Array(15).fill(""))),
       gameState: gameState || "ongoing",
     });
     res.status(201).json(newGame);
