@@ -2,6 +2,7 @@
   background-color: var(--secondBackground);
   margin: 0;
   padding: 0;
+  height: 100vh;
 }
 
 :root {
@@ -120,6 +121,13 @@ input::placeholder {
   font-size: 1.45rem;
   font-weight: 700;
   margin-bottom: 5px;
+}
+
+.goodNumberOfSymbols {
+  width: 1.3rem;
+  padding: 6px;
+  aspect-ratio: 1/1;
+  border-radius: 50px;
 }
 
 .leftSideBtns {

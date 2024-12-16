@@ -5,6 +5,7 @@ import {
   arrowWhite,
   blueBulb,
   check,
+  redCancel,
   chevronDownBlack,
   chevronDownWhite,
   chevronUpBlack,
@@ -19,12 +20,115 @@ import { Button } from "../../Components/Button/Button";
 import { useDarkMode } from "../../DarkModeContext";
 import { Link } from "react-router-dom";
 
-export default function EditorPage() {
+interface EditorPageProps {
+  uuid?: string;
+}
+
+export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
+  type Game = {
+    createdAt: string;
+    difficulty: string;
+    gameState: string;
+    name: string;
+    updatedAt: string;
+    uuid: string;
+  };
+
   const { darkMode, toggleDarkMode } = useDarkMode();
-  const [player, setPlayer] = useState(true);
-  const [hasSymbol, setHasSymbol] = useState(false);
+  const [player, setPlayer] = useState<boolean>(true);
+  const [hasSymbol, setHasSymbol] = useState<boolean>();
+  const [goodNumberOfSymbols, setGoodNumberOfSymbols] =
+    useState<boolean>(false);
   const [xCount, setXCount] = useState(0);
   const [oCount, setOCount] = useState(0);
+  const [grid, setGrid] = useState<string[][]>(
+    Array.from({ length: 15 }, () => Array(15).fill(""))
+  );
+  const [game, setGame] = useState<Game>({
+    createdAt: "",
+    difficulty: "",
+    gameState: "",
+    name: "",
+    updatedAt: "",
+    uuid,
+  });
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const uuid: string | undefined = url.pathname.split("/").pop(); // Poslední část cesty
+
+    fetchSpecificGame(typeof uuid == "string" ? uuid : "");
+  }, []);
+
+  async function fetchSpecificGame(uuid: string) {
+    try {
+      // pokud je uuid prázdné, spustí se normální hra
+      if (uuid === "") {
+        return;
+      }
+
+      const response = await fetch(
+        `http://localhost:5000/api/v1/Games/${uuid}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      setGame({
+        createdAt: data.createdAt,
+        difficulty: data.difficulty,
+        gameState: data.gameState,
+        name: data.name,
+        updatedAt: data.updatedAt,
+        uuid: uuid,
+      });
+
+      setHasSymbol(true);
+
+      console.log(data);
+      setGrid(JSON.parse(data.board));
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
+  const getDifficultyValue = (difficulty: string): string => {
+    switch (difficulty.toLowerCase()) {
+      case "začátečník":
+      case "easy":
+        return "Začátečník";
+      case "jednoduchá":
+        return "Jednoduchá";
+      case "pokročilá":
+      case "medium":
+        return "Pokročilá";
+      case "těžká":
+      case "hard":
+        return "Těžká";
+      case "nejtěžší":
+        return "Nejtěžší";
+      default:
+        return "";
+    }
+  };
+
+  // Inicializace hodnoty z API při načtení komponenty
+  useEffect(() => {
+    setGame({ ...game, difficulty: getDifficultyValue(game.difficulty) });
+  }, [game.difficulty]);
+
+  const difficultyCHange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setGame({ ...game, difficulty: event.target.value });
+  };
+
+  const handleNameInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setGame({ ...game, name: event.target.value });
+  };
 
   const changePlayerOnRed = () => {
     setPlayer(false);
@@ -33,10 +137,6 @@ export default function EditorPage() {
   const changePlayerOnBlue = () => {
     setPlayer(true);
   };
-
-  const [grid, setGrid] = useState<string[][]>(
-    Array.from({ length: 15 }, () => Array(15).fill(""))
-  );
 
   useEffect(() => {
     let xCount = 0;
@@ -48,6 +148,12 @@ export default function EditorPage() {
           xCount++;
         } else if (cell === "O") {
           oCount++;
+        }
+
+        if (xCount - 1 === oCount || xCount === oCount) {
+          setGoodNumberOfSymbols(true);
+        } else {
+          setGoodNumberOfSymbols(false);
         }
       });
     });
@@ -106,12 +212,16 @@ export default function EditorPage() {
                 className={styles.editorPageInput}
                 type="text"
                 placeholder="Zadejte název hry"
+                value={game.name}
+                onChange={handleNameInputChange}
               />
 
               <select
                 className={styles.editorPageSelect}
                 name="difficulty"
                 id=""
+                value={game.difficulty}
+                onChange={difficultyCHange}
               >
                 <option value="none" disabled selected>
                   Vyberte obtížnost
@@ -154,10 +264,21 @@ export default function EditorPage() {
                 </p>
                 <img src={redBulb} />
               </button>
+              <span>
+                <img
+                  style={
+                    goodNumberOfSymbols
+                      ? { backgroundColor: "#009e47d0" }
+                      : { backgroundColor: "#e318365d" }
+                  }
+                  className={styles.goodNumberOfSymbols}
+                  src={goodNumberOfSymbols ? check : redCancel}
+                />
+              </span>
               <button
                 style={
                   player
-                    ? { opacity: "0.6", filter: "brightness(1)" }
+                    ? { opacity: "0.4", filter: "brightness(1)" }
                     : { opacity: "1", filter: "brightness(1.25)" }
                 }
                 onClick={changePlayerOnRed}
@@ -219,4 +340,4 @@ export default function EditorPage() {
       </div>
     </div>
   );
-}
+};

@@ -10,15 +10,46 @@ import { Card } from "../../Components/Card/Card";
 import Header from "../../Components/Header/Header";
 import styles from "./CardsPage.module.css";
 import { useDarkMode } from "../../DarkModeContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function CardsPage() {
+  type Game = {
+    board: [];
+    createdAt: string;
+    difficulty: string;
+    gameState: string;
+    name: string;
+    updatedAt: string;
+    uuid: string;
+  };
+
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [isFiltrationOpen, toggleIsFiltrationOpen] = useState(true);
+  const [games, setGames] = useState<Game[]>([]);
 
   const openFiltration = () => {
     toggleIsFiltrationOpen(!isFiltrationOpen);
   };
+
+  useEffect(() => {
+    fetchAllGames();
+  }, []);
+
+  async function fetchAllGames() {
+    try {
+      const response = await fetch("http://localhost:5000/api/v1/games");
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setGames(data);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
 
   return (
     <div>
@@ -123,8 +154,10 @@ export default function CardsPage() {
             </div>
           </div>
 
-          <div>
-            <Card name="Puzzle" type="Pokročilá" />
+          <div className={styles.cards}>
+            {games.map((game) => (
+              <Card name={game.name} type={game.difficulty} uuid={game.uuid} />
+            ))}
           </div>
         </div>
       </body>

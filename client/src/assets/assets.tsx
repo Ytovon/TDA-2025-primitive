@@ -29,6 +29,7 @@ import modraZarovkaO from "./images/modraZarovkaO.svg";
 import blueBulb from "./images/modraZarovka.svg";
 import redBulb from "./images/cervenaZarovka.svg";
 import check from "./images/check-solid.svg";
+import redCancel from "./images/xmark-solid-red.svg";
 import trashBin from "./images/trash-solid.svg";
 
 /* Header */
@@ -66,5 +67,6 @@ export {
   blueBulb,
   redBulb,
   check,
+  redCancel,
   trashBin,
 };

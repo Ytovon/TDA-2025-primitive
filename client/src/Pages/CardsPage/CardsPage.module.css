@@ -35,7 +35,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 5px 15px;
-  border-bottom: 1px solid rgb(230, 230, 230);
+  border-bottom: 2px solid rgb(230, 230, 230);
   color: var(--textColor);
 }
 
@@ -75,7 +75,7 @@
 }
 
 .filtrationSection:not(:first-child):not(:last-child) {
-  border-inline: 1px solid rgb(230, 230, 230);
+  border-inline: 2px solid rgb(230, 230, 230);
 }
 
 .filtrationSectionTitle {
@@ -119,4 +119,12 @@
 
 .difficultyColor5 {
   background-color: #e31837b2;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  width: 48vw;
+  min-width: 840px;
+  margin: 0 auto;
 }
