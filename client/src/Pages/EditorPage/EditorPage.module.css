@@ -193,3 +193,17 @@ input::placeholder {
     margin: 10px auto;
   }
 }
+
+@media screen and (max-height: 800px) {
+  .editorPageTitle {
+    margin-bottom: 10px;
+  }
+
+  .editWrapper {
+    margin-block: 15px 10px;
+  }
+
+  .leftSide {
+    justify-content: space-between;
+  }
+}
