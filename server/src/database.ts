@@ -1,9 +1,12 @@
 import { Sequelize } from "sequelize";
+const path = require("path");
+
+const dbPath = path.resolve(__dirname, "../database.sqlite");
 
 // Initialize Sequelize with SQLite
 const sequelize = new Sequelize({
   dialect: "sqlite",
-  storage: "../database.sqlite", // Path to SQLite database file
+  storage: dbPath, // Path to SQLite database file
   logging: false, // Disable logging for cleaner console output
 });
 
