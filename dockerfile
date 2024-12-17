@@ -42,4 +42,4 @@ ENV PORT=5000
 EXPOSE 5000
 
 # Start the server (point to the compiled JavaScript entry point)
-CMD ["node", "server/dist/index.js"]
+CMD ["node", "server/dist/app.js"]
