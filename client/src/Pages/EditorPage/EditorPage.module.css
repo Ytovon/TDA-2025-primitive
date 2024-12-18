@@ -35,18 +35,34 @@
 
 .editorPageTitle {
   text-align: center;
-  font-size: 1.8rem;
+  font-size: 2rem;
   color: var(--textColor);
-  margin-bottom: 3vh;
+  margin-bottom: 4vh;
 }
 
 .editWrapper {
   display: flex;
   gap: 1vw;
   justify-content: center;
-  margin-top: 7vh;
+  margin-top: 3vh;
 }
 
+.errorWin {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  background-color: #e31837;
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 10px 20px;
+  width: 13vw;
+  min-width: 200px;
+  border-radius: 0px 0px 10px 10px;
+  position: fixed;
+  top: 0;
+  right: 21vw;
+}
 /* ****************************** */
 
 .leftSide {
@@ -123,7 +139,7 @@ input::placeholder {
   margin-bottom: 5px;
 }
 
-.goodNumberOfSymbols {
+.circleBtn {
   width: 1.3rem;
   padding: 6px;
   aspect-ratio: 1/1;

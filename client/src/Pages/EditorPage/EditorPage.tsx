@@ -37,6 +37,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [player, setPlayer] = useState<boolean>(true);
   const [hasSymbol, setHasSymbol] = useState<boolean>();
+  const [isThereWinner, setIsThereWinner] = useState<boolean>(false);
   const [goodNumberOfSymbols, setGoodNumberOfSymbols] =
     useState<boolean>(false);
   const [xCount, setXCount] = useState(0);
@@ -92,6 +93,45 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
       setGrid(JSON.parse(data.board));
     } catch (error) {
       console.error("Error fetching data:", error);
+    }
+  }
+
+  async function postData(uuid: string, data: any) {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/v1/Games/${uuid}`,
+        {
+          method: "PUT", // Typ požadavku
+          headers: {
+            "Content-Type": "application/json", // Formát dat (tady JSON)
+          },
+          body: JSON.stringify(data), // Data, která odesíláme
+        }
+      );
+
+      // Čekáme na odpověď a převádíme ji na JSON
+      const responseData = await response.json();
+
+      return responseData; // Vrátíme odpověď serveru
+    } catch (error) {
+      console.error("Error:", error); // Chytíme chyby při odesílání nebo zpracování odpovědi
+    }
+  }
+
+  async function sendData() {
+    try {
+      const editGameData = {
+        board: grid,
+        difficulty: game.difficulty,
+        gameState: game.gameState,
+        name: game.name,
+        uuid: game.uuid,
+        createdAt: game.createdAt,
+      };
+      const responseData = await postData(game.uuid, editGameData);
+      console.log(responseData); // Zpracování odpovědi
+    } catch (error) {
+      console.error("Error in sendData:", error);
     }
   }
 
@@ -162,6 +202,49 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
     setOCount(oCount);
   }, [grid]);
 
+  const checkWinner = (grid: string[][]) => {
+    const directions = [
+      { row: 0, col: 1 }, // Vodorovně
+      { row: 1, col: 0 }, // Svisle
+      { row: 1, col: 1 }, // Diagonálně (zleva dolů doprava)
+      { row: 1, col: -1 }, // Diagonálně (zprava dolů doleva)
+    ];
+
+    for (let row = 0; row < 15; row++) {
+      for (let col = 0; col < 15; col++) {
+        const symbol = grid[row][col];
+        if (symbol === "") continue;
+
+        for (const { row: dRow, col: dCol } of directions) {
+          let count = 1;
+
+          for (let step = 1; step < 5; step++) {
+            const newRow = row + step * dRow;
+            const newCol = col + step * dCol;
+
+            if (
+              newRow >= 0 &&
+              newRow < 15 &&
+              newCol >= 0 &&
+              newCol < 15 &&
+              grid[newRow][newCol] === symbol
+            ) {
+              count++;
+            } else {
+              break;
+            }
+
+            if (count >= 5) {
+              return symbol; // Vrátí vítězný symbol ("X" nebo "O")
+            }
+          }
+        }
+      }
+    }
+
+    return null; // Žádný vítěz
+  };
+
   const cellClick = (row: number, col: number) => {
     setGrid((prevGrid) => {
       const currentCell = prevGrid[row][col];
@@ -178,6 +261,12 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
       }
 
       setHasSymbol(newGrid.some((row) => row.some((cell) => cell !== "")));
+
+      if (checkWinner(newGrid)) {
+        setIsThereWinner(true); // Aktualizace stavu pro zobrazení zprávy o vítězství
+      } else {
+        setIsThereWinner(false);
+      }
 
       return newGrid;
     });
@@ -201,6 +290,19 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
           <img className={styles.darkModeBtn} src={darkModeButton} />
         </button>
       </div>
+
+      <div
+        style={isThereWinner ? { display: "flex" } : { display: "none" }}
+        className={styles.errorWin}
+      >
+        <img
+          style={{ backgroundColor: "white" }}
+          className={styles.circleBtn}
+          src={redCancel}
+        />
+        <p className={styles.errorWinText}>Úloha nesmí být již vyřešena</p>
+      </div>
+
       <h2 className={styles.editorPageTitle}>Editační stránka</h2>
 
       <div className={styles.editWrapper}>
@@ -271,7 +373,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
                       ? { backgroundColor: "#009e47d0" }
                       : { backgroundColor: "#e318365d" }
                   }
-                  className={styles.goodNumberOfSymbols}
+                  className={styles.circleBtn}
                   src={goodNumberOfSymbols ? check : redCancel}
                 />
               </span>
@@ -300,6 +402,10 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
               image={check}
               color="white"
               backgroundColor="#0070BB"
+              onClick={sendData}
+              isDisabled={
+                isThereWinner ? false : goodNumberOfSymbols ? false : true
+              }
             />
             <Button
               text="Vymazat úlohu"
