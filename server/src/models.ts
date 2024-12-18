@@ -1,12 +1,13 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import { sequelize } from "./database.js"; // Adjust path as needed
+import { Json } from "sequelize/types/utils.js";
 
 // Define the interface for the Game attributes
 interface GameAttributes {
   uuid: string;
   name: string;
   difficulty: string;
-  board: JSON;
+  board: Json;
   gameState: string;
   updatedAt?: Date; // Optional because it will be auto-managed by Sequelize
   createdAt?: Date; // Optional because it will be auto-managed by Sequelize (for soft deletes)
@@ -33,17 +34,8 @@ const Game = sequelize.define<Model<GameAttributes, GameCreationAttributes>>(
       allowNull: false,
     },
     board: {
-      type: DataTypes.STRING,
+      type: DataTypes.JSON,
       allowNull: false,
-      get() {
-        // Deserialize the JSON string into a JavaScript array
-        const value = this.getDataValue("board");
-        return value ? JSON.parse(value) : null;
-      },
-      set(value: any) {
-        // Serialize the JavaScript array into a JSON string
-        this.setDataValue("board", JSON.stringify(value));
-      },
     },
 
     gameState: {
