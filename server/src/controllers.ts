@@ -23,18 +23,27 @@ const getGameById = async (req: any, res: any) => {
   }
 };
 
-// 3. Create a new game
-const createGame = async (req: any, res: any) => {
+const createGame = async (req: Request, res: Response) => {
   const { name, difficulty, board, gameState } = req.body;
+
   try {
-    const newGame = await Game.create({
-      name,
-      difficulty,
-      board: board || Array(15).fill(Array(15).fill("")),
-      gameState: gameState || "ongoing",
-    });
-    res.status(201).json(newGame);
+    // Validate that `board` is an array
+    if (!Array.isArray(board)) {
+      return res.status(400).json({ message: "`board` must be an array." });
+    }
+
+    // Additional validation (e.g., board dimensions)
+    if (board.some((row) => !Array.isArray(row) || row.length !== 15)) {
+      return res.status(400).json({
+        message: "`board` must be a 2D array with 15 elements in each row.",
+      });
+    }
+
+    // Create the game
+    const game = await Game.create({ name, difficulty, board, gameState });
+    res.status(201).json(game);
   } catch (error) {
+    console.error("Error creating game:", error);
     res.status(500).json({ message: "Failed to create game", error });
   }
 };
