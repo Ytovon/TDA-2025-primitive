@@ -6,7 +6,7 @@ interface GameAttributes {
   uuid: string;
   name: string;
   difficulty: string;
-  board: string;
+  board: JSON;
   gameState: string;
   updatedAt?: Date; // Optional because it will be auto-managed by Sequelize
   createdAt?: Date; // Optional because it will be auto-managed by Sequelize (for soft deletes)
@@ -33,9 +33,19 @@ const Game = sequelize.define<Model<GameAttributes, GameCreationAttributes>>(
       allowNull: false,
     },
     board: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING,
       allowNull: false,
+      get() {
+        // Deserialize the JSON string into a JavaScript array
+        const value = this.getDataValue("board");
+        return value ? JSON.parse(value) : null;
+      },
+      set(value: any) {
+        // Serialize the JavaScript array into a JSON string
+        this.setDataValue("board", JSON.stringify(value));
+      },
     },
+
     gameState: {
       type: DataTypes.STRING,
       allowNull: false,
