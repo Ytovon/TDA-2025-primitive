@@ -1,0 +1,187 @@
+.body {
+  background-color: var(--secondBackground);
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --cellSize: 5.5vh;
+  --cellSizeClamped: clamp(18px, var(--cellSize), 48px);
+}
+
+/* ********************************** */
+
+.editorPageMenu {
+  width: 98vw;
+  margin: 0 auto;
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.arrow {
+  width: 2rem;
+}
+
+.darkModeBtn {
+  width: 1.25rem;
+  aspect-ratio: 1/1;
+  background-color: var(--darkModeBtn);
+  padding: 7px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.editorPageTitle {
+  text-align: center;
+  font-size: 1.8rem;
+  color: var(--textColor);
+  margin-bottom: 3vh;
+}
+
+.editWrapper {
+  display: flex;
+  gap: 1vw;
+  justify-content: center;
+  margin-top: 7vh;
+}
+
+/* ****************************** */
+
+.leftSide {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 15vw;
+  min-width: 280px;
+  position: relative;
+  color: var(--textColor);
+  margin: 1%;
+  padding: 1%;
+}
+
+.editorPageInput {
+  width: calc(100% - 20px);
+  height: 22px;
+  margin-bottom: 15px;
+  background-color: var(--firstBackground);
+  color: var(--textColor);
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 1rem;
+}
+
+input::placeholder {
+  color: var(--textColor);
+}
+
+.editorPageSelect {
+  width: 100%;
+  height: 40px;
+  background-color: var(--firstBackground);
+  color: var(--textColor);
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.leftSideTitle {
+  font-size: 1.75rem;
+  font-weight: 500;
+  margin-bottom: 30px;
+}
+
+.editacePlochyTitle {
+  display: flex;
+  place-items: center;
+  justify-content: space-between;
+}
+
+.info {
+  font-weight: 600;
+  font-size: 1rem;
+  text-align: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid black;
+  border-radius: 50px;
+  cursor: help;
+  margin-bottom: 20px;
+}
+
+.selectSymbolImg {
+  display: flex;
+  justify-content: space-between;
+}
+
+.numberAboveImg {
+  font-size: 1.45rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.leftSideBtns {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* ******************************* */
+
+.rightSide {
+  position: relative;
+}
+
+.gameGrid {
+  display: grid;
+  grid-template-columns: repeat(15, var(--cellSizeClamped));
+  border: 1px solid var(--gameBorder);
+  padding-right: 2px;
+  border-radius: 10px;
+}
+
+.cell {
+  width: var(--cellSizeClamped);
+  aspect-ratio: 1/0.95;
+  background-color: var(--gameBackground);
+  border: 1px solid var(--gameBorder);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cell:nth-child(1) {
+  border-radius: 8px 0 0 0;
+}
+.cell:nth-child(15) {
+  border-radius: 0 8px 0 0;
+}
+.cell:nth-last-child(15) {
+  border-radius: 0 0 0 8px;
+}
+.cell:nth-last-child(1) {
+  border-radius: 0 0 8px 0;
+}
+
+.symbol {
+  width: 65%;
+  max-width: 26px;
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.clearGame {
+  position: absolute;
+  color: var(--grey);
+  font-size: 1.1rem;
+  right: 8px;
+  top: -27px;
+  cursor: pointer;
+}
+
+@media screen and (max-witdh: 750px) {
+  .leftSide {
+    margin: 10px auto;
+  }
+}

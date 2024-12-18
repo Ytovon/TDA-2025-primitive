@@ -28,6 +28,10 @@ COPY server/tsconfig.json ./server/tsconfig.json
 # Copy the TypeScript source code to the container
 COPY server/src ./server/src
 
+
+# Copy the SQLite database file
+COPY server/database.sqlite ./server/database.sqlite
+
 # Install TypeScript globally (if it's not already a dependency in your package.json)
 RUN npm install -g typescript
 
@@ -42,4 +46,4 @@ ENV PORT=5000
 EXPOSE 5000
 
 # Start the server (point to the compiled JavaScript entry point)
-CMD ["node", "server/dist/index.js"]
+CMD ["node", "server/dist/app.js"]
