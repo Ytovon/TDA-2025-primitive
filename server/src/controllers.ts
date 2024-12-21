@@ -5,7 +5,16 @@ import { Model } from "sequelize"; // Import Model from Sequelize
 const getAllGames = async (req: any, res: any) => {
   try {
     const games = await Game.findAll();
-    res.json(games);
+
+    // Parse the 'board' attribute for each game before returning it
+    const parsedGames = games.map((game: any) => {
+      if (game.board) {
+        game.board = JSON.parse(game.board); // Parse the board string into a JavaScript object
+      }
+      return game;
+    });
+
+    res.json(parsedGames);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch games", error });
   }
@@ -17,6 +26,13 @@ const getGameById = async (req: any, res: any) => {
   try {
     const game = await Game.findByPk(uuid);
     if (!game) return res.status(404).json({ message: "Game not found" });
+
+    // Parse the 'board' attribute before returning it
+    const board = game.get("board"); // Use .get() to access attributes
+    if (typeof board === "string") {
+      game.set("board", JSON.parse(board)); // Parse the board string into a JavaScript object
+    }
+
     res.json(game);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch game", error });
