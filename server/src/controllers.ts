@@ -92,8 +92,13 @@ const updateGame = async (req: any, res: any) => {
       updatedAt: new Date(),
     });
 
+    const responseGame = {
+      ...updatedGame.toJSON(), // Convert Sequelize object to plain JSON
+      board: updatedGame,
+    };
+
     // Send the updated game back in the response
-    res.json(updatedGame); // Return the updated instance
+    res.json(responseGame); // Return the updated instance
   } catch (error) {
     res.status(500).json({ message: "Failed to update game", error });
   }
