@@ -33,7 +33,7 @@ const createGame = async (req: any, res: any) => {
       board: JSON.stringify(board || Array(15).fill(Array(15).fill(""))),
       gameState: gameState || "ongoing",
     });
-
+    
     // Parse the board back to a JSON object
     const parsedBoard = JSON.parse(newGame.get("board") as string);
 
