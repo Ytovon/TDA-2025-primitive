@@ -33,9 +33,23 @@ const createGame = async (req: any, res: any) => {
       board: JSON.stringify(board || Array(15).fill(Array(15).fill(""))),
       gameState: gameState || "ongoing",
     });
-    res.status(201).json(newGame);
+
+    // Parse the board back to a JSON object
+    const parsedBoard = JSON.parse(newGame.get("board") as string);
+
+    // Add the parsed board to the response or modify the object if needed
+    const responseGame = {
+      ...newGame.toJSON(), // Convert Sequelize object to plain JSON
+      board: parsedBoard,
+    };
+
+    res.status(201).json(responseGame);
   } catch (error) {
-    res.status(500).json({ message: "Failed to create game", error });
+    if (error instanceof Error) {
+      res.status(500).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: "An unknown error occurred." });
+    }
   }
 };
 
