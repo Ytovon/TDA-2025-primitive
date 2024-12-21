@@ -69,6 +69,7 @@ const createGame = async (req: any, res: any) => {
   }
 };
 
+
 // 4. Update a game by UUID
 const updateGame = async (req: any, res: any) => {
   const { uuid } = req.params;
@@ -80,29 +81,31 @@ const updateGame = async (req: any, res: any) => {
 
     if (!game) return res.status(404).json({ message: "Game not found" });
 
-    // Type assertion to ensure TypeScript understands the type of `game`
-    const updatedGame = game as Model<GameAttributes> & GameAttributes; // More explicit typing
+    // Ensure the board is parsed correctly before updating
+    const parsedBoard = board ? JSON.stringify(board) : game.get("board"); // Ensure board is stored as a string in the DB
 
     // Update the game attributes
-    await updatedGame.update({
-      name: name || updatedGame.name,
-      difficulty: difficulty || updatedGame.difficulty,
-      board: board ? JSON.stringify(board) : updatedGame.board,
-      gameState: gameState || updatedGame.gameState,
+    await game.update({
+      name: name || game.get("name"),
+      difficulty: difficulty || game.get("difficulty"),
+      board: parsedBoard as string,
+      gameState: gameState || game.get("gameState"),
       updatedAt: new Date(),
     });
 
+    // Create a response object and parse the board field back into an object if necessary
     const responseGame = {
-      ...updatedGame.toJSON(), // Convert Sequelize object to plain JSON
-      board: updatedGame,
+      ...game.toJSON(), // Convert Sequelize model to plain JSON object
+      board: JSON.parse(game.get("board") as string), // Parse the board string back into an object
     };
 
     // Send the updated game back in the response
-    res.json(responseGame); // Return the updated instance
+    res.json(responseGame);
   } catch (error) {
     res.status(500).json({ message: "Failed to update game", error });
   }
 };
+
 
 // 5. Delete a game by UUID
 const deleteGame = async (req: any, res: any) => {
