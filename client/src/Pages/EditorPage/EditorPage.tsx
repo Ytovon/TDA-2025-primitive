@@ -19,6 +19,7 @@ import {
 import { Button } from "../../Components/Button/Button";
 import { useDarkMode } from "../../DarkModeContext";
 import { Link } from "react-router-dom";
+import { NONAME } from "dns";
 
 interface EditorPageProps {
   uuid?: string;
@@ -37,6 +38,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [player, setPlayer] = useState<boolean>(true);
   const [hasSymbol, setHasSymbol] = useState<boolean>();
+  const [nameInputStyle, setNameInputStyle] = useState({ border: "none" });
   const [isThereWinner, setIsThereWinner] = useState<boolean>(false);
   const [goodNumberOfSymbols, setGoodNumberOfSymbols] =
     useState<boolean>(false);
@@ -132,6 +134,26 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
       console.log(responseData); // Zpracování odpovědi
     } catch (error) {
       console.error("Error in sendData:", error);
+    }
+  }
+
+  async function deleteGame(uuid: string) {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/v1/Games/${uuid}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      console.log("Game deleted successfully");
+      clearGame(); // Vyčistí mřížku po smazání hry
+    } catch (error) {
+      console.error("Error deleting game:", error);
     }
   }
 
@@ -272,6 +294,14 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
     });
   };
 
+  const nameIsMissing = () => {
+    if (game.name.trim() === "") {
+      setNameInputStyle({ border: "1px solid red" });
+    } else {
+      setNameInputStyle({ border: "none" });
+    }
+  };
+
   const clearGame = () => {
     setGrid(Array.from({ length: 15 }, () => Array(15).fill("")));
     setHasSymbol(false);
@@ -311,6 +341,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
             <h3 className={styles.leftSideTitle}>Všeobecné nastavení</h3>
             <div className={styles.editorPageInputs}>
               <input
+                style={nameInputStyle}
                 className={styles.editorPageInput}
                 type="text"
                 placeholder="Zadejte název hry"
@@ -402,17 +433,24 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
               image={check}
               color="white"
               backgroundColor="#0070BB"
-              onClick={sendData}
+              onClick={() =>
+                game.name !== ""
+                  ? (sendData(), setNameInputStyle({ border: "none" }))
+                  : nameIsMissing()
+              }
               isDisabled={
                 isThereWinner ? false : goodNumberOfSymbols ? false : true
               }
             />
-            <Button
-              text="Vymazat úlohu"
-              image={trashBin}
-              color="#E31837"
-              border="2px solid #E31837"
-            />
+            <Link style={{ textDecoration: "none" }} to="/Games">
+              <Button
+                text="Vymazat úlohu"
+                image={trashBin}
+                color="#E31837"
+                border="2px solid #E31837"
+                onClick={() => deleteGame(game.uuid)}
+              />
+            </Link>
           </div>
         </div>
 
