@@ -69,7 +69,6 @@ const createGame = async (req: any, res: any) => {
   }
 };
 
-
 // 4. Update a game by UUID
 const updateGame = async (req: any, res: any) => {
   const { uuid } = req.params;
@@ -105,7 +104,6 @@ const updateGame = async (req: any, res: any) => {
     res.status(500).json({ message: "Failed to update game", error });
   }
 };
-
 
 // 5. Delete a game by UUID
 const deleteGame = async (req: any, res: any) => {

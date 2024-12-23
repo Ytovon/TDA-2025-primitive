@@ -13,12 +13,14 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.21.1",
     "sequelize": "^6.37.5",
     "sqlite3": "^5.1.7",
     "uuid": "^11.0.3"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "concurrently": "^9.1.0",
     "dotenv": "^16.4.5",

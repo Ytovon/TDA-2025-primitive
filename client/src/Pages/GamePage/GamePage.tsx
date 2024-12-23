@@ -84,13 +84,10 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
         uuid: uuid,
       });
 
-      // TODO !!!
-      setInitialBoard(JSON.parse(data.board));
-      setGrid(JSON.parse(data.board));
-      console.log(JSON.parse(data.board));
-      // setInitialBoard(Array.from({ length: 15 }, () => Array(15).fill("O")));
-      // setGrid(Array.from({ length: 15 }, () => Array(15).fill("X")));
-      console.log(data);
+      setInitialBoard(data.board);
+      setGrid(data.board);
+      
+      console.log(data.board);
     } catch (error) {
       console.error("Error fetching data:", error);
     }

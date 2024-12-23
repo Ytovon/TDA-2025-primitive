@@ -19,7 +19,6 @@ import {
 import { Button } from "../../Components/Button/Button";
 import { useDarkMode } from "../../DarkModeContext";
 import { Link } from "react-router-dom";
-import { NONAME } from "dns";
 
 interface EditorPageProps {
   uuid?: string;
@@ -90,9 +89,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
       });
 
       setHasSymbol(true);
-
-      console.log(data);
-      setGrid(JSON.parse(data.board));
+      setGrid(data.board);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
