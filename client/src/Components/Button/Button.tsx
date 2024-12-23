@@ -8,6 +8,7 @@ interface ButtonProps {
   border?: string;
   backgroundColor?: string;
   onClick?: () => void;
+  isDisabled?: boolean;
 }
 
 // Definice komponenty Button
@@ -18,9 +19,11 @@ export const Button: React.FC<ButtonProps> = ({
   border,
   backgroundColor,
   onClick,
+  isDisabled,
 }) => {
   return (
     <button
+      disabled={isDisabled}
       className={styles.button}
       onClick={onClick}
       style={{ backgroundColor: backgroundColor, border: border }}

@@ -3,7 +3,14 @@ import { Game } from "./models.js";
 const getAllGames = async (req, res) => {
     try {
         const games = await Game.findAll();
-        res.json(games);
+        // Parse the 'board' attribute for each game before returning it
+        const parsedGames = games.map((game) => {
+            if (game.board) {
+                game.board = JSON.parse(game.board); // Parse the board string into a JavaScript object
+            }
+            return game;
+        });
+        res.json(parsedGames);
     }
     catch (error) {
         res.status(500).json({ message: "Failed to fetch games", error });
@@ -16,6 +23,11 @@ const getGameById = async (req, res) => {
         const game = await Game.findByPk(uuid);
         if (!game)
             return res.status(404).json({ message: "Game not found" });
+        // Parse the 'board' attribute before returning it
+        const board = game.get("board"); // Use .get() to access attributes
+        if (typeof board === "string") {
+            game.set("board", JSON.parse(board)); // Parse the board string into a JavaScript object
+        }
         res.json(game);
     }
     catch (error) {
@@ -32,10 +44,22 @@ const createGame = async (req, res) => {
             board: JSON.stringify(board || Array(15).fill(Array(15).fill(""))),
             gameState: gameState || "ongoing",
         });
-        res.status(201).json(newGame);
+        // Parse the board back to a JSON object
+        const parsedBoard = JSON.parse(newGame.get("board"));
+        // Add the parsed board to the response or modify the object if needed
+        const responseGame = {
+            ...newGame.toJSON(), // Convert Sequelize object to plain JSON
+            board: parsedBoard,
+        };
+        res.status(201).json(responseGame);
     }
     catch (error) {
-        res.status(500).json({ message: "Failed to create game", error });
+        if (error instanceof Error) {
+            res.status(500).json({ error: error.message });
+        }
+        else {
+            res.status(500).json({ error: "An unknown error occurred." });
+        }
     }
 };
 // 4. Update a game by UUID
@@ -47,18 +71,23 @@ const updateGame = async (req, res) => {
         const game = await Game.findByPk(uuid);
         if (!game)
             return res.status(404).json({ message: "Game not found" });
-        // Type assertion to ensure TypeScript understands the type of `game`
-        const updatedGame = game; // More explicit typing
+        // Ensure the board is parsed correctly before updating
+        const parsedBoard = board ? JSON.stringify(board) : game.get("board"); // Ensure board is stored as a string in the DB
         // Update the game attributes
-        await updatedGame.update({
-            name: name || updatedGame.name,
-            difficulty: difficulty || updatedGame.difficulty,
-            board: board ? JSON.stringify(board) : updatedGame.board,
-            gameState: gameState || updatedGame.gameState,
+        await game.update({
+            name: name || game.get("name"),
+            difficulty: difficulty || game.get("difficulty"),
+            board: parsedBoard,
+            gameState: gameState || game.get("gameState"),
             updatedAt: new Date(),
         });
+        // Create a response object and parse the board field back into an object if necessary
+        const responseGame = {
+            ...game.toJSON(), // Convert Sequelize model to plain JSON object
+            board: JSON.parse(game.get("board")), // Parse the board string back into an object
+        };
         // Send the updated game back in the response
-        res.json(updatedGame); // Return the updated instance
+        res.json(responseGame);
     }
     catch (error) {
         res.status(500).json({ message: "Failed to update game", error });

@@ -2,6 +2,7 @@
   background-color: var(--secondBackground);
   margin: 0;
   padding: 0;
+  height: 100vh;
 }
 
 :root {
@@ -34,18 +35,34 @@
 
 .editorPageTitle {
   text-align: center;
-  font-size: 1.8rem;
+  font-size: 2rem;
   color: var(--textColor);
-  margin-bottom: 3vh;
+  margin-bottom: 4vh;
 }
 
 .editWrapper {
   display: flex;
   gap: 1vw;
   justify-content: center;
-  margin-top: 7vh;
+  margin-top: 3vh;
 }
 
+.errorWin {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  background-color: #e31837;
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 10px 20px;
+  width: 13vw;
+  min-width: 200px;
+  border-radius: 0px 0px 10px 10px;
+  position: fixed;
+  top: 0;
+  right: 21vw;
+}
 /* ****************************** */
 
 .leftSide {
@@ -66,7 +83,6 @@
   margin-bottom: 15px;
   background-color: var(--firstBackground);
   color: var(--textColor);
-  border: none;
   border-radius: 5px;
   padding: 10px;
   font-size: 1rem;
@@ -120,6 +136,13 @@ input::placeholder {
   font-size: 1.45rem;
   font-weight: 700;
   margin-bottom: 5px;
+}
+
+.circleBtn {
+  width: 1.3rem;
+  padding: 6px;
+  aspect-ratio: 1/1;
+  border-radius: 50px;
 }
 
 .leftSideBtns {
@@ -183,5 +206,19 @@ input::placeholder {
 @media screen and (max-witdh: 750px) {
   .leftSide {
     margin: 10px auto;
+  }
+}
+
+@media screen and (max-height: 800px) {
+  .editorPageTitle {
+    margin-bottom: 10px;
+  }
+
+  .editWrapper {
+    margin-block: 15px 10px;
+  }
+
+  .leftSide {
+    justify-content: space-between;
   }
 }

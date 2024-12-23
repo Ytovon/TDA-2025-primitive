@@ -6,31 +6,26 @@ import { inspect } from "util";
 interface CardProps {
   type?: string;
   name?: string;
+  uuid?: string;
 }
 
 export const Card: React.FC<CardProps> = ({
-  type = "piškvorky",
-  name = "Začátečník",
+  name = "piškvorky",
+  type = "Začátečník",
+  uuid = "",
 }) => {
   let typeStyle: React.CSSProperties = {};
 
-  if (type === "Začátečník") {
+  //TODO !!!
+  if (type.toLowerCase() === "začátečník" || "easy") {
     typeStyle = { color: "#0070BB" };
-  }
-
-  if (type === "Jednoduchá") {
+  } else if (type.toLowerCase() === "jednoduchá") {
     typeStyle = { color: "#395A9A" };
-  }
-
-  if (type === "Pokročilá") {
+  } else if (type.toLowerCase() === "pokročilá") {
     typeStyle = { color: "#724479" };
-  }
-
-  if (type === "Těžká") {
+  } else if (type.toLowerCase() === "těžká") {
     typeStyle = { color: "#AB2E58" };
-  }
-
-  if (type === "Nejtěžší") {
+  } else if (type.toLowerCase() === "nejtěžší") {
     typeStyle = { color: "#E31837" };
   }
 
@@ -42,7 +37,7 @@ export const Card: React.FC<CardProps> = ({
           src={nahledPiskvorek}
           alt="Piškvorky"
         />
-        <Link to="/EditorPage">
+        <Link to={`/EditorPage/${uuid}`}>
           <img className={styles.cardUpdate} src={settingsButton} />
         </Link>
       </div>
@@ -51,7 +46,7 @@ export const Card: React.FC<CardProps> = ({
       <p className={styles.cardType} style={typeStyle}>
         {type}
       </p>
-      <Link className={styles.cardStart} to="/Game/uuid">
+      <Link className={styles.cardStart} to={`/Game/${uuid}`}>
         <p>Spustit úlohu</p>
       </Link>
     </div>
