@@ -5,10 +5,17 @@ const getGameState = (board) => {
   // Validate board dimensions
   if (!Array.isArray(board) || board.length !== 15 || board.some(row => row.length !== 15)) {
     debugInfo.error = "Invalid board dimensions.";
-    return { gameState: "unknown", debugInfo };
+    return { statusCode: 422, error: "Invalid board size.", debugInfo };
   }
 
-  // Validate symbols and turn order
+  // Validate symbols
+  const validSymbols = ["X", "O", ""];
+  if (!board.flat().every(cell => validSymbols.includes(cell))) {
+    debugInfo.error = "Invalid symbols on the board.";
+    return { statusCode: 422, error: "Invalid symbols.", debugInfo };
+  }
+
+  // Validate turn order
   const xCount = countSymbols(board, "X");
   const oCount = countSymbols(board, "O");
 
@@ -17,7 +24,7 @@ const getGameState = (board) => {
 
   if (xCount < oCount || xCount > oCount + 1) {
     debugInfo.error = "Invalid turn sequence.";
-    return { gameState: "unknown", debugInfo };
+    return { statusCode: 422, error: "Wrong starting player or invalid turn sequence.", debugInfo };
   }
 
   let roundsPlayed = Math.floor((xCount + oCount) / 2);
@@ -57,9 +64,7 @@ const hasWinningMove = (board, player) => {
     for (let col = 0; col < 15; col++) {
       if (board[row][col] === player) {
         for (const { row: dRow, col: dCol } of directions) {
-          console.log(`Checking direction for player ${player} at (${row}, ${col}) in direction (${dRow}, ${dCol})`);
           if (checkEndgameCondition(board, player, row, col, dRow, dCol)) {
-            console.log(`Winning move found for ${player} at (${row}, ${col})`);
             return true;
           }
         }
@@ -81,7 +86,6 @@ const checkEndgameCondition = (board, player, startRow, startCol, dRow, dCol) =>
     if (board[row][col] === player) {
       count++;
     } else if (board[row][col] !== "") {
-      console.log(`Blocked line for ${player} at (${row}, ${col})`);
       return false;
     }
   }
@@ -105,7 +109,6 @@ const checkEndgameCondition = (board, player, startRow, startCol, dRow, dCol) =>
     afterCol < 15 &&
     board[afterRow][afterCol] === "";
 
-  console.log(`Count: ${count}, BeforeOpen: ${beforeOpen}, AfterOpen: ${afterOpen}`);
   return count === 4 && (beforeOpen || afterOpen);
 };
 
