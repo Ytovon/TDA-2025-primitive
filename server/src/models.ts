@@ -6,7 +6,7 @@ interface GameAttributes {
   uuid: string;
   name: string;
   difficulty: string;
-  board: string;
+  board: string[][]; // Update type to reflect JSON structure
   gameState: string;
   updatedAt?: Date; // Optional because it will be auto-managed by Sequelize
   createdAt?: Date; // Optional because it will be auto-managed by Sequelize (for soft deletes)
@@ -33,7 +33,7 @@ const Game = sequelize.define<Model<GameAttributes, GameCreationAttributes>>(
       allowNull: false,
     },
     board: {
-      type: DataTypes.TEXT,
+      type: DataTypes.JSON, // Use JSON instead of TEXT
       allowNull: false,
     },
     gameState: {
