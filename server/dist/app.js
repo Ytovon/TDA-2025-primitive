@@ -36,3 +36,4 @@ app.get("*", (req, res) => {
     res.sendFile(path.resolve(dirname, "../..", "client", "build", "index.html"));
 });
 export { gameRoutes };
+//# sourceMappingURL=app.js.map

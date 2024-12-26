@@ -77,7 +77,7 @@ export default function CardsPage() {
       }
 
       const data = await response.json();
-      return data.uuid; // Vrátíme UUID nově vytvořené hry
+      return data.game.uuid; // Vrátíme UUID nově vytvořené hry
     } catch (error) {
       console.error("Error creating new game:", error);
     }
@@ -85,6 +85,9 @@ export default function CardsPage() {
 
   const handleCreateGame = async () => {
     const newGameUuid = await createGame(); // Vytvoření hry a získání UUID
+
+    console.log(newGameUuid);
+
     if (newGameUuid) {
       navigate(`/EditorPage/${newGameUuid}`); // Přesměrování na EditorPage
     }

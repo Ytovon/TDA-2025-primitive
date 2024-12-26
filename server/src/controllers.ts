@@ -27,13 +27,6 @@ const getGameById = async (req: any, res: any) => {
 const createGame = async (req: any, res: any) => {
   const { name, difficulty, board, gameState } = req.body;
   try {
-    if (!name || !difficulty || !board) {
-      return res.status(400).json({
-        status: "error",
-        message: "Missing required fields: name, difficulty, or board.",
-      });
-    }
-
     const result = getGameState(board);
 
     if (result.statusCode === 422) {
@@ -48,7 +41,7 @@ const createGame = async (req: any, res: any) => {
       name,
       difficulty,
       board: board || Array(15).fill(Array(15).fill("")),
-      gameState: gameState || "ongoing",
+      gameState: result.gameState || gameState,
     });
 
     res.status(201).json({
