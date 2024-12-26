@@ -356,7 +356,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
                 value={game.difficulty}
                 onChange={difficultyCHange}
               >
-                <option value="none" disabled selected>
+                <option value="none" selected>
                   Vyberte obtížnost
                 </option>
                 <option className={styles.difficulty} value="Začátečník">
