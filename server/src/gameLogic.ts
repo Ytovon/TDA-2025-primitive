@@ -73,11 +73,11 @@ const getGameState = (board: string[][]): GameStateResponse => {
 };
 
 // Count occurrences of a symbol
-const countSymbols = (board: string[][], symbol: string) => {
+const countSymbols = (board: string[][], symbol: string): number => {
   return board.flat().filter((cell) => cell === symbol).length;
 };
 
-const hasWinningMove = (board: string[][], player: string) => {
+const hasWinningMove = (board: string[][], player: string): boolean => {
   const directions = [
     { row: 0, col: 1 }, // Horizontal
     { row: 1, col: 0 }, // Vertical
@@ -89,7 +89,9 @@ const hasWinningMove = (board: string[][], player: string) => {
     for (let col = 0; col < 15; col++) {
       if (board[row][col] === player) {
         for (const { row: dRow, col: dCol } of directions) {
+          console.log(`Checking direction for player ${player} at (${row}, ${col}) in direction (${dRow}, ${dCol})`);
           if (checkEndgameCondition(board, player, row, col, dRow, dCol)) {
+            console.log(`Winning move found for ${player} at (${row}, ${col})`);
             return true;
           }
         }
@@ -106,9 +108,10 @@ const checkEndgameCondition = (
   startCol: number,
   dRow: number,
   dCol: number
-) => {
+): boolean => {
   let count = 0;
 
+  // Check the main sequence
   for (let i = 0; i < 5; i++) {
     const row = startRow + i * dRow;
     const col = startCol + i * dCol;
@@ -117,31 +120,47 @@ const checkEndgameCondition = (
 
     if (board[row][col] === player) {
       count++;
-    } else if (board[row][col] !== "") {
-      return false;
+    } else {
+      break; // Stop if there's a gap or opponent's symbol
     }
   }
 
+  // If the sequence is not exactly 4, return false
+  if (count !== 4) {
+    return false;
+  }
+
+  // Check open ends
   const beforeRow = startRow - dRow;
   const beforeCol = startCol - dCol;
   const afterRow = startRow + 5 * dRow;
   const afterCol = startCol + 5 * dCol;
 
-  const beforeOpen =
+  const beforeValid =
     beforeRow >= 0 &&
     beforeRow < 15 &&
     beforeCol >= 0 &&
     beforeCol < 15 &&
     board[beforeRow][beforeCol] === "";
 
-  const afterOpen =
+  const afterValid =
     afterRow >= 0 &&
     afterRow < 15 &&
     afterCol >= 0 &&
     afterCol < 15 &&
     board[afterRow][afterCol] === "";
 
-  return count === 4 && (beforeOpen || afterOpen);
+  // Validate player turn
+  const xCount = countSymbols(board, "X");
+  const oCount = countSymbols(board, "O");
+  const isPlayerTurn = (player === "X" && xCount > oCount) || (player === "O" && xCount === oCount);
+
+  console.log(
+    `Player: ${player}, Count: ${count}, BeforeOpen: ${beforeValid}, AfterOpen: ${afterValid}, IsPlayerTurn: ${isPlayerTurn}`
+  );
+
+  // Ensure at least one open end and validate player turn
+  return count === 4 && (beforeValid || afterValid) && isPlayerTurn;
 };
 
 export { getGameState };

@@ -85,7 +85,7 @@ const updateGame = async (req: any, res: any) => {
       name: name || game.get("name"),
       difficulty: difficulty || game.get("difficulty"),
       board: boardTmp,
-      gameState: gameState || game.get("gameState"),
+      gameState: result.gameState || game.get("gameState"),
       updatedAt: new Date(),
     });
 
