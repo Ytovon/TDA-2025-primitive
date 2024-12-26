@@ -1,11 +1,11 @@
-import express from "express";
-import {
+const express = require("express");
+const {
   getAllGames,
   getGameById,
   createGame,
   updateGame,
   deleteGame,
-} from "./controllers.js";
+} = require("./controllers");
 
 const router = express.Router();
 
@@ -16,4 +16,4 @@ router.post("/", createGame); // Create a new game
 router.put("/:uuid", updateGame); // Update a game
 router.delete("/:uuid", deleteGame); // Delete a game
 
-export { router };
+module.exports = router;
