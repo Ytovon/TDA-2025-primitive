@@ -79,7 +79,7 @@ const updateGame = async (req, res) => {
             name: name || game.get("name"),
             difficulty: difficulty || game.get("difficulty"),
             board: boardTmp,
-            gameState: gameState || game.get("gameState"),
+            gameState: result.gameState || game.get("gameState"),
             updatedAt: new Date(),
         });
         // Create a response object and parse the board field back into an object if necessary
