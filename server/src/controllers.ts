@@ -1,5 +1,5 @@
-import { Game, GameAttributes } from "./models.js";
-import { Model } from "sequelize"; // Import Model from Sequelize
+import { Game } from "./models.js";
+import { getGameState } from "./gameLogic.js"; // Import game state algorithm
 
 // 1. Get all games
 const getAllGames = async (req: any, res: any) => {
@@ -43,23 +43,35 @@ const getGameById = async (req: any, res: any) => {
 const createGame = async (req: any, res: any) => {
   const { name, difficulty, board, gameState } = req.body;
   try {
+    if (!name || !difficulty || !board) {
+      return res.status(400).json({
+        status: "error",
+        message: "Missing required fields: name, difficulty, or board.",
+      });
+    }
+
+    const result = getGameState(board);
+
+    if (result.statusCode === 422) {
+      return res.status(422).json({
+        status: "error",
+        message: result.error,
+        debugInfo: result.debugInfo,
+      });
+    }
+
     const newGame = await Game.create({
       name,
       difficulty,
-      board: JSON.stringify(board || Array(15).fill(Array(15).fill(""))),
+      board: board || Array(15).fill(Array(15).fill("")),
       gameState: gameState || "ongoing",
     });
 
-    // Parse the board back to a JSON object
-    const parsedBoard = JSON.parse(newGame.get("board") as string);
-
-    // Add the parsed board to the response or modify the object if needed
-    const responseGame = {
-      ...newGame.toJSON(), // Convert Sequelize object to plain JSON
-      board: parsedBoard,
-    };
-
-    res.status(201).json(responseGame);
+    res.status(201).json({
+      status: "success",
+      message: "Game created successfully.",
+      game: newGame,
+    });
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).json({ error: error.message });
@@ -68,7 +80,6 @@ const createGame = async (req: any, res: any) => {
     }
   }
 };
-
 
 // 4. Update a game by UUID
 const updateGame = async (req: any, res: any) => {
@@ -81,31 +92,38 @@ const updateGame = async (req: any, res: any) => {
 
     if (!game) return res.status(404).json({ message: "Game not found" });
 
-    // Ensure the board is parsed correctly before updating
-    const parsedBoard = board ? JSON.stringify(board) : game.get("board"); // Ensure board is stored as a string in the DB
+    // Ensure the board exists before updating it
+    let boardTmp = board ? board : game.get("board");
+
+    const result = board && getGameState(board);
+
+    if (result.statusCode === 422) {
+      return res.status(422).json({
+        status: "error",
+        message: result.error,
+        debugInfo: result.debugInfo,
+      });
+    }
 
     // Update the game attributes
     await game.update({
       name: name || game.get("name"),
       difficulty: difficulty || game.get("difficulty"),
-      board: parsedBoard as string,
+      board: boardTmp,
       gameState: gameState || game.get("gameState"),
       updatedAt: new Date(),
     });
 
     // Create a response object and parse the board field back into an object if necessary
-    const responseGame = {
-      ...game.toJSON(), // Convert Sequelize model to plain JSON object
-      board: JSON.parse(game.get("board") as string), // Parse the board string back into an object
-    };
-
-    // Send the updated game back in the response
-    res.json(responseGame);
+    res.json({
+      status: "success",
+      message: "Game updated successfully.",
+      game,
+    });
   } catch (error) {
     res.status(500).json({ message: "Failed to update game", error });
   }
 };
-
 
 // 5. Delete a game by UUID
 const deleteGame = async (req: any, res: any) => {

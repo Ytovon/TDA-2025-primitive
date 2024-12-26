@@ -1,16 +1,37 @@
+interface GameStateResponse {
+  statusCode?: number;
+  error?: string;
+  debugInfo?: DebugInfo;
+  gameState?: string;
+}
+
+interface DebugInfo {
+  error?: string;
+  xCount?: number;
+  oCount?: number;
+  roundsPlayed?: number;
+  xWinningMove?: boolean;
+  oWinningMove?: boolean;
+  gameState?: string;
+}
+
 // Utility to determine the game state
-const getGameState = (board) => {
-  const debugInfo = {}; // Collect debugging information here
+const getGameState = (board: string[][]): GameStateResponse => {
+  const debugInfo: DebugInfo = {}; // Collect debugging information here
 
   // Validate board dimensions
-  if (!Array.isArray(board) || board.length !== 15 || board.some(row => row.length !== 15)) {
+  if (
+    !Array.isArray(board) ||
+    board.length !== 15 ||
+    board.some((row) => row.length !== 15)
+  ) {
     debugInfo.error = "Invalid board dimensions.";
     return { statusCode: 422, error: "Invalid board size.", debugInfo };
   }
 
   // Validate symbols
   const validSymbols = ["X", "O", ""];
-  if (!board.flat().every(cell => validSymbols.includes(cell))) {
+  if (!board.flat().every((cell) => validSymbols.includes(cell))) {
     debugInfo.error = "Invalid symbols on the board.";
     return { statusCode: 422, error: "Invalid symbols.", debugInfo };
   }
@@ -24,7 +45,11 @@ const getGameState = (board) => {
 
   if (xCount < oCount || xCount > oCount + 1) {
     debugInfo.error = "Invalid turn sequence.";
-    return { statusCode: 422, error: "Wrong starting player or invalid turn sequence.", debugInfo };
+    return {
+      statusCode: 422,
+      error: "Wrong starting player or invalid turn sequence.",
+      debugInfo,
+    };
   }
 
   let roundsPlayed = Math.floor((xCount + oCount) / 2);
@@ -48,16 +73,16 @@ const getGameState = (board) => {
 };
 
 // Count occurrences of a symbol
-const countSymbols = (board, symbol) => {
-  return board.flat().filter(cell => cell === symbol).length;
+const countSymbols = (board: string[][], symbol: string) => {
+  return board.flat().filter((cell) => cell === symbol).length;
 };
 
-const hasWinningMove = (board, player) => {
+const hasWinningMove = (board: string[][], player: string) => {
   const directions = [
-    { row: 0, col: 1 },  // Horizontal
-    { row: 1, col: 0 },  // Vertical
-    { row: 1, col: 1 },  // Diagonal (top-left to bottom-right)
-    { row: 1, col: -1 }  // Diagonal (top-right to bottom-left)
+    { row: 0, col: 1 }, // Horizontal
+    { row: 1, col: 0 }, // Vertical
+    { row: 1, col: 1 }, // Diagonal (top-left to bottom-right)
+    { row: 1, col: -1 }, // Diagonal (top-right to bottom-left)
   ];
 
   for (let row = 0; row < 15; row++) {
@@ -74,7 +99,14 @@ const hasWinningMove = (board, player) => {
   return false;
 };
 
-const checkEndgameCondition = (board, player, startRow, startCol, dRow, dCol) => {
+const checkEndgameCondition = (
+  board: string[][],
+  player: string,
+  startRow: number,
+  startCol: number,
+  dRow: number,
+  dCol: number
+) => {
   let count = 0;
 
   for (let i = 0; i < 5; i++) {
@@ -112,4 +144,4 @@ const checkEndgameCondition = (board, player, startRow, startCol, dRow, dCol) =>
   return count === 4 && (beforeOpen || afterOpen);
 };
 
-module.exports = { getGameState };
+export { getGameState };
