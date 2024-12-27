@@ -32,6 +32,7 @@ export default function CardsPage() {
   const [difficultyFilter, setDifficultyFilter] = useState<string>(""); // Obtížnost
   const [nameFilter, setNameFilter] = useState<string>(""); // Název
   const [dateFilter, setDateFilter] = useState<string>(""); // Datum
+  const [isLoading, setIsLoading] = useState(false);
   const [filteredGames, setFilteredGames] = useState<Game[]>([]); // Filtrované hry
 
   const [games, setGames] = useState<Game[]>([]);
@@ -103,9 +104,7 @@ export default function CardsPage() {
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTimeout(() => {
-      setNameFilter(e.target.value);
-    }, 500);
+    setNameFilter(e.target.value);
   };
 
   const handleDateChange = (value: string) => {
@@ -155,7 +154,11 @@ export default function CardsPage() {
   };
 
   useEffect(() => {
-    applyFilters();
+    setIsLoading(true);
+    setTimeout(() => {
+      applyFilters();
+      setIsLoading(false);
+    }, games.length * 100);
   }, [difficultyFilter, nameFilter, dateFilter, games]);
 
   const resetFilters = () => {
@@ -302,6 +305,7 @@ export default function CardsPage() {
                 <input
                   type="text"
                   placeholder="Zadejte název úlohy:"
+                  value={nameFilter}
                   onChange={handleNameChange}
                 />
               </div>
