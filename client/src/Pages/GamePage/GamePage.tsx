@@ -13,6 +13,7 @@ import {
   cervenaZarovkaX,
   modraZarovkaO,
   darkModeButton,
+  lightModeButton,
 } from "../../assets/assets";
 import { useDarkMode } from "../../DarkModeContext";
 
@@ -206,7 +207,10 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
               />
             </button>
             <button onClick={toggleDarkMode}>
-              <img className={styles.darkModeBtn} src={darkModeButton} />
+              <img
+                className={styles.darkModeBtn}
+                src={darkMode ? darkModeButton : lightModeButton}
+              />
             </button>
           </div>
         </div>

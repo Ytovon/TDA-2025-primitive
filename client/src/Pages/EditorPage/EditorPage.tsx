@@ -11,6 +11,7 @@ import {
   chevronUpBlack,
   chevronUpWhite,
   darkModeButton,
+  lightModeButton,
   redBulb,
   trashBin,
   symbolX,
@@ -317,7 +318,10 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
           />
         </Link>
         <button onClick={toggleDarkMode}>
-          <img className={styles.darkModeBtn} src={darkModeButton} />
+          <img
+            className={styles.darkModeBtn}
+            src={darkMode ? darkModeButton : lightModeButton}
+          />
         </button>
       </div>
 
