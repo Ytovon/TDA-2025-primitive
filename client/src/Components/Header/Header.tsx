@@ -14,7 +14,7 @@ export default function Header() {
   return (
     <div className={styles.headerBackground}>
       <header className={styles.header}>
-        <Link to="">
+        <Link to="/">
           <img
             className={styles.logo}
             src={darkMode ? lightModeLogo : darkModeLogo}

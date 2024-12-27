@@ -30,16 +30,35 @@
   width: 19vw;
 }
 
+.titleWrapper {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
 .title {
   color: var(--textColor);
-  font-size: 1.65rem;
+  font-size: 1.75rem;
   text-align: center;
-  margin-block: 35px;
+  height: min-content;
+}
+
+.line {
+  width: 2px;
+  background-color: var(--textColor);
+}
+
+.gameState {
+  color: var(--textColor);
+  margin-block: 10px 18px;
+  font-size: 1.6rem;
+  font-weight: 500;
+  text-align: center;
 }
 
 .gameMenu {
   display: block;
-  margin: 20px;
+  margin: 20px 20px 10px;
   display: flex;
   justify-content: space-between;
 }

@@ -16,7 +16,7 @@ const Game = sequelize.define("Game", {
         allowNull: false,
     },
     board: {
-        type: DataTypes.TEXT,
+        type: DataTypes.JSON, // Use JSON instead of TEXT
         allowNull: false,
     },
     gameState: {

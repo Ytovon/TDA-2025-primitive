@@ -8,16 +8,89 @@ import {
 } from "../../assets/assets";
 import { Card } from "../../Components/Card/Card";
 import Header from "../../Components/Header/Header";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./CardsPage.module.css";
 import { useDarkMode } from "../../DarkModeContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function CardsPage() {
+  type Game = {
+    board: [];
+    createdAt: string;
+    difficulty: string;
+    gameState: string;
+    name: string;
+    updatedAt: string;
+    uuid: string;
+  };
+
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [isFiltrationOpen, toggleIsFiltrationOpen] = useState(true);
+  const [games, setGames] = useState<Game[]>([]);
+  const navigate = useNavigate();
 
   const openFiltration = () => {
     toggleIsFiltrationOpen(!isFiltrationOpen);
+  };
+
+  useEffect(() => {
+    fetchAllGames();
+  }, []);
+
+  async function fetchAllGames() {
+    try {
+      const response = await fetch("http://localhost:5000/api/v1/games");
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setGames(data);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
+  async function createGame() {
+    try {
+      const newGame = {
+        name: "",
+        difficulty: "Začátečník",
+        gameState: "",
+        board: Array.from({ length: 15 }, () => Array(15).fill("")),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      const response = await fetch("http://localhost:5000/api/v1/games", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newGame),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.game.uuid; // Vrátíme UUID nově vytvořené hry
+    } catch (error) {
+      console.error("Error creating new game:", error);
+    }
+  }
+
+  const handleCreateGame = async () => {
+    const newGameUuid = await createGame(); // Vytvoření hry a získání UUID
+
+    console.log(newGameUuid);
+
+    if (newGameUuid) {
+      navigate(`/EditorPage/${newGameUuid}`); // Přesměrování na EditorPage
+    }
   };
 
   return (
@@ -123,8 +196,13 @@ export default function CardsPage() {
             </div>
           </div>
 
-          <div>
-            <Card name="Puzzle" type="Pokročilá" />
+          <div className={styles.cards}>
+            <button onClick={handleCreateGame} className={styles.addGameBtn}>
+              Vytvořit novou hru
+            </button>
+            {games.map((game) => (
+              <Card name={game.name} type={game.difficulty} uuid={game.uuid} />
+            ))}
           </div>
         </div>
       </body>
