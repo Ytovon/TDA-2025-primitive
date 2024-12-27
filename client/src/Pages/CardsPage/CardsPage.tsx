@@ -8,6 +8,7 @@ import {
   resetBtnBlack,
   resetBtnWhite,
   xMarkGrey,
+  loadingSpinnerGif,
 } from "../../assets/assets";
 import { Card } from "../../Components/Card/Card";
 import Header from "../../Components/Header/Header";
@@ -158,7 +159,7 @@ export default function CardsPage() {
     setTimeout(() => {
       applyFilters();
       setIsLoading(false);
-    }, games.length * 100);
+    }, games.length * 200);
   }, [difficultyFilter, nameFilter, dateFilter, games]);
 
   const resetFilters = () => {
@@ -363,7 +364,16 @@ export default function CardsPage() {
             Vytvořit novou hru
           </button>
 
-          <div className={styles.cards}>
+          <img
+            style={isLoading ? { display: "block" } : { display: "none" }}
+            className={styles.loadingSpinner}
+            src={loadingSpinnerGif}
+            alt=""
+          />
+          <div
+            style={isLoading ? { display: "none" } : { display: "grid" }}
+            className={styles.cards}
+          >
             {filteredGames.map((game) => (
               <Card name={game.name} type={game.difficulty} uuid={game.uuid} />
             ))}

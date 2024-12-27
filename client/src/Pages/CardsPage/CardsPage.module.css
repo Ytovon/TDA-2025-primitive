@@ -139,3 +139,8 @@
   min-width: 840px;
   margin: 0 auto;
 }
+
+.loadingSpinner {
+  width: 70px;
+  margin: 20px auto;
+}
