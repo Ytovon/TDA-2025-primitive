@@ -11,6 +11,7 @@ import {
   chevronUpBlack,
   chevronUpWhite,
   darkModeButton,
+  lightModeButton,
   redBulb,
   trashBin,
   symbolX,
@@ -314,7 +315,10 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
           />
         </Link>
         <button onClick={toggleDarkMode}>
-          <img className={styles.darkModeBtn} src={darkModeButton} />
+          <img
+            className={styles.darkModeBtn}
+            src={darkMode ? darkModeButton : lightModeButton}
+          />
         </button>
       </div>
 
@@ -353,7 +357,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
                 value={game.difficulty}
                 onChange={difficultyCHange}
               >
-                <option value="none" disabled selected>
+                <option value="none" selected>
                   Vyberte obtížnost
                 </option>
                 <option className={styles.difficulty} value="Začátečník">
