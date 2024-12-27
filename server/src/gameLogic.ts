@@ -10,9 +10,9 @@ interface DebugInfo {
   xCount?: number;
   oCount?: number;
   roundsPlayed?: number;
-  xWinningMove?: boolean;
-  oWinningMove?: boolean;
-  gameState?: string;
+  currentPlayer?: string;
+  currentWinningMove?: boolean;
+  condition?: string;
 }
 
 // Utility to determine the game state
@@ -52,23 +52,30 @@ const getGameState = (board: string[][]): GameStateResponse => {
     };
   }
 
-  let roundsPlayed = Math.floor((xCount + oCount) / 2);
-  debugInfo.roundsPlayed = roundsPlayed;
+  // Determine the current player
+  const currentPlayer = xCount === oCount ? "X" : "O";
+  debugInfo.currentPlayer = currentPlayer;
 
-  // Check for winning conditions
-  const xWinningMove = hasWinningMove(board, "X");
-  const oWinningMove = hasWinningMove(board, "O");
-  debugInfo.xWinningMove = xWinningMove;
-  debugInfo.oWinningMove = oWinningMove;
+  // Check for winning conditions only for the current player
+  const currentWinningMove = hasWinningMove(board, currentPlayer);
+  debugInfo.currentWinningMove = currentWinningMove;
 
-  if (xWinningMove || oWinningMove) {
+  if (currentWinningMove) {
+    // If a player can win within one move, classify as "endgame" regardless of the number of rounds
+    debugInfo.condition = "Winning move detected for current player";
     return { gameState: "endgame", debugInfo };
   }
 
   // Classify based on the number of rounds
+  const roundsPlayed = Math.floor((xCount + oCount) / 2);
+  debugInfo.roundsPlayed = roundsPlayed;
+
   if (roundsPlayed < 6) {
+    debugInfo.condition = "Less than 6 rounds played";
     return { gameState: "opening", debugInfo };
   }
+
+  debugInfo.condition = "Default midgame classification";
   return { gameState: "midgame", debugInfo };
 };
 
@@ -87,7 +94,7 @@ const hasWinningMove = (board: string[][], player: string): boolean => {
 
   for (let row = 0; row < 15; row++) {
     for (let col = 0; col < 15; col++) {
-      if (board[row][col] === player) {
+      if (board[row][col] === player || board[row][col] === "") {
         for (const { row: dRow, col: dCol } of directions) {
           console.log(`Checking direction for player ${player} at (${row}, ${col}) in direction (${dRow}, ${dCol})`);
           if (checkEndgameCondition(board, player, row, col, dRow, dCol)) {
@@ -110,8 +117,9 @@ const checkEndgameCondition = (
   dCol: number
 ): boolean => {
   let count = 0;
+  let gapFound = false;
 
-  // Check the main sequence
+  // Traverse forward to check for consecutive symbols or gaps
   for (let i = 0; i < 5; i++) {
     const row = startRow + i * dRow;
     const col = startCol + i * dCol;
@@ -120,17 +128,19 @@ const checkEndgameCondition = (
 
     if (board[row][col] === player) {
       count++;
+    } else if (board[row][col] === "" && !gapFound) {
+      gapFound = true; // Allow only one gap in the sequence
     } else {
-      break; // Stop if there's a gap or opponent's symbol
+      break; // Stop if there's an opponent symbol or more than one gap
     }
   }
 
-  // If the sequence is not exactly 4, return false
-  if (count !== 4) {
+  // If the sequence isn’t exactly 4 with one potential move, return false
+  if (count !== 4 || gapFound === false) {
     return false;
   }
 
-  // Check open ends
+  // Check open ends for actual winning move possibility
   const beforeRow = startRow - dRow;
   const beforeCol = startCol - dCol;
   const afterRow = startRow + 5 * dRow;
@@ -150,17 +160,12 @@ const checkEndgameCondition = (
     afterCol < 15 &&
     board[afterRow][afterCol] === "";
 
-  // Validate player turn
-  const xCount = countSymbols(board, "X");
-  const oCount = countSymbols(board, "O");
-  const isPlayerTurn = (player === "X" && xCount > oCount) || (player === "O" && xCount === oCount);
-
   console.log(
-    `Player: ${player}, Count: ${count}, BeforeOpen: ${beforeValid}, AfterOpen: ${afterValid}, IsPlayerTurn: ${isPlayerTurn}`
+    `Player: ${player}, Count: ${count}, GapFound: ${gapFound}, BeforeValid: ${beforeValid}, AfterValid: ${afterValid}`
   );
 
-  // Ensure at least one open end and validate player turn
-  return count === 4 && (beforeValid || afterValid) && isPlayerTurn;
+  // Ensure at least one open end
+  return beforeValid || afterValid;
 };
 
 export { getGameState };
