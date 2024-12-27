@@ -1,11 +1,13 @@
 /* Everywhere */
 
 import darkModeButton from "./images/Primary.svg";
+import lightModeButton from "./images/sun.png";
 
 /* CardsPage */
 
 import xMarkWhite from "./images/xmark-solid-white.svg";
 import xMarkBlack from "./images/xmark-solid-black.svg";
+import xMarkGrey from "./images/xmark-solid-grey.svg";
 import chevronUpWhite from "./images/chevron-up-solid-white.svg";
 import chevronUpBlack from "./images/chevron-up-solid-black.svg";
 import chevronDownWhite from "./images/chevron-down-solid-white.svg";
@@ -54,12 +56,14 @@ export {
   cervenaZarovkaX,
   modraZarovkaO,
   darkModeButton,
+  lightModeButton,
   lightModeLogo,
   darkModeLogo,
   nahledPiskvorek,
   settingsButton,
   xMarkWhite,
   xMarkBlack,
+  xMarkGrey,
   chevronUpWhite,
   chevronUpBlack,
   chevronDownWhite,

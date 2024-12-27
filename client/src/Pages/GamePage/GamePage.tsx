@@ -13,6 +13,7 @@ import {
   cervenaZarovkaX,
   modraZarovkaO,
   darkModeButton,
+  lightModeButton,
 } from "../../assets/assets";
 import { useDarkMode } from "../../DarkModeContext";
 
@@ -140,7 +141,7 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
   let typeStyle: React.CSSProperties = {};
 
   //TODO !!!
-  if (game.difficulty.toLowerCase() === "začátečník" || "easy") {
+  if (game.difficulty.toLowerCase() === "začátečník") {
     typeStyle = { color: "#0070BB" };
   } else if (game.difficulty.toLowerCase() === "jednoduchá") {
     typeStyle = { color: "#395A9A" };
@@ -203,7 +204,10 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
               />
             </button>
             <button onClick={toggleDarkMode}>
-              <img className={styles.darkModeBtn} src={darkModeButton} />
+              <img
+                className={styles.darkModeBtn}
+                src={darkMode ? darkModeButton : lightModeButton}
+              />
             </button>
           </div>
         </div>
