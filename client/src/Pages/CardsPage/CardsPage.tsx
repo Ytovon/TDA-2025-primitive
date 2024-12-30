@@ -108,9 +108,7 @@ export default function CardsPage() {
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTimeout(() => {
-      setNameFilter(e.target.value);
-    }, 500);
+    setNameFilter(e.target.value);
   };
 
   const handleDateChange = (value: string) => {
@@ -365,12 +363,6 @@ export default function CardsPage() {
               </div>
             </div>
           </div>
-          <button onClick={handleCreateGame} className={styles.addGameBtn}>
-            Vytvořit novou hru
-          </button>
-
-          <div className={styles.cards}>
-            {filteredGames.map((game) => (
           <button onClick={handleCreateGame} className={styles.addGameBtn}>
             Vytvořit novou hru
           </button>
