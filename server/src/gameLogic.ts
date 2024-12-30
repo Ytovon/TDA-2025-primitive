@@ -12,7 +12,7 @@ interface DebugInfo {
   roundsPlayed?: number;
   currentPlayer?: string;
   currentWinningMove?: boolean;
-  fourBlocked?: boolean;             // New field to track blocked four scenarios
+  fourBlocked?: boolean; // New field to track blocked four scenarios
   condition?: string;
 }
 
@@ -21,7 +21,11 @@ const getGameState = (board: string[][]): GameStateResponse => {
   const debugInfo: DebugInfo = {}; // Collect debugging information here
 
   // Validate board dimensions
-  if (!Array.isArray(board) || board.length !== 15 || board.some((row) => row.length !== 15)) {
+  if (
+    !Array.isArray(board) ||
+    board.length !== 15 ||
+    board.some((row) => row.length !== 15)
+  ) {
     debugInfo.error = "Invalid board dimensions.";
     return { statusCode: 422, error: "Invalid board size.", debugInfo };
   }
@@ -64,14 +68,16 @@ const getGameState = (board: string[][]): GameStateResponse => {
   }
 
   // Check for midgame scenarios: Four blocked by wall or opponent's symbol
-  const fourBlocked = hasBlockedFour(board, currentPlayer) || hasOpponentBlockedFour(board, currentPlayer);
+  const fourBlocked =
+    hasBlockedFour(board, currentPlayer) ||
+    hasOpponentBlockedFour(board, currentPlayer);
   debugInfo.fourBlocked = fourBlocked;
 
   // Classify based on the number of rounds
-  const roundsPlayed = Math.floor((xCount + oCount) / 2);
+  const roundsPlayed = xCount + oCount;
   debugInfo.roundsPlayed = roundsPlayed;
 
-  if (roundsPlayed < 6 && !fourBlocked) {
+  if (roundsPlayed < 7 && !fourBlocked) {
     debugInfo.condition = "Less than 6 rounds played";
     return { gameState: "opening", debugInfo };
   }
@@ -128,7 +134,9 @@ const hasBlockedFour = (board: string[][], player: string): boolean => {
       if (board[row][col] === player) {
         for (const { row: dRow, col: dCol } of directions) {
           if (checkBlockedFourCondition(board, player, row, col, dRow, dCol)) {
-            console.log(`Blocked four detected for ${player} at (${row}, ${col})`);
+            console.log(
+              `Blocked four detected for ${player} at (${row}, ${col})`
+            );
             return true;
           }
         }
