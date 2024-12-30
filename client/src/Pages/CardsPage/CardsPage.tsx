@@ -369,8 +369,6 @@ export default function CardsPage() {
             Vytvořit novou hru
           </button>
 
-          <div className={styles.cards}>
-            {filteredGames.map((game) => (
           <button onClick={handleCreateGame} className={styles.addGameBtn}>
             Vytvořit novou hru
           </button>
