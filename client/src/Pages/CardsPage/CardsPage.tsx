@@ -9,6 +9,9 @@ import {
   resetBtnWhite,
   xMarkGrey,
   loadingSpinnerGif,
+  whitePlus,
+  bluePlus,
+  trashBin,
 } from "../../assets/assets";
 import { Card } from "../../Components/Card/Card";
 import Header from "../../Components/Header/Header";
@@ -37,7 +40,6 @@ export default function CardsPage() {
   const [filteredGames, setFilteredGames] = useState<Game[]>([]); // Filtrované hry
 
   const [games, setGames] = useState<Game[]>([]);
-  const navigate = useNavigate();
 
   const openFiltration = () => {
     toggleIsFiltrationOpen(!isFiltrationOpen);
@@ -62,46 +64,6 @@ export default function CardsPage() {
       console.error("Error fetching data:", error);
     }
   }
-
-  async function createGame() {
-    try {
-      const newGame = {
-        name: "",
-        difficulty: "Začátečník",
-        gameState: "",
-        board: Array.from({ length: 15 }, () => Array(15).fill("")),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
-      const response = await fetch("http://localhost:5000/api/v1/games", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newGame),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data.game.uuid; // Vrátíme UUID nově vytvořené hry
-    } catch (error) {
-      console.error("Error creating new game:", error);
-    }
-  }
-
-  const handleCreateGame = async () => {
-    const newGameUuid = await createGame(); // Vytvoření hry a získání UUID
-
-    console.log(newGameUuid);
-
-    if (newGameUuid) {
-      navigate(`/EditorPage/${newGameUuid}`); // Přesměrování na EditorPage
-    }
-  };
 
   const handleDifficultyChange = (value: string) => {
     setDifficultyFilter(value);
@@ -160,9 +122,14 @@ export default function CardsPage() {
   useEffect(() => {
     setIsLoading(true);
     setTimeout(() => {
-      applyFilters();
       setIsLoading(false);
-    }, games.length * 200);
+    }, games.length * 100);
+  }, [difficultyFilter, nameFilter, dateFilter]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      applyFilters();
+    }, games.length * 100);
   }, [difficultyFilter, nameFilter, dateFilter, games]);
 
   const resetFilters = () => {
@@ -363,9 +330,15 @@ export default function CardsPage() {
               </div>
             </div>
           </div>
-          <button onClick={handleCreateGame} className={styles.addGameBtn}>
-            Vytvořit novou hru
-          </button>
+          <Link to="/EditorPage">
+            <button>
+              <img
+                className={styles.addGameBtn}
+                src={darkMode ? whitePlus : bluePlus}
+                alt=""
+              />
+            </button>
+          </Link>
 
           <img
             style={isLoading ? { display: "block" } : { display: "none" }}

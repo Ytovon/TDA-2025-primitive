@@ -38,6 +38,8 @@ body {
   --difficulty3Color: #724479;
   --difficulty4Color: #ab2e58;
   --difficulty5Color: #e31837;
+  --addGameBtnColor: #395a9a;
+  --addGameBtnBorder: #395a9a35;
 }
 
 .dark-mode {
@@ -58,6 +60,8 @@ body {
   --difficulty3Color: white;
   --difficulty4Color: white;
   --difficulty5Color: white;
+  --addGameBtnColor: #395a9a35;
+  --addGameBtnBorder: #395a9a;
 }
 
 .winnerRed {

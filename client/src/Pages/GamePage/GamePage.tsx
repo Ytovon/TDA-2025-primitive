@@ -59,6 +59,29 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
     fetchSpecificGame(typeof uuid == "string" ? uuid : "");
   }, []);
 
+  useEffect(() => {
+    let xCount = 0;
+    let oCount = 0;
+
+    // Projde každou buňku v gridu a spočítá počet X a O
+    grid.forEach((row) => {
+      row.forEach((cell) => {
+        if (cell === "X") {
+          xCount++;
+        } else if (cell === "O") {
+          oCount++;
+        }
+      });
+    });
+
+    // Nastaví, který hráč má hrát na základě počtu X a O
+    if (xCount === oCount) {
+      setPlayer(true); // Hráč X na tahu
+    } else {
+      setPlayer(false); // Hráč O na tahu
+    }
+  }, [grid]);
+
   async function fetchSpecificGame(uuid: string) {
     try {
       // pokud je uuid prázdné, spustí se normální hra
@@ -87,7 +110,7 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
 
       setInitialBoard(data.board);
       setGrid(data.board);
-      
+
       console.log(data.board);
     } catch (error) {
       console.error("Error fetching data:", error);
