@@ -12,6 +12,7 @@ interface DebugInfo {
   roundsPlayed?: number;
   currentPlayer?: string;
   currentWinningMove?: boolean;
+  fourBlocked?: boolean;             // New field to track blocked four scenarios
   condition?: string;
 }
 
@@ -20,11 +21,7 @@ const getGameState = (board: string[][]): GameStateResponse => {
   const debugInfo: DebugInfo = {}; // Collect debugging information here
 
   // Validate board dimensions
-  if (
-    !Array.isArray(board) ||
-    board.length !== 15 ||
-    board.some((row) => row.length !== 15)
-  ) {
+  if (!Array.isArray(board) || board.length !== 15 || board.some((row) => row.length !== 15)) {
     debugInfo.error = "Invalid board dimensions.";
     return { statusCode: 422, error: "Invalid board size.", debugInfo };
   }
@@ -56,7 +53,7 @@ const getGameState = (board: string[][]): GameStateResponse => {
   const currentPlayer = xCount === oCount ? "X" : "O";
   debugInfo.currentPlayer = currentPlayer;
 
-  // Check for winning conditions only for the current player
+  // Check for winning conditions for the current player
   const currentWinningMove = hasWinningMove(board, currentPlayer);
   debugInfo.currentWinningMove = currentWinningMove;
 
@@ -66,13 +63,22 @@ const getGameState = (board: string[][]): GameStateResponse => {
     return { gameState: "endgame", debugInfo };
   }
 
+  // Check for midgame scenarios: Four blocked by wall or opponent's symbol
+  const fourBlocked = hasBlockedFour(board, currentPlayer) || hasOpponentBlockedFour(board, currentPlayer);
+  debugInfo.fourBlocked = fourBlocked;
+
   // Classify based on the number of rounds
   const roundsPlayed = Math.floor((xCount + oCount) / 2);
   debugInfo.roundsPlayed = roundsPlayed;
 
-  if (roundsPlayed < 6) {
+  if (roundsPlayed < 6 && !fourBlocked) {
     debugInfo.condition = "Less than 6 rounds played";
     return { gameState: "opening", debugInfo };
+  }
+
+  if (fourBlocked) {
+    debugInfo.condition = "Four blocked scenario detected";
+    return { gameState: "midgame", debugInfo };
   }
 
   debugInfo.condition = "Default midgame classification";
@@ -84,6 +90,7 @@ const countSymbols = (board: string[][], symbol: string): number => {
   return board.flat().filter((cell) => cell === symbol).length;
 };
 
+// Check if the player has a winning move
 const hasWinningMove = (board: string[][], player: string): boolean => {
   const directions = [
     { row: 0, col: 1 }, // Horizontal
@@ -96,7 +103,6 @@ const hasWinningMove = (board: string[][], player: string): boolean => {
     for (let col = 0; col < 15; col++) {
       if (board[row][col] === player || board[row][col] === "") {
         for (const { row: dRow, col: dCol } of directions) {
-          console.log(`Checking direction for player ${player} at (${row}, ${col}) in direction (${dRow}, ${dCol})`);
           if (checkEndgameCondition(board, player, row, col, dRow, dCol)) {
             console.log(`Winning move found for ${player} at (${row}, ${col})`);
             return true;
@@ -108,6 +114,69 @@ const hasWinningMove = (board: string[][], player: string): boolean => {
   return false;
 };
 
+// Check for a "four blocked by wall or opponent's symbol"
+const hasBlockedFour = (board: string[][], player: string): boolean => {
+  const directions = [
+    { row: 0, col: 1 }, // Horizontal
+    { row: 1, col: 0 }, // Vertical
+    { row: 1, col: 1 }, // Diagonal (top-left to bottom-right)
+    { row: 1, col: -1 }, // Diagonal (top-right to bottom-left)
+  ];
+
+  for (let row = 0; row < 15; row++) {
+    for (let col = 0; col < 15; col++) {
+      if (board[row][col] === player) {
+        for (const { row: dRow, col: dCol } of directions) {
+          if (checkBlockedFourCondition(board, player, row, col, dRow, dCol)) {
+            console.log(`Blocked four detected for ${player} at (${row}, ${col})`);
+            return true;
+          }
+        }
+      }
+    }
+  }
+  return false;
+};
+
+// Check for opponent's blocked four
+const hasOpponentBlockedFour = (board: string[][], player: string): boolean => {
+  const opponent = player === "X" ? "O" : "X";
+  return hasBlockedFour(board, opponent);
+};
+
+// Check if a "four is blocked" in the current direction
+const checkBlockedFourCondition = (
+  board: string[][],
+  player: string,
+  startRow: number,
+  startCol: number,
+  dRow: number,
+  dCol: number
+): boolean => {
+  let count = 0;
+  let blockedBy = null;
+
+  for (let i = 0; i < 4; i++) {
+    const row = startRow + i * dRow;
+    const col = startCol + i * dCol;
+
+    if (row < 0 || row >= 15 || col < 0 || col >= 15) {
+      blockedBy = "wall";
+      break;
+    }
+
+    if (board[row][col] === player) {
+      count++;
+    } else if (board[row][col] !== "") {
+      blockedBy = "opponent";
+      break;
+    }
+  }
+
+  return count === 4 && blockedBy !== null;
+};
+
+// Check endgame conditions
 const checkEndgameCondition = (
   board: string[][],
   player: string,
@@ -119,7 +188,6 @@ const checkEndgameCondition = (
   let count = 0;
   let gapFound = false;
 
-  // Traverse forward to check for consecutive symbols or gaps
   for (let i = 0; i < 5; i++) {
     const row = startRow + i * dRow;
     const col = startCol + i * dCol;
@@ -129,43 +197,13 @@ const checkEndgameCondition = (
     if (board[row][col] === player) {
       count++;
     } else if (board[row][col] === "" && !gapFound) {
-      gapFound = true; // Allow only one gap in the sequence
+      gapFound = true; // Allow one gap
     } else {
-      break; // Stop if there's an opponent symbol or more than one gap
+      break;
     }
   }
 
-  // If the sequence isn’t exactly 4 with one potential move, return false
-  if (count !== 4 || gapFound === false) {
-    return false;
-  }
-
-  // Check open ends for actual winning move possibility
-  const beforeRow = startRow - dRow;
-  const beforeCol = startCol - dCol;
-  const afterRow = startRow + 5 * dRow;
-  const afterCol = startCol + 5 * dCol;
-
-  const beforeValid =
-    beforeRow >= 0 &&
-    beforeRow < 15 &&
-    beforeCol >= 0 &&
-    beforeCol < 15 &&
-    board[beforeRow][beforeCol] === "";
-
-  const afterValid =
-    afterRow >= 0 &&
-    afterRow < 15 &&
-    afterCol >= 0 &&
-    afterCol < 15 &&
-    board[afterRow][afterCol] === "";
-
-  console.log(
-    `Player: ${player}, Count: ${count}, GapFound: ${gapFound}, BeforeValid: ${beforeValid}, AfterValid: ${afterValid}`
-  );
-
-  // Ensure at least one open end
-  return beforeValid || afterValid;
+  return count === 4 && gapFound;
 };
 
 export { getGameState };
