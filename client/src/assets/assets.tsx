@@ -13,6 +13,8 @@ import chevronUpBlack from "./images/chevron-up-solid-black.svg";
 import chevronDownWhite from "./images/chevron-down-solid-white.svg";
 import chevronDownBlack from "./images/chevron-down-solid-black.svg";
 import loadingSpinnerGif from "./images/Dual Ring@1x-1.0s-200px-200px.gif";
+import bluePlus from "./images/plus-solid-blue.svg";
+import whitePlus from "./images/plus-solid.svg";
 
 /* GamePage */
 
@@ -74,5 +76,7 @@ export {
   check,
   redCancel,
   trashBin,
+  whitePlus,
+  bluePlus,
   loadingSpinnerGif,
 };

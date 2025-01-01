@@ -1,6 +1,7 @@
 .body {
   display: flex;
   justify-content: center;
+  min-height: 101vh;
 }
 
 .cardsPageWrapper {
@@ -133,6 +134,7 @@
 }
 
 .cards {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(3, auto);
   width: 48vw;
@@ -143,4 +145,17 @@
 .loadingSpinner {
   width: 70px;
   margin: 20px auto;
+}
+
+.addGameBtn {
+  position: absolute;
+  align-items: center;
+  width: 28px;
+  aspect-ratio: 1/1;
+  padding: 8px;
+  background-color: var(--addGameBtnColor);
+  border: 2px solid var(--addGameBtnBorder);
+  border-radius: 50px;
+  right: 150px;
+  top: 500px;
 }
