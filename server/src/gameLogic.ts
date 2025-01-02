@@ -68,10 +68,10 @@ const getGameState = (board: string[][]): GameStateResponse => {
   debugInfo.fourBlocked = fourBlocked;
 
   // Classify based on the number of rounds
-  const roundsPlayed = Math.floor((xCount + oCount) / 2);
+  const roundsPlayed = xCount + oCount;
   debugInfo.roundsPlayed = roundsPlayed;
 
-  if (roundsPlayed < 6 && !fourBlocked) {
+  if (roundsPlayed < 7 && !fourBlocked) {
     debugInfo.condition = "Less than 6 rounds played";
     return { gameState: "opening", debugInfo };
   }
