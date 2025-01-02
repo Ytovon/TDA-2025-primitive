@@ -4,6 +4,7 @@ import {
   darkModeButton,
   lightModeLogo,
   darkModeLogo,
+  lightModeButton,
 } from "../../assets/assets";
 import styles from "./Header.module.css";
 import { useDarkMode } from "../../DarkModeContext";
@@ -30,7 +31,10 @@ export default function Header() {
             <p>Tréninkové úlohy</p>
           </Link>
           <button onClick={toggleDarkMode}>
-            <img className={styles.darkModeBtn} src={darkModeButton} />
+            <img
+              className={styles.darkModeBtn}
+              src={darkMode ? darkModeButton : lightModeButton}
+            />
           </button>
           <p>
             <Link className={styles.playBtn} to="/Game">

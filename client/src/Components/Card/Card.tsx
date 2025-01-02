@@ -17,7 +17,7 @@ export const Card: React.FC<CardProps> = ({
   let typeStyle: React.CSSProperties = {};
 
   //TODO !!!
-  if (type.toLowerCase() === "začátečník" || "easy") {
+  if (type.toLowerCase() === "začátečník") {
     typeStyle = { color: "#0070BB" };
   } else if (type.toLowerCase() === "jednoduchá") {
     typeStyle = { color: "#395A9A" };

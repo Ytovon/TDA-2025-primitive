@@ -1,15 +1,20 @@
 /* Everywhere */
 
 import darkModeButton from "./images/Primary.svg";
+import lightModeButton from "./images/sun.png";
 
 /* CardsPage */
 
 import xMarkWhite from "./images/xmark-solid-white.svg";
 import xMarkBlack from "./images/xmark-solid-black.svg";
+import xMarkGrey from "./images/xmark-solid-grey.svg";
 import chevronUpWhite from "./images/chevron-up-solid-white.svg";
 import chevronUpBlack from "./images/chevron-up-solid-black.svg";
 import chevronDownWhite from "./images/chevron-down-solid-white.svg";
 import chevronDownBlack from "./images/chevron-down-solid-black.svg";
+import loadingSpinnerGif from "./images/Dual Ring@1x-1.0s-200px-200px.gif";
+import bluePlus from "./images/plus-solid-blue.svg";
+import whitePlus from "./images/plus-solid.svg";
 
 /* GamePage */
 
@@ -54,12 +59,14 @@ export {
   cervenaZarovkaX,
   modraZarovkaO,
   darkModeButton,
+  lightModeButton,
   lightModeLogo,
   darkModeLogo,
   nahledPiskvorek,
   settingsButton,
   xMarkWhite,
   xMarkBlack,
+  xMarkGrey,
   chevronUpWhite,
   chevronUpBlack,
   chevronDownWhite,
@@ -69,4 +76,7 @@ export {
   check,
   redCancel,
   trashBin,
+  whitePlus,
+  bluePlus,
+  loadingSpinnerGif,
 };

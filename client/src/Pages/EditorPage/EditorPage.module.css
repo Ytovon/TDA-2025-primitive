@@ -97,7 +97,6 @@ input::placeholder {
   height: 40px;
   background-color: var(--firstBackground);
   color: var(--textColor);
-  border: none;
   padding: 10px;
   border-radius: 5px;
   font-size: 1rem;

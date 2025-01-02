@@ -9,6 +9,7 @@ interface ButtonProps {
   backgroundColor?: string;
   onClick?: () => void;
   isDisabled?: boolean;
+  isVisible?: boolean;
 }
 
 // Definice komponenty Button
@@ -20,13 +21,18 @@ export const Button: React.FC<ButtonProps> = ({
   backgroundColor,
   onClick,
   isDisabled,
+  isVisible = true,
 }) => {
   return (
     <button
       disabled={isDisabled}
       className={styles.button}
       onClick={onClick}
-      style={{ backgroundColor: backgroundColor, border: border }}
+      style={{
+        backgroundColor: backgroundColor,
+        border: border,
+        display: isVisible ? "" : "none",
+      }}
     >
       {image && <img className={styles.image} src={image} />}
       <p className={styles.text} style={{ color: color }}>

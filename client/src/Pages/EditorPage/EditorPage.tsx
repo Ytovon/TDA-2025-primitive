@@ -11,14 +11,16 @@ import {
   chevronUpBlack,
   chevronUpWhite,
   darkModeButton,
+  lightModeButton,
   redBulb,
   trashBin,
   symbolX,
   symbolO,
+  whitePlus,
 } from "../../assets/assets";
 import { Button } from "../../Components/Button/Button";
 import { useDarkMode } from "../../DarkModeContext";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 interface EditorPageProps {
   uuid?: string;
@@ -38,6 +40,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
   const [player, setPlayer] = useState<boolean>(true);
   const [hasSymbol, setHasSymbol] = useState<boolean>();
   const [nameInputStyle, setNameInputStyle] = useState({ border: "none" });
+  const [diffInputStyle, setDiffInputStyle] = useState({ border: "none" });
   const [isThereWinner, setIsThereWinner] = useState<boolean>(false);
   const [goodNumberOfSymbols, setGoodNumberOfSymbols] =
     useState<boolean>(false);
@@ -54,6 +57,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
     updatedAt: "",
     uuid,
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -61,6 +65,48 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
 
     fetchSpecificGame(typeof uuid == "string" ? uuid : "");
   }, []);
+
+  async function createGame() {
+    try {
+      const newGame = {
+        name: game.name,
+        difficulty: game.difficulty,
+        gameState: game.gameState,
+        board: Array.from({ length: 15 }, () => Array(15).fill("")),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+
+      const response = await fetch("http://localhost:5000/api/v1/games", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newGame),
+      });
+
+      navigate("/Games");
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.game.uuid; // Vrátíme UUID nově vytvořené hry
+    } catch (error) {
+      console.error("Error creating new game:", error);
+    }
+  }
+
+  const handleCreateGame = async () => {
+    const newGameUuid = await createGame(); // Vytvoření hry a získání UUID
+
+    console.log(newGameUuid);
+
+    if (newGameUuid) {
+      fetchSpecificGame(newGameUuid);
+    }
+  };
 
   async function fetchSpecificGame(uuid: string) {
     try {
@@ -111,6 +157,8 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
       // Čekáme na odpověď a převádíme ji na JSON
       const responseData = await response.json();
 
+      navigate("/Games");
+
       return responseData; // Vrátíme odpověď serveru
     } catch (error) {
       console.error("Error:", error); // Chytíme chyby při odesílání nebo zpracování odpovědi
@@ -128,6 +176,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
         createdAt: game.createdAt,
       };
       const responseData = await postData(game.uuid, editGameData);
+
       console.log(responseData); // Zpracování odpovědi
     } catch (error) {
       console.error("Error in sendData:", error);
@@ -292,10 +341,18 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
   };
 
   const nameIsMissing = () => {
-    if (game.name.trim() === "") {
+    if (game.name === "") {
       setNameInputStyle({ border: "1px solid red" });
     } else {
       setNameInputStyle({ border: "none" });
+    }
+  };
+
+  const difficultyIsMissing = () => {
+    if (game.difficulty === "") {
+      setDiffInputStyle({ border: "1px solid red" });
+    } else {
+      setDiffInputStyle({ border: "none" });
     }
   };
 
@@ -314,7 +371,10 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
           />
         </Link>
         <button onClick={toggleDarkMode}>
-          <img className={styles.darkModeBtn} src={darkModeButton} />
+          <img
+            className={styles.darkModeBtn}
+            src={darkMode ? darkModeButton : lightModeButton}
+          />
         </button>
       </div>
 
@@ -353,7 +413,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
                 value={game.difficulty}
                 onChange={difficultyCHange}
               >
-                <option value="none" disabled selected>
+                <option value="none" selected>
                   Vyberte obtížnost
                 </option>
                 <option className={styles.difficulty} value="Začátečník">
@@ -426,18 +486,42 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
 
           <div className={styles.leftSideBtns}>
             <Button
+              text="Vytvořit hru"
+              image={whitePlus}
+              color="white"
+              backgroundColor="#0070BB"
+              onClick={() =>
+                game.name !== ""
+                  ? game.difficulty !== ""
+                    ? (handleCreateGame(),
+                      setNameInputStyle({ border: "none" }),
+                      setDiffInputStyle({ border: "none" }))
+                    : difficultyIsMissing()
+                  : nameIsMissing()
+              }
+              isDisabled={
+                isThereWinner ? false : goodNumberOfSymbols ? false : true
+              }
+              isVisible={game.uuid === "" ? true : false}
+            ></Button>
+            <Button
               text="Uložit úlohu"
               image={check}
               color="white"
               backgroundColor="#0070BB"
               onClick={() =>
                 game.name !== ""
-                  ? (sendData(), setNameInputStyle({ border: "none" }))
+                  ? game.difficulty !== ""
+                    ? (handleCreateGame(),
+                      setNameInputStyle({ border: "none" }),
+                      setDiffInputStyle({ border: "none" }))
+                    : difficultyIsMissing()
                   : nameIsMissing()
               }
               isDisabled={
                 isThereWinner ? false : goodNumberOfSymbols ? false : true
               }
+              isVisible={game.uuid === "" ? false : true}
             />
             <Link style={{ textDecoration: "none" }} to="/Games">
               <Button

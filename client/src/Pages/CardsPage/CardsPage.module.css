@@ -1,8 +1,9 @@
 .body {
   display: flex;
   justify-content: center;
-  background-color: var(--secondBackground);
+  min-height: 101vh;
 }
+
 .cardsPageWrapper {
   width: 60vw;
 }
@@ -70,6 +71,13 @@
   position: relative;
 }
 
+.resetFiltrationSection {
+  width: 0.85rem;
+  position: absolute;
+  right: 6px;
+  top: 5px;
+}
+
 .filtrationSection label {
   color: var(--textColor);
 }
@@ -92,7 +100,6 @@
 }
 
 .difficultyBtn {
-  color: white;
   border: none;
   padding: 8px 15px;
   border-radius: 50px;
@@ -102,29 +109,53 @@
 }
 
 .difficultyColor1 {
-  background-color: #0070bbb2;
+  background-color: #6bc4ff60;
+  color: var(--difficulty1Color);
 }
 
 .difficultyColor2 {
-  background-color: #395a9ab2;
+  background-color: #5b8be460;
+  color: var(--difficulty2Color);
 }
 
 .difficultyColor3 {
-  background-color: #724479b5;
+  background-color: #ba6cc660;
+  color: var(--difficulty3Color);
 }
 
 .difficultyColor4 {
-  background-color: #ab2e58b2;
+  background-color: #db2a6550;
+  color: var(--difficulty4Color);
 }
 
 .difficultyColor5 {
-  background-color: #e31837b2;
+  background-color: #e3183750;
+  color: var(--difficulty5Color);
 }
 
 .cards {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(3, auto);
   width: 48vw;
   min-width: 840px;
   margin: 0 auto;
+}
+
+.loadingSpinner {
+  width: 70px;
+  margin: 20px auto;
+}
+
+.addGameBtn {
+  position: absolute;
+  align-items: center;
+  width: 28px;
+  aspect-ratio: 1/1;
+  padding: 8px;
+  background-color: var(--addGameBtnColor);
+  border: 2px solid var(--addGameBtnBorder);
+  border-radius: 50px;
+  right: 150px;
+  top: 500px;
 }
