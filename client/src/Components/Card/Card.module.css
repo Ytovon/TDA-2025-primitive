@@ -7,11 +7,10 @@
 .card {
   position: relative;
   border-radius: 10px;
-  width: 17vw;
+  width: 19vw;
   min-width: 240px;
   max-width: 260px;
   max-height: 290px;
-  margin: 20px;
   background-color: var(--firstBackground);
   display: flex;
   flex-direction: column;

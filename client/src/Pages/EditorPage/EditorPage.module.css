@@ -222,7 +222,9 @@ input::placeholder {
   }
 
   .editorPageMenu {
-    padding: 10px 10px 0 10px;
+    padding: 0 7px 0 0;
+    margin: 10px auto;
+    width: 97%;
   }
 
   .editWrapper {
@@ -231,8 +233,42 @@ input::placeholder {
   }
 
   .leftSide {
-    width: 35vw;
-    margin: 0px auto 2vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "item1 item2"
+      "item3 item3";
+    margin: 0px auto 4vh;
+    width: 600px;
+    gap: 25px;
+    padding: 0;
+  }
+
+  .editArea1 {
+    grid-area: item1;
+  }
+
+  .editorPageInputs {
+    display: flex;
+    flex-direction: column;
+    height: 60%;
+    gap: 15%;
+  }
+
+  .editorPageInput {
+    margin: 0;
+  }
+
+  .editArea2 {
+    grid-area: item2;
+  }
+
+  .selectSymbolImg img:nth-child(2n + 0) {
+    width: 6rem;
+  }
+
+  .leftSideBtns {
+    grid-area: item3;
   }
 
   .rightSide {
@@ -241,7 +277,7 @@ input::placeholder {
   }
 
   .editorPageTitle {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
   }
 
   .leftSideTitle {
@@ -284,10 +320,6 @@ input::placeholder {
 }
 
 @media screen and (max-height: 800px) {
-  .editorPageTitle {
-    margin-bottom: 10px;
-  }
-
   .editWrapper {
     margin-block: 15px 10px;
   }
@@ -298,7 +330,21 @@ input::placeholder {
 }
 
 @media screen and (max-width: 800px) {
+  .editorPageTitle {
+    margin-bottom: 40px;
+  }
+
   .leftSide {
-    margin-bottom: 3vh;
+    display: flex;
+    width: 50vw;
+    margin-bottom: 50px;
+  }
+
+  .editorPageInputs {
+    gap: 10px;
+  }
+
+  .leftSideBtns {
+    gap: 30px;
   }
 }

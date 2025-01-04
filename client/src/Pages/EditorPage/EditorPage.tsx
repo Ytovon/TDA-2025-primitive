@@ -394,7 +394,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
 
       <div className={styles.editWrapper}>
         <div className={styles.leftSide}>
-          <div>
+          <div className={styles.editArea1}>
             <h3 className={styles.leftSideTitle}>Všeobecné nastavení</h3>
             <div className={styles.editorPageInputs}>
               <input
@@ -455,7 +455,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
             </div>
           </div>
 
-          <div className={styles.selectSymbol}>
+          <div className={styles.editArea2}>
             <div className={styles.editacePlochyTitle}>
               <h3 className={styles.leftSideTitle}>Editace plochy</h3>
               <p className={styles.info}>?</p>
