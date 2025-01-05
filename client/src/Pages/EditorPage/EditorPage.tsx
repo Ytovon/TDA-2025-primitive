@@ -394,7 +394,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
 
       <div className={styles.editWrapper}>
         <div className={styles.leftSide}>
-          <div>
+          <div className={styles.editArea1}>
             <h3 className={styles.leftSideTitle}>Všeobecné nastavení</h3>
             <div className={styles.editorPageInputs}>
               <input
@@ -416,26 +416,46 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
                 <option value="none" selected>
                   Vyberte obtížnost
                 </option>
-                <option className={styles.difficulty} value="Začátečník">
+                <option
+                  style={{ color: darkMode ? "black" : "#0070BB" }}
+                  className={styles.difficulty}
+                  value="Začátečník"
+                >
                   Začátečník
                 </option>
-                <option className={styles.difficulty} value="Jednoduchá">
+                <option
+                  style={{ color: darkMode ? "black" : "#395A9A" }}
+                  className={styles.difficulty}
+                  value="Jednoduchá"
+                >
                   Jednoduchá
                 </option>
-                <option className={styles.difficulty} value="Pokročilá">
+                <option
+                  style={{ color: darkMode ? "black" : "#724479" }}
+                  className={styles.difficulty}
+                  value="Pokročilá"
+                >
                   Pokročilá
                 </option>
-                <option className={styles.difficulty} value="Těžká">
+                <option
+                  style={{ color: darkMode ? "black" : "#AB2E58" }}
+                  className={styles.difficulty}
+                  value="Těžká"
+                >
                   Těžká
                 </option>
-                <option className={styles.difficulty} value="Nejtěžší">
+                <option
+                  style={{ color: darkMode ? "black" : "#E31837" }}
+                  className={styles.difficulty}
+                  value="Nejtěžší"
+                >
                   Nejtěžší
                 </option>
               </select>
             </div>
           </div>
 
-          <div className={styles.selectSymbol}>
+          <div className={styles.editArea2}>
             <div className={styles.editacePlochyTitle}>
               <h3 className={styles.leftSideTitle}>Editace plochy</h3>
               <p className={styles.info}>?</p>

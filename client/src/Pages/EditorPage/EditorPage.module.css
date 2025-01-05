@@ -1,5 +1,5 @@
 .body {
-  background-color: var(--secondBackground);
+  background-color: var(--mainBackground);
   margin: 0;
   padding: 0;
   height: 100vh;
@@ -7,7 +7,7 @@
 
 :root {
   --cellSize: 5.5vh;
-  --cellSizeClamped: clamp(18px, var(--cellSize), 48px);
+  --cellSizeClamped: clamp(18px, var(--cellSize), 47px);
 }
 
 /* ********************************** */
@@ -44,7 +44,6 @@
   display: flex;
   gap: 1vw;
   justify-content: center;
-  margin-top: 3vh;
 }
 
 .errorWin {
@@ -98,8 +97,13 @@ input::placeholder {
   background-color: var(--firstBackground);
   color: var(--textColor);
   padding: 10px;
+  border: 0;
   border-radius: 5px;
   font-size: 1rem;
+}
+
+.editorPageSelect:focus {
+  outline: none;
 }
 
 .leftSideTitle {
@@ -120,7 +124,7 @@ input::placeholder {
   text-align: center;
   width: 20px;
   height: 20px;
-  border: 1px solid black;
+  border: 1px solid var(--textColor);
   border-radius: 50px;
   cursor: help;
   margin-bottom: 20px;
@@ -129,6 +133,10 @@ input::placeholder {
 .selectSymbolImg {
   display: flex;
   justify-content: space-between;
+}
+
+.selectSymbolImg img:nth-child(2n + 0) {
+  width: 7.5rem;
 }
 
 .numberAboveImg {
@@ -186,6 +194,10 @@ input::placeholder {
 .cell:nth-last-child(1) {
   border-radius: 0 0 8px 0;
 }
+.cell:nth-child(15n) {
+  width: var(--cellSizeClamped);
+  border-right: 0;
+}
 
 .symbol {
   width: 65%;
@@ -202,22 +214,137 @@ input::placeholder {
   cursor: pointer;
 }
 
-@media screen and (max-witdh: 750px) {
-  .leftSide {
+@media screen and (max-width: 1100px) {
+  :root {
+    font-size: 15px;
+    --cellSize: 6vw;
+    --cellSizeClamped: clamp(18px, var(--cellSize), 40px);
+  }
+
+  .editorPageMenu {
+    padding: 0 7px 0 0;
     margin: 10px auto;
+    width: 97%;
+  }
+
+  .editWrapper {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .leftSide {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "item1 item2"
+      "item3 item3";
+    margin: 0px auto 4vh;
+    width: 600px;
+    gap: 25px;
+    padding: 0;
+  }
+
+  .editArea1 {
+    grid-area: item1;
+  }
+
+  .editorPageInputs {
+    display: flex;
+    flex-direction: column;
+    height: 60%;
+    gap: 15%;
+  }
+
+  .editorPageInput {
+    margin: 0;
+  }
+
+  .editArea2 {
+    grid-area: item2;
+  }
+
+  .selectSymbolImg img:nth-child(2n + 0) {
+    width: 6rem;
+  }
+
+  .leftSideBtns {
+    grid-area: item3;
+  }
+
+  .rightSide {
+    width: min-content;
+    margin: 0 auto;
+  }
+
+  .editorPageTitle {
+    margin-bottom: 50px;
+  }
+
+  .leftSideTitle {
+    margin-bottom: 25px;
+  }
+
+  .editacePlochyTitle {
+    gap: 25px;
+  }
+
+  .editorPageSelect {
+    margin-bottom: 20px;
+  }
+
+  .gameGrid {
+    justify-content: center;
+    border: 0;
+    padding-right: 3px;
+    margin-bottom: 3%;
+  }
+
+  .cell:nth-child(15n) {
+    border-right: 1px solid var(--gameBorder);
+  }
+
+  .selectSymbolImg {
+    justify-content: space-around;
+    margin-bottom: 10px;
+  }
+
+  .leftSideBtns {
+    justify-content: center;
+    gap: 3vw;
+  }
+
+  .clearGame {
+    top: -23px;
+    font-size: 1rem;
   }
 }
 
 @media screen and (max-height: 800px) {
-  .editorPageTitle {
-    margin-bottom: 10px;
-  }
-
   .editWrapper {
     margin-block: 15px 10px;
   }
 
   .leftSide {
     justify-content: space-between;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .editorPageTitle {
+    margin-bottom: 40px;
+  }
+
+  .leftSide {
+    display: flex;
+    width: 50vw;
+    margin-bottom: 50px;
+  }
+
+  .editorPageInputs {
+    gap: 10px;
+  }
+
+  .leftSideBtns {
+    gap: 30px;
   }
 }
