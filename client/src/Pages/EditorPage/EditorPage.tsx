@@ -72,7 +72,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
         name: game.name,
         difficulty: game.difficulty,
         gameState: game.gameState,
-        board: Array.from({ length: 15 }, () => Array(15).fill("")),
+        board: grid,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -141,32 +141,9 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
     }
   }
 
-  async function postData(uuid: string, data: any) {
+  async function sendGameData(game: any, grid: any) {
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/v1/Games/${uuid}`,
-        {
-          method: "PUT", // Typ požadavku
-          headers: {
-            "Content-Type": "application/json", // Formát dat (tady JSON)
-          },
-          body: JSON.stringify(data), // Data, která odesíláme
-        }
-      );
-
-      // Čekáme na odpověď a převádíme ji na JSON
-      const responseData = await response.json();
-
-      navigate("/Games");
-
-      return responseData; // Vrátíme odpověď serveru
-    } catch (error) {
-      console.error("Error:", error); // Chytíme chyby při odesílání nebo zpracování odpovědi
-    }
-  }
-
-  async function sendData() {
-    try {
+      // Připravte data pro odeslání
       const editGameData = {
         board: grid,
         difficulty: game.difficulty,
@@ -175,11 +152,33 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
         uuid: game.uuid,
         createdAt: game.createdAt,
       };
-      const responseData = await postData(game.uuid, editGameData);
 
-      console.log(responseData); // Zpracování odpovědi
+      // Odeslání dat pomocí fetch
+      const response = await fetch(
+        `http://localhost:5000/api/v1/Games/${game.uuid}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(editGameData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      // Zpracování odpovědi
+      const responseData = await response.json();
+      console.log(responseData);
+
+      // Navigace na stránku her
+      navigate("/Games");
+
+      return responseData;
     } catch (error) {
-      console.error("Error in sendData:", error);
+      console.error("Error in sendGameData:", error);
     }
   }
 
@@ -356,6 +355,35 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
     }
   };
 
+  const handleButtonClick = () => {
+    let isValid = true;
+
+    if (game.name === "") {
+      // Pokud `game.name` není vyplněné
+      nameIsMissing();
+      setNameInputStyle({ border: "1px solid red" });
+      isValid = false;
+    } else {
+      // Pokud `game.name` je vyplněné
+      setNameInputStyle({ border: "none" });
+    }
+
+    if (game.difficulty === "") {
+      // Pokud `game.difficulty` není vyplněné
+      difficultyIsMissing();
+      setDiffInputStyle({ border: "1px solid red" });
+      isValid = false;
+    } else {
+      // Pokud `game.difficulty` je vyplněné
+      setDiffInputStyle({ border: "none" });
+    }
+
+    // Pokud jsou obě hodnoty validní, spustíme `handleCreateGame`
+    if (isValid) {
+      handleCreateGame();
+    }
+  };
+
   const clearGame = () => {
     setGrid(Array.from({ length: 15 }, () => Array(15).fill("")));
     setHasSymbol(false);
@@ -407,6 +435,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
               />
 
               <select
+                style={diffInputStyle}
                 className={styles.editorPageSelect}
                 name="difficulty"
                 id=""
@@ -510,15 +539,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
               image={whitePlus}
               color="white"
               backgroundColor="#0070BB"
-              onClick={() =>
-                game.name !== ""
-                  ? game.difficulty !== ""
-                    ? (handleCreateGame(),
-                      setNameInputStyle({ border: "none" }),
-                      setDiffInputStyle({ border: "none" }))
-                    : difficultyIsMissing()
-                  : nameIsMissing()
-              }
+              onClick={() => handleButtonClick()}
               isDisabled={
                 isThereWinner ? false : goodNumberOfSymbols ? false : true
               }
@@ -529,15 +550,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
               image={check}
               color="white"
               backgroundColor="#0070BB"
-              onClick={() =>
-                game.name !== ""
-                  ? game.difficulty !== ""
-                    ? (handleCreateGame(),
-                      setNameInputStyle({ border: "none" }),
-                      setDiffInputStyle({ border: "none" }))
-                    : difficultyIsMissing()
-                  : nameIsMissing()
-              }
+              onClick={() => handleButtonClick()}
               isDisabled={
                 isThereWinner ? false : goodNumberOfSymbols ? false : true
               }
