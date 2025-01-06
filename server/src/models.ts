@@ -1,12 +1,12 @@
 import { DataTypes, Model, Optional } from "sequelize";
-import { sequelize } from "./database"; // Adjust path as needed
+import { sequelize } from "./database.js"; // Adjust path as needed
 
 // Define the interface for the Game attributes
 interface GameAttributes {
   uuid: string;
   name: string;
   difficulty: string;
-  board: string; // Store the board as a JSON string
+  board: string[][]; // Store the board as a JSON string
   gameState: string;
   bitmap?: string; // Optional because it can be null
   createdAt?: Date; // Optional because it will be auto-managed by Sequelize
@@ -17,11 +17,14 @@ interface GameAttributes {
 interface GameCreationAttributes extends Optional<GameAttributes, "uuid"> {}
 
 // Define the Game model using an interface
-class Game extends Model<GameAttributes, GameCreationAttributes> implements GameAttributes {
+class Game
+  extends Model<GameAttributes, GameCreationAttributes>
+  implements GameAttributes
+{
   public uuid!: string;
   public name!: string;
   public difficulty!: string;
-  public board!: string; // Store the board as a JSON string
+  public board!: string[][]; // Store the board as a JSON string
   public gameState!: string;
   public bitmap?: string; // Optional because it can be null
 
@@ -46,7 +49,7 @@ Game.init(
       allowNull: false,
     },
     board: {
-      type: DataTypes.TEXT, // Store the board as a JSON string
+      type: DataTypes.JSON, // Store the board as a JSON string
       allowNull: false,
       defaultValue: JSON.stringify(Array(15).fill(Array(15).fill(null))),
     },
