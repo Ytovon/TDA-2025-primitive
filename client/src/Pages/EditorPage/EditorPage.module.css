@@ -55,8 +55,7 @@
   font-size: 1.05rem;
   font-weight: 600;
   padding: 10px 20px;
-  width: 13vw;
-  min-width: 200px;
+  width: 240px;
   border-radius: 0px 0px 10px 10px;
   position: fixed;
   top: 0;
@@ -96,7 +95,7 @@ input::placeholder {
   height: 40px;
   background-color: var(--firstBackground);
   color: var(--textColor);
-  padding: 10px;
+  padding: 0 10px;
   border: 0;
   border-radius: 5px;
   font-size: 1rem;
@@ -317,6 +316,10 @@ input::placeholder {
     top: -23px;
     font-size: 1rem;
   }
+
+  .errorWin {
+    width: 220px;
+  }
 }
 
 @media screen and (max-height: 800px) {
@@ -346,5 +349,17 @@ input::placeholder {
 
   .leftSideBtns {
     gap: 30px;
+  }
+
+  .errorWin {
+    right: 30px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .errorWin {
+    right: 15px;
+    width: none;
+    padding: 10px;
   }
 }
