@@ -1,8 +1,13 @@
 {
   "dependencies": {
-    "sequelize": "^6.37.5"
+    "canvas": "^3.0.1",
+    "express": "^4.21.1",
+    "sequelize": "^6.37.5",
+    "sqlite3": "^5.1.7",
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
+    "@types/express": "^5.0.0",
     "@types/sequelize": "^4.28.20"
   }
 }

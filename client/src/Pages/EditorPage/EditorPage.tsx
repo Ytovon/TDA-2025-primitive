@@ -34,6 +34,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
     name: string;
     updatedAt: string;
     uuid: string;
+    bitmap: string;
   };
 
   const { darkMode, toggleDarkMode } = useDarkMode();
@@ -56,6 +57,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
     name: "",
     updatedAt: "",
     uuid,
+    bitmap: "",
   });
   const navigate = useNavigate();
 
@@ -92,7 +94,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
       }
 
       const data = await response.json();
-      return data.game.uuid; // Vrátíme UUID nově vytvořené hry
+      return data.game.uuid; // returns UUID of recently created game
     } catch (error) {
       console.error("Error creating new game:", error);
     }
@@ -100,8 +102,6 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
 
   const handleCreateGame = async () => {
     const newGameUuid = await createGame(); // Vytvoření hry a získání UUID
-
-    console.log(newGameUuid);
 
     if (newGameUuid) {
       fetchSpecificGame(newGameUuid);
@@ -132,6 +132,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
         name: data.name,
         updatedAt: data.updatedAt,
         uuid: uuid,
+        bitmap: data.bitmap,
       });
 
       setHasSymbol(true);

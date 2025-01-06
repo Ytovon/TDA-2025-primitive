@@ -1,11 +1,13 @@
+import { Request, Response } from "express";
 import { Game } from "./models.js";
-import { getGameState } from "./gameLogic.js"; // Import game state algorithm
+import { getGameState } from "./gameLogic.js";
+import BitmapGenerator from "./bitmapGenerator.js"; // Import the bitmap generator utility
 
 // 1. Get all games
 const getAllGames = async (req: any, res: any) => {
   try {
     const games = await Game.findAll();
-    res.json(games); // No need to parse the board; it's already JSON
+    res.json(games);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch games", error });
   }
@@ -17,7 +19,7 @@ const getGameById = async (req: any, res: any) => {
   try {
     const game = await Game.findByPk(uuid);
     if (!game) return res.status(404).json({ message: "Game not found" });
-    res.json(game); // No need to parse the board; it's already JSON
+    res.json(game);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch game", error });
   }
@@ -25,9 +27,18 @@ const getGameById = async (req: any, res: any) => {
 
 // 3. Create a new game
 const createGame = async (req: any, res: any) => {
-  const { name, difficulty, board, gameState } = req.body;
+  const { name, difficulty, board } = req.body;
+
   try {
-    const result = getGameState(board);
+    if (!name || !difficulty || !board) {
+      return res.status(400).json({
+        status: "error",
+        message: "Missing required fields: name, difficulty, or board.",
+      });
+    }
+
+    const processedBoard = Array.isArray(board) ? board : JSON.parse(board);
+    const result = getGameState(processedBoard);
 
     if (result.statusCode === 422) {
       return res.status(422).json({
@@ -37,11 +48,19 @@ const createGame = async (req: any, res: any) => {
       });
     }
 
+    // Ensure gameState is a string
+    const gameState = result.gameState ?? "ongoing";
+
+    // Generate the bitmap for the board
+    const bitmap = BitmapGenerator.generateBitmap(processedBoard);
+
+    // Create a new game object
     const newGame = await Game.create({
       name,
       difficulty,
-      board: board || Array(15).fill(Array(15).fill("")),
-      gameState: result.gameState || gameState,
+      board: processedBoard,
+      gameState,
+      bitmap, // Save the Base64-encoded bitmap
     });
 
     res.status(201).json({
@@ -50,27 +69,23 @@ const createGame = async (req: any, res: any) => {
       game: newGame,
     });
   } catch (error) {
-    if (error instanceof Error) {
-      res.status(500).json({ error: error.message });
-    } else {
-      res.status(500).json({ error: "An unknown error occurred." });
-    }
+    res.status(500).json({ message: "Failed to create game", error });
   }
 };
 
 // 4. Update a game by UUID
 const updateGame = async (req: any, res: any) => {
   const { uuid } = req.params;
-  const { name, difficulty, board, gameState } = req.body;
+  const { name, difficulty, board } = req.body;
 
   try {
     const game = await Game.findByPk(uuid);
     if (!game) return res.status(404).json({ message: "Game not found" });
 
-    // Ensure the board exists before updating it
-    let boardTmp = board ? board : game.get("board");
-
-    const result = board && getGameState(board);
+    const processedBoard = board ? board : game.board;
+    const result = board
+      ? getGameState(processedBoard)
+      : { gameState: game.gameState };
 
     if (result.statusCode === 422) {
       return res.status(422).json({
@@ -80,16 +95,24 @@ const updateGame = async (req: any, res: any) => {
       });
     }
 
-    // Update the game attributes
+    // Ensure gameState is a string
+    const gameState = result.gameState ?? "ongoing";
+
+    // Generate the bitmap for the updated board
+    const bitmap = board
+      ? BitmapGenerator.generateBitmap(JSON.parse(processedBoard))
+      : game.bitmap;
+
+    // Update the game object
     await game.update({
-      name: name || game.get("name"),
-      difficulty: difficulty || game.get("difficulty"),
-      board: boardTmp,
-      gameState: result.gameState || game.get("gameState"),
+      name: name ?? game.name,
+      difficulty: difficulty ?? game.difficulty,
+      board: processedBoard,
+      gameState, // Use recalculated or existing game state
+      bitmap, // Save the updated Base64-encoded bitmap
       updatedAt: new Date(),
     });
 
-    // Create a response object and parse the board field back into an object if necessary
     res.json({
       status: "success",
       message: "Game updated successfully.",
