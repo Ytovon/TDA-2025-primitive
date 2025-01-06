@@ -7,12 +7,14 @@ interface CardProps {
   type?: string;
   name?: string;
   uuid?: string;
+  bitmapUrl?: string;
 }
 
 export const Card: React.FC<CardProps> = ({
   name = "piškvorky",
   type = "Začátečník",
   uuid = "",
+  bitmapUrl = "",
 }) => {
   let typeStyle: React.CSSProperties = {};
 
@@ -32,11 +34,7 @@ export const Card: React.FC<CardProps> = ({
   return (
     <div className={styles.card}>
       <div className="">
-        <img
-          className={styles.cardImage}
-          src={nahledPiskvorek}
-          alt="Piškvorky"
-        />
+        <img className={styles.cardImage} src={bitmapUrl} alt="Piškvorky" />
         <Link to={`/EditorPage/${uuid}`}>
           <img className={styles.cardUpdate} src={settingsButton} />
         </Link>

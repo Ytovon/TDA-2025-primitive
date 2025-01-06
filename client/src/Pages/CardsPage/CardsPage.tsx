@@ -29,6 +29,8 @@ export default function CardsPage() {
     name: string;
     updatedAt: string;
     uuid: string;
+    bitmap?: string;
+    bitmapUrl?: string;
   };
 
   const { darkMode, toggleDarkMode } = useDarkMode();
@@ -59,11 +61,20 @@ export default function CardsPage() {
 
       const data = await response.json();
       setGames(data);
-      console.log(data);
+      updateAllBitmapUrls();
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   }
+
+  const updateAllBitmapUrls = () => {
+    setGames((prevGames) =>
+      prevGames.map((game) => ({
+        ...game,
+        bitmapUrl: `data:image/png;base64,${game.bitmap}`, // Combine the prefix with the bitmap code
+      }))
+    );
+  };
 
   const handleDifficultyChange = (value: string) => {
     setDifficultyFilter(value);
@@ -347,11 +358,16 @@ export default function CardsPage() {
             alt=""
           />
           <div
-            style={isLoading ? { display: "none" } : { display: "grid" }}
+            style={isLoading ? { display: "none" } : { display: "flex" }}
             className={styles.cards}
           >
             {filteredGames.map((game) => (
-              <Card name={game.name} type={game.difficulty} uuid={game.uuid} />
+              <Card
+                name={game.name}
+                type={game.difficulty}
+                uuid={game.uuid}
+                bitmapUrl={game.bitmapUrl}
+              />
             ))}
           </div>
         </div>
