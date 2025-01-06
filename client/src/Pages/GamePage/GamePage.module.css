@@ -213,54 +213,41 @@
 
 /* ************************* */
 
-@media screen and (max-width: 1400px) {
-  .gameBtns {
-    grid-template-columns: repeat(15, 50px);
-  }
-
+@media screen and (max-width: 1300px) {
   .game {
-    gap: 1vw;
+    gap: 0px;
   }
 }
 
-@media screen and (max-width: 1000px) {
-  :root {
-    font-size: 15px;
-  }
-
-  .title {
-    margin-block: 25px;
-  }
-
-  .gameBtns {
-    gap: 15px;
-  }
-
-  .symbol {
-    width: 58%;
-  }
-
+@media screen and (max-width: 1200px) {
   .imgNextToGame {
     display: none;
   }
-}
-
-@media screen and (max-height: 800px) {
-  .gameMenu {
-    margin-block: 10px;
-  }
 
   .title {
-    margin-block: 10px;
+    font-size: 26px;
   }
 }
 
 @media screen and (max-aspect-ratio: 1/1) {
   .gameGrid {
-    grid-template-columns: repeat(15, 6vw);
+    grid-template-columns: repeat(15, clamp(20px, 5.7vw, 48px));
   }
 
   .cell {
-    width: 6vw;
+    width: clamp(20px, 5.7vw, 48px);
   }
+}
+
+@media screen and (max-width: 500px) {
+  .title {
+    font-size: 23px;
+  }
+
+  .gameState {
+    font-size: 22px;
+  }
+}
+
+@media screen and (min-aspect-ratio: 0/1) {
 }
