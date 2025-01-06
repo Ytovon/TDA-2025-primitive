@@ -356,7 +356,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
     }
   };
 
-  const handleButtonClick = () => {
+  const handleButtonClick = (method: string) => {
     let isValid = true;
 
     if (game.name === "") {
@@ -381,7 +381,11 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
 
     // Pokud jsou obě hodnoty validní, spustíme `handleCreateGame`
     if (isValid) {
-      handleCreateGame();
+      if (method === "create") {
+        handleCreateGame();
+      } else if (method === "send") {
+        sendGameData(game, grid);
+      }
     }
   };
 
@@ -540,7 +544,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
               image={whitePlus}
               color="white"
               backgroundColor="#0070BB"
-              onClick={() => handleButtonClick()}
+              onClick={() => handleButtonClick("create")}
               isDisabled={
                 isThereWinner ? false : goodNumberOfSymbols ? false : true
               }
@@ -551,7 +555,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
               image={check}
               color="white"
               backgroundColor="#0070BB"
-              onClick={() => handleButtonClick()}
+              onClick={() => handleButtonClick("send")}
               isDisabled={
                 isThereWinner ? false : goodNumberOfSymbols ? false : true
               }
