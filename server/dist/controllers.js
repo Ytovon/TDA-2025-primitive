@@ -41,11 +41,12 @@ const createGame = async (req, res) => {
             board: board || Array(15).fill(Array(15).fill("")),
             gameState: result.gameState || gameState,
         });
-        res.status(201).json({
-            status: "success",
-            message: "Game created successfully.",
-            game: newGame,
-        });
+        res.status(201).json(newGame);
+        // res.status(201).json({
+        //   status: "success",
+        //   message: "Game created successfully.",
+        //   game: newGame,
+        // });
     }
     catch (error) {
         if (error instanceof Error) {
@@ -82,12 +83,13 @@ const updateGame = async (req, res) => {
             gameState: result.gameState || game.get("gameState"),
             updatedAt: new Date(),
         });
-        // Create a response object and parse the board field back into an object if necessary
-        res.json({
-            status: "success",
-            message: "Game updated successfully.",
-            game,
-        });
+        res.status(201).json(game);
+        // // Create a response object and parse the board field back into an object if necessary
+        // res.json({
+        //   status: "success",
+        //   message: "Game updated successfully.",
+        //   game: game,
+        // });
     }
     catch (error) {
         res.status(500).json({ message: "Failed to update game", error });
