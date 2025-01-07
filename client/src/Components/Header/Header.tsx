@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   darkModeButton,
@@ -18,6 +18,19 @@ export default function Header() {
   const toggleMenu = () => {
     setMenuIsOpen((prev) => !prev);
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 1050 && menuIsOpen) {
+        setMenuIsOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [menuIsOpen]);
 
   return (
     <div className={styles.headerBackground}>
