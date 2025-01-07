@@ -19,6 +19,7 @@ import { Link, useNavigate } from "react-router-dom";
 import styles from "./CardsPage.module.css";
 import { useDarkMode } from "../../DarkModeContext";
 import { useEffect, useState } from "react";
+import Footer from "../../Components/Footer/Footer";
 
 export default function CardsPage() {
   type Game = {
@@ -372,6 +373,7 @@ export default function CardsPage() {
           </div>
         </div>
       </body>
+      <Footer />
     </div>
   );
 }
