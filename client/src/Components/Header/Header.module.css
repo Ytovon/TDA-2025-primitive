@@ -78,6 +78,7 @@ a {
 .menu {
   position: relative;
   flex-direction: column;
+  text-align: right;
   width: 65vw;
   padding: 20px;
   margin: 0 auto;
@@ -90,7 +91,7 @@ a {
   position: absolute;
   width: 17px;
   top: 20px;
-  right: 20px;
+  left: 20px;
 }
 
 @media screen and (max-width: 1050px) {
