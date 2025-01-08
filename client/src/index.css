@@ -18,7 +18,6 @@ body {
   --textColor: black;
   --textColorInverted: white;
   --startBtnColor: #e81837;
-  --halfBrightness: 1;
   --brightness: 1;
   --darkModeBtn: #c7c7c7;
   --cardShadow: 0px 6px 37.5px 0px #948d8d78;
@@ -39,6 +38,7 @@ body {
   --difficulty5Color: #e31837;
   --addGameBtnColor: #395a9a;
   --addGameBtnBorder: #395a9a35;
+  --filtrationNameInput: #d9d9d98f;
 }
 
 .dark-mode {
@@ -47,8 +47,7 @@ body {
   --secondBackground: #1a1a1a;
   --textColor: white;
   --textColorInverted: black;
-  --halfBrightness: 1.5;
-  --brightness: 1.6;
+  --brightness: 1.5;
   --darkModeBtn: #e1e1e1;
   --cardShadow: none;
   --gameBackground: #1a1a1a;
@@ -61,6 +60,7 @@ body {
   --difficulty5Color: white;
   --addGameBtnColor: #395a9a35;
   --addGameBtnBorder: #395a9a;
+  --filtrationNameInput: #242424;
 }
 
 .winnerRed {

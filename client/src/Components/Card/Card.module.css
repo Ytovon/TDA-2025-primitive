@@ -7,7 +7,7 @@
 .card {
   position: relative;
   border-radius: 10px;
-  width: clamp(240px, 30vw, 300px);
+  width: clamp(250px, 30vw, 300px);
   height: 100%;
   background-color: var(--firstBackground);
   display: flex;
@@ -78,5 +78,36 @@
 @media screen and (max-width: 1300px) {
   .cardTitle {
     padding-top: 2px;
+  }
+}
+
+@media screen and (max-width: 1100px) {
+  .card {
+    width: 300px;
+    aspect-ratio: unset;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .card {
+    width: clamp(200px, 100%, 300px);
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .card {
+    width: 100%;
+  }
+
+  .cardImage {
+    height: clamp(100px, 50vw, 250px);
+  }
+
+  .cardTitle {
+    font-size: 1.55rem;
+  }
+
+  .cardType {
+    font-size: 1.1rem;
   }
 }
