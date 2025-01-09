@@ -41,6 +41,8 @@ import trashBin from "./images/trash-solid.svg";
 
 import lightModeLogo from "./images/Think-different-Academy_LOGO_oficialni_1.png";
 import darkModeLogo from "./images/Think-different-Academy_LOGO_oficialni_1_dark-mode.png";
+import barsWhite from "./images/bars-staggered-solid-white.svg";
+import barsBlack from "./images/bars-staggered-solid-black.svg";
 
 /* Card */
 
@@ -79,4 +81,6 @@ export {
   whitePlus,
   bluePlus,
   loadingSpinnerGif,
+  barsWhite,
+  barsBlack,
 };

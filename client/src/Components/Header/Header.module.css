@@ -5,8 +5,7 @@
 header {
   display: flex;
   justify-content: space-between;
-  width: 65vw;
-  max-width: 1100px;
+  width: clamp(300px, 65vw, 1100px);
   margin: 0 auto;
   user-select: none;
   padding: 7px 10px;
@@ -64,4 +63,43 @@ a {
   border: 3px solid #0070bb;
   border-radius: 5px;
   filter: brightness(var(--halfBrightness));
+}
+
+.openNav {
+  width: 30px;
+  display: none;
+}
+
+.fullNav {
+  display: flex;
+  column-gap: 30px;
+}
+
+.menu {
+  position: relative;
+  flex-direction: column;
+  text-align: right;
+  width: 65vw;
+  padding: 20px;
+  margin: 0 auto;
+  gap: 15px;
+  background-color: var(--firstBackground);
+  font-size: 19px;
+}
+
+.menuDarkModeBtn {
+  position: absolute;
+  width: 17px;
+  top: 20px;
+  left: 20px;
+}
+
+@media screen and (max-width: 1050px) {
+  .fullNav {
+    display: none;
+  }
+
+  .openNav {
+    display: block;
+  }
 }
