@@ -286,13 +286,14 @@ export default function CardsPage() {
                 />
                 <h5 className={styles.filtrationSectionTitle}>Název</h5>
                 <input
+                  className={styles.filtrationSectionName}
                   type="text"
                   placeholder="Zadejte název úlohy:"
                   value={nameFilter}
                   onChange={handleNameChange}
                 />
               </div>
-              <div className={styles.filtrationSection}>
+              <div className={`${styles.filtrationSection}`}>
                 <img
                   src={xMarkGrey}
                   onClick={() => setDateFilter("")}
@@ -301,9 +302,10 @@ export default function CardsPage() {
                 <h5 className={styles.filtrationSectionTitle}>
                   Datum poslední úpravy
                 </h5>
-                <form action="">
+                <form className={styles.filtrationSectionDate} action="">
                   <label>
                     <input
+                      style={{ gridArea: "first" }}
                       type="radio"
                       name="dates"
                       checked={dateFilter === "24 hodin"}
@@ -313,6 +315,7 @@ export default function CardsPage() {
                   </label>
                   <label>
                     <input
+                      style={{ gridArea: "second" }}
                       type="radio"
                       name="dates"
                       checked={dateFilter === "7 dní"}
@@ -322,6 +325,7 @@ export default function CardsPage() {
                   </label>
                   <label>
                     <input
+                      style={{ gridArea: "third" }}
                       type="radio"
                       name="dates"
                       checked={dateFilter === "1 měsíc"}
@@ -331,6 +335,7 @@ export default function CardsPage() {
                   </label>
                   <label>
                     <input
+                      style={{ gridArea: "fourth" }}
                       type="radio"
                       name="dates"
                       checked={dateFilter === "3 měsíce"}

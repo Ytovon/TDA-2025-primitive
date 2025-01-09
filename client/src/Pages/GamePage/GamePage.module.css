@@ -169,7 +169,7 @@
 .winnerCardImg {
   width: 10vw;
   position: sticky;
-  filter: brightness(var(--halfBrightness));
+  filter: brightness(var(--brightness));
   animation: moveUpDown 4s infinite ease-in-out;
 }
 
@@ -201,14 +201,14 @@
   color: white;
   letter-spacing: 0.5px;
   background-color: var(--winnerColor);
-  filter: brightness(var(--halfBrightness));
+  filter: brightness(var(--brightness));
 }
 
 .winnerCardBtn:nth-child(2) {
   color: var(--winnerColor);
   text-decoration: none;
   border: 2px solid var(--winnerColor);
-  filter: brightness(var(--halfBrightness));
+  filter: brightness(var(--brightness));
 }
 
 /* ************************* */

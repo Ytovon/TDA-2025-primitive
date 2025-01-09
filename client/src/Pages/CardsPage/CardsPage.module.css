@@ -5,15 +5,13 @@
 }
 
 .cardsPageWrapper {
-  width: 60vw;
-  min-width: 900px;
-  max-width: 1100px;
+  width: clamp(970px, 60vw, 1100px);
 }
 
 .cardsPageTitle {
   display: flex;
   gap: 5px;
-  margin-block: 7vh 5vh;
+  margin-block: 8vh 5vh;
   color: var(--textColor);
 }
 
@@ -67,10 +65,35 @@
 }
 
 .filtrationSection {
-  padding: 15px 25px;
+  padding: 25px;
   width: 33%;
-  height: 15vh;
   position: relative;
+}
+
+.filtrationSectionName {
+  width: clamp(160px, 70%, 400px);
+  height: 1.875rem;
+  padding: 5px 10px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--filtrationNameInput);
+}
+
+.filtrationSectionDate {
+  display: grid;
+  grid-template-columns: 40% 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "first second"
+    "third fourth";
+  gap: 5px;
+  font-size: 1.1rem;
+}
+
+.filtrationSectionDate input {
+  transform: scale(1.1);
+  margin-right: 5px;
 }
 
 .resetFiltrationSection {
@@ -103,7 +126,7 @@
 
 .difficultyBtn {
   border: none;
-  padding: 8px 15px;
+  padding: 0.5rem 0.9375rem;
   border-radius: 50px;
   font-weight: 600;
   font-size: 14px;
@@ -135,11 +158,10 @@
   color: var(--difficulty5Color);
 }
 
-/* musím udělat mezery mezi kartičkama rovnoměrné */
-
 .cards {
-  margin-top: 25px;
+  margin-block: 25px;
   display: flex;
+  flex-wrap: wrap;
   gap: 2rem;
   flex-direction: row;
   justify-content: space-between;
@@ -166,13 +188,80 @@
 }
 
 @media screen and (max-width: 1100px) {
+  .cardsPageWrapper {
+    width: 700px;
+  }
+
   .cardsPageTitle {
     flex-direction: column;
   }
+
+  .filtrationSection {
+    padding: 15px 15px;
+  }
+
+  .cards {
+    justify-content: space-between;
+    column-gap: 3.25rem;
+  }
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 800px) {
+  .cardsPageWrapper {
+    width: clamp(300px, 80vw, 800px);
+  }
+
+  .cardsPageTitle h1 {
+    font-size: 3rem;
+  }
+
+  .cardsPageTitle {
+    font-size: 1.6rem;
+  }
+
+  .filtration {
+    margin: 0 auto;
+  }
+
+  .filtrationSections {
+    flex-direction: column;
+  }
+
+  .filtrationSection {
+    width: 90%;
+    padding: 13px 5% 27px 5%;
+  }
+
+  .filtrationSection:not(:first-child):not(:last-child) {
+    border-inline: none;
+    border-block: 1px solid rgb(230, 230, 230);
+  }
+
+  .filtrationSectionName {
+    width: 90%;
+  }
+
   .cards {
-    flex-wrap: wrap;
+    margin: 20px;
+    justify-content: center;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .cardsPageWrapper {
+    width: 80vw;
+  }
+
+  .filtration {
+    width: 80vw;
+    padding: 5px 0;
+  }
+
+  .filtrationMenu {
+    padding: 0 15px;
+  }
+
+  .cards {
+    margin: 0;
   }
 }
