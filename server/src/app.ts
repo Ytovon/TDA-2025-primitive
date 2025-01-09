@@ -43,9 +43,12 @@ sequelize
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
+// Serve static files from the React app's build directory
+app.use(express.static(path.join(__dirname, "../../client/build")));
+
 // Serve the React app on all other routes
 app.get("*", (req, res) => {
-  res.sendFile(path.resolve(dirname, "../..", "client", "build", "index.html"));
+  res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
 });
 
 export { gameRoutes };
