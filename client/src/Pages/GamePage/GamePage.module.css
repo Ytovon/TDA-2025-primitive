@@ -8,14 +8,14 @@
 }
 
 :root {
-  --cellSize: 5.5vh;
-  --cellSizeClamped: clamp(18px, var(--cellSize), 48px);
+  --gameCellSize: 5.2vh;
+  --gameCellSizeClamped: clamp(18px, var(--gameCellSize), 48px);
 }
 
 /* ****************************** */
 .gameWrapper {
   position: absolute;
-  top: 50%;
+  top: 48%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -65,14 +65,14 @@
 
 .gameGrid {
   display: grid;
-  grid-template-columns: repeat(15, var(--cellSizeClamped));
+  grid-template-columns: repeat(15, var(--gameCellSizeClamped));
   border: 1px solid var(--gameBorder);
   padding-right: 2px;
   border-radius: 10px;
 }
 
 .cell {
-  width: var(--cellSizeClamped);
+  width: var(--gameCellSizeClamped);
   aspect-ratio: 1/0.95;
   background-color: var(--gameBackground);
   border: 1px solid var(--gameBorder);
@@ -213,54 +213,68 @@
 
 /* ************************* */
 
-@media screen and (max-width: 1400px) {
-  .gameBtns {
-    grid-template-columns: repeat(15, 50px);
-  }
-
+@media screen and (max-width: 1300px) {
   .game {
-    gap: 1vw;
+    gap: 0px;
   }
 }
 
-@media screen and (max-width: 1000px) {
-  :root {
-    font-size: 15px;
-  }
-
-  .title {
-    margin-block: 25px;
-  }
-
-  .gameBtns {
-    gap: 15px;
-  }
-
-  .symbol {
-    width: 58%;
-  }
-
+@media screen and (max-width: 1200px) {
   .imgNextToGame {
     display: none;
   }
-}
-
-@media screen and (max-height: 800px) {
-  .gameMenu {
-    margin-block: 10px;
-  }
 
   .title {
-    margin-block: 10px;
+    font-size: 26px;
+  }
+
+  .gameState {
+    margin-bottom: 10px;
   }
 }
 
 @media screen and (max-aspect-ratio: 1/1) {
   .gameGrid {
-    grid-template-columns: repeat(15, 6vw);
+    grid-template-columns: repeat(15, clamp(20px, 5.6vw, 48px));
   }
 
   .cell {
-    width: 6vw;
+    width: clamp(20px, 5.6vw, 48px);
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .title {
+    font-size: 23px;
+  }
+
+  .gameState {
+    font-size: 22px;
+  }
+}
+
+@media screen and (min-width: 500px) and (max-height: 500px) {
+  .title {
+    font-size: 20px;
+  }
+
+  .gameState {
+    font-size: 18px;
+    margin: 0 0 5px 0;
+  }
+
+  .gameWrapper {
+    top: 45%;
+  }
+}
+
+@media screen and (min-width: 800px) and (max-height: 600px) {
+  .game {
+    gap: 1vw;
+  }
+
+  .imgNextToGame {
+    display: block;
+    width: 150px;
   }
 }
