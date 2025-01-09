@@ -1,0 +1,18 @@
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: clamp(300px, 60vw, 1100px);
+  height: 75px;
+  margin: 10px auto 0;
+  font-size: 1rem;
+  color: var(--textColor);
+  border-top: 1px solid var(--textColor);
+}
+
+.teamName {
+  font-weight: 600;
+  background: linear-gradient(to bottom, #ffffff, #ff0084);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
