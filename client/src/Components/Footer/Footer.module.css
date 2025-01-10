@@ -1,18 +1,97 @@
 .footer {
   display: flex;
+  flex-direction: column;
+  width: clamp(970px, 60vw, 1100px);
+  margin: 0 auto;
+  margin-top: 50px;
+  color: var(--textColor);
+}
+
+.footerTop {
+  margin: 0 auto;
+  width: 100%;
+  height: 35vh;
+  display: flex;
+}
+
+.block {
+  width: 20%;
+}
+
+.block1 {
+  background-color: #e31837;
+}
+.block2 {
+  background-color: #ab2e58;
+}
+.block3 {
+  background-color: #724479;
+}
+.block4 {
+  background-color: #395a9a;
+}
+.block5 {
+  background-color: #0070bb;
+}
+
+.footerBottom {
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  width: clamp(300px, 60vw, 1100px);
+  max-width: 100%;
   height: 75px;
-  margin: 10px auto 0;
   font-size: 1rem;
   color: var(--textColor);
-  border-top: 1px solid var(--textColor);
+  padding: 0 25px;
+}
+
+.mainText {
+  font-size: 2rem;
 }
 
 .teamName {
+  font-size: 1.4rem;
   font-weight: 600;
-  background: linear-gradient(to bottom, #ffffff, #ff0084);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+}
+
+@media screen and (max-width: 1100px) {
+  .footer {
+    width: 700px;
+  }
+
+  .footerTop {
+    height: 25vh;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .footer {
+    width: clamp(300px, 80vw, 800px);
+  }
+
+  .footerTop {
+    height: 20vh;
+  }
+
+  .mainText {
+    font-size: 25px;
+  }
+
+  .teamName {
+    font-size: 20px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .footerBottom {
+    padding: 0 15px;
+  }
+
+  .mainText {
+    font-size: 22px;
+  }
+
+  .teamName {
+    font-size: 18px;
+  }
 }
