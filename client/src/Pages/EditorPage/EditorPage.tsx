@@ -142,17 +142,16 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
     }
   }
 
-  async function sendGameData(game: any, grid: any) {
+  async function sendGameData() {
     try {
       // Připravte data pro odeslání
       const editGameData = {
         board: grid,
         difficulty: game.difficulty,
-        gameState: game.gameState,
         name: game.name,
-        uuid: game.uuid,
-        createdAt: game.createdAt,
       };
+
+      console.log(game.uuid);
 
       // Odeslání dat pomocí fetch
       const response = await fetch(
@@ -384,7 +383,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
       if (method === "create") {
         handleCreateGame();
       } else if (method === "send") {
-        sendGameData(game, grid);
+        sendGameData();
       }
     }
   };
