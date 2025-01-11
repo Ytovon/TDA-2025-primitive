@@ -85,10 +85,10 @@ const updateGame = async (req, res) => {
             });
         }
         // Ensure gameState is a string
-        const gameState = result.gameState ?? "ongoing";
+        const gameState = result.gameState ?? "unknown";
         // Generate the bitmap for the updated board
         const bitmap = board
-            ? BitmapGenerator.generateBitmap(JSON.parse(processedBoard))
+            ? BitmapGenerator.generateBitmap(processedBoard)
             : game.bitmap;
         // Update the game object
         await game.update({
