@@ -97,7 +97,7 @@
 }
 
 .resetFiltrationSection {
-  width: 0.85rem;
+  width: 1rem;
   position: absolute;
   right: 6px;
   top: 5px;
@@ -200,6 +200,9 @@
     padding: 15px 15px;
   }
 
+  .resetFiltrationSection {
+    width: 1.2rem;
+  }
   .cards {
     justify-content: space-between;
     column-gap: 3.25rem;
@@ -259,6 +262,10 @@
 
   .filtrationMenu {
     padding: 0 15px;
+  }
+
+  .resetFiltrationSection {
+    width: 1.1rem;
   }
 
   .cards {
