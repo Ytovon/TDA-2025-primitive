@@ -140,10 +140,9 @@
 }
 
 .winnerCard {
-  width: 25vw;
-  max-width: 620px;
+  width: clamp(290px, 28vw, 440px);
   color: var(--textColor);
-  background-color: var(--thirdBackground);
+  background-color: var(--secondBackground);
   border-radius: 10px;
   padding: 30px;
 }
@@ -167,7 +166,7 @@
 }
 
 .winnerCardImg {
-  width: 10vw;
+  width: clamp(100px, 10vw, 150px);
   position: sticky;
   filter: brightness(var(--brightness));
   animation: moveUpDown 4s infinite ease-in-out;
@@ -217,6 +216,10 @@
   .game {
     gap: 0px;
   }
+
+  .winnerCardSubtitle {
+    margin-bottom: 10px;
+  }
 }
 
 @media screen and (max-width: 1200px) {
@@ -230,6 +233,10 @@
 
   .gameState {
     margin-bottom: 10px;
+  }
+
+  .winnerCardSubtitle {
+    margin-bottom: 20px;
   }
 }
 
@@ -250,6 +257,19 @@
 
   .gameState {
     font-size: 22px;
+  }
+
+  .winnerCard {
+    width: 270px;
+    padding: 25px;
+  }
+
+  .winnerCardImg {
+    width: 85px;
+  }
+
+  .winnerCardBtn {
+    padding: 6px 25px;
   }
 }
 

@@ -36,7 +36,7 @@ export default function CardsPage() {
 
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [isFiltrationOpen, toggleIsFiltrationOpen] = useState(true);
-  const [difficultyFilter, setDifficultyFilter] = useState<string>(""); // Obtížnost
+  const [difficultyFilter, setDifficultyFilter] = useState<string[]>([]);
   const [nameFilter, setNameFilter] = useState<string>(""); // Název
   const [dateFilter, setDateFilter] = useState<string>(""); // Datum
   const [isLoading, setIsLoading] = useState(false);
@@ -77,8 +77,13 @@ export default function CardsPage() {
     );
   };
 
-  const handleDifficultyChange = (value: string) => {
-    setDifficultyFilter(value);
+  const handleDifficultyChange = (difficulty: string) => {
+    setDifficultyFilter(
+      (prevFilters) =>
+        prevFilters.includes(difficulty)
+          ? prevFilters.filter((item) => item !== difficulty) // Pokud už existuje, odstraň
+          : [...prevFilters, difficulty] // Jinak přidej
+    );
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,9 +98,9 @@ export default function CardsPage() {
     let filtered = [...games];
 
     // Filtr podle obtížnosti
-    if (difficultyFilter) {
-      filtered = filtered.filter(
-        (game) => game.difficulty === difficultyFilter
+    if (difficultyFilter.length > 0) {
+      filtered = filtered.filter((game) =>
+        difficultyFilter.includes(game.difficulty)
       );
     }
 
@@ -135,17 +140,17 @@ export default function CardsPage() {
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
-    }, games.length * 100);
+    }, games.length * 10 + 300);
   }, [difficultyFilter, nameFilter, dateFilter]);
 
   useEffect(() => {
     setTimeout(() => {
       applyFilters();
-    }, games.length * 100);
+    }, games.length * 10 + 300);
   }, [difficultyFilter, nameFilter, dateFilter, games]);
 
   const resetFilters = () => {
-    setDifficultyFilter("");
+    setDifficultyFilter([]);
     setNameFilter("");
     setDateFilter("");
   };
@@ -201,81 +206,36 @@ export default function CardsPage() {
               <div className={styles.filtrationSection}>
                 <img
                   src={xMarkGrey}
-                  onClick={() => setDifficultyFilter("")}
+                  onClick={() => setDifficultyFilter([])}
                   className={styles.resetFiltrationSection}
                 />
                 <h5 className={styles.filtrationSectionTitle}>Obtížnosti</h5>
                 <form className={styles.difficultyBtns} action="">
-                  <input
-                    style={
-                      difficultyFilter === "Začátečník"
-                        ? {
-                            transform: "scale(1.1)",
-                            transition: "transform 0.2s ease",
-                          }
-                        : {}
-                    }
-                    className={`${styles.difficultyBtn} ${styles.difficultyColor1}`}
-                    type="button"
-                    value="Začátečník"
-                    onClick={() => handleDifficultyChange("Začátečník")}
-                  />
-                  <input
-                    style={
-                      difficultyFilter === "Jednoduchá"
-                        ? {
-                            transform: "scale(1.1)",
-                            transition: "transform 0.2s ease",
-                          }
-                        : {}
-                    }
-                    className={`${styles.difficultyBtn} ${styles.difficultyColor2}`}
-                    type="button"
-                    value="Jednoduchá"
-                    onClick={() => handleDifficultyChange("Jednoduchá")}
-                  />
-                  <input
-                    style={
-                      difficultyFilter === "Pokročilá"
-                        ? {
-                            transform: "scale(1.1)",
-                            transition: "transform 0.2s ease",
-                          }
-                        : {}
-                    }
-                    className={`${styles.difficultyBtn} ${styles.difficultyColor3}`}
-                    type="button"
-                    value="Pokročilá"
-                    onClick={() => handleDifficultyChange("Pokročilá")}
-                  />
-                  <input
-                    style={
-                      difficultyFilter === "Těžká"
-                        ? {
-                            transform: "scale(1.1)",
-                            transition: "transform 0.2s ease",
-                          }
-                        : {}
-                    }
-                    className={`${styles.difficultyBtn} ${styles.difficultyColor4}`}
-                    type="button"
-                    value="Těžká"
-                    onClick={() => handleDifficultyChange("Těžká")}
-                  />
-                  <input
-                    style={
-                      difficultyFilter === "Nejtěžší"
-                        ? {
-                            transform: "scale(1.1)",
-                            transition: "transform 0.2s ease",
-                          }
-                        : {}
-                    }
-                    className={`${styles.difficultyBtn} ${styles.difficultyColor5}`}
-                    type="button"
-                    value="Nejtěžší"
-                    onClick={() => handleDifficultyChange("Nejtěžší")}
-                  />
+                  {[
+                    "Začátečník",
+                    "Jednoduchá",
+                    "Pokročilá",
+                    "Těžká",
+                    "Nejtěžší",
+                  ].map((difficulty, index) => (
+                    <input
+                      key={index}
+                      style={
+                        difficultyFilter.includes(difficulty)
+                          ? {
+                              transform: "scale(1.1)",
+                              transition: "transform 0.2s ease",
+                            }
+                          : {}
+                      }
+                      className={`${styles.difficultyBtn} ${
+                        styles[`difficultyColor${index + 1}`]
+                      }`}
+                      type="button"
+                      value={difficulty}
+                      onClick={() => handleDifficultyChange(difficulty)}
+                    />
+                  ))}
                 </form>
               </div>
               <div className={styles.filtrationSection}>
@@ -303,46 +263,24 @@ export default function CardsPage() {
                   Datum poslední úpravy
                 </h5>
                 <form className={styles.filtrationSectionDate} action="">
-                  <label>
-                    <input
-                      style={{ gridArea: "first" }}
-                      type="radio"
-                      name="dates"
-                      checked={dateFilter === "24 hodin"}
-                      onChange={() => handleDateChange("24 hodin")}
-                    />{" "}
-                    24 hodin
-                  </label>
-                  <label>
-                    <input
-                      style={{ gridArea: "second" }}
-                      type="radio"
-                      name="dates"
-                      checked={dateFilter === "7 dní"}
-                      onChange={() => handleDateChange("7 dní")}
-                    />{" "}
-                    7 dní
-                  </label>
-                  <label>
-                    <input
-                      style={{ gridArea: "third" }}
-                      type="radio"
-                      name="dates"
-                      checked={dateFilter === "1 měsíc"}
-                      onChange={() => handleDateChange("1 měsíc")}
-                    />{" "}
-                    1 měsíc
-                  </label>
-                  <label>
-                    <input
-                      style={{ gridArea: "fourth" }}
-                      type="radio"
-                      name="dates"
-                      checked={dateFilter === "3 měsíce"}
-                      onChange={() => handleDateChange("3 měsíce")}
-                    />{" "}
-                    3 měsíce
-                  </label>
+                  {["24 hodin", "7 dní", "1 měsíc", "3 měsíce"].map(
+                    (label, index) => (
+                      <label key={index}>
+                        <input
+                          style={{
+                            gridArea: ["first", "second", "third", "fourth"][
+                              index
+                            ],
+                          }}
+                          type="radio"
+                          name="dates"
+                          checked={dateFilter === label}
+                          onChange={() => handleDateChange(label)}
+                        />{" "}
+                        {label}
+                      </label>
+                    )
+                  )}
                 </form>
               </div>
             </div>
