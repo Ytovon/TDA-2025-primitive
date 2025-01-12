@@ -1,0 +1,11 @@
+.XBackground {
+  position: absolute;
+  z-index: 100;
+  fill: black;
+  transform: rotate(11deg);
+}
+
+.XBackground svg {
+  fill: var(--SymbolBackround);
+  stroke: var(--SymbolBackround);
+}
