@@ -12,6 +12,8 @@ import {
   whitePlus,
   bluePlus,
   trashBin,
+  symbolO,
+  symbolX,
 } from "../../assets/assets";
 import { Card } from "../../Components/Card/Card";
 import Header from "../../Components/Header/Header";
@@ -20,6 +22,8 @@ import styles from "./CardsPage.module.css";
 import { useDarkMode } from "../../DarkModeContext";
 import { useEffect, useState } from "react";
 import { Footer } from "../../Components/Footer/Footer";
+import XBackground from "../../Components/Animation/BackgroundSymbol";
+import BackgroundSymbol from "../../Components/Animation/BackgroundSymbol";
 
 export default function CardsPage() {
   type Game = {
@@ -158,6 +162,23 @@ export default function CardsPage() {
   return (
     <div>
       <Header />
+
+      {/* Symbols Floating in back */}
+      <BackgroundSymbol
+        isXmark={false}
+        startTop={400}
+        width={100}
+        left={10}
+        height={140}
+      />
+      <BackgroundSymbol
+        isXmark={true}
+        startTop={750}
+        left={80}
+        width={200}
+        height={240}
+      />
+
       <body className={styles.body}>
         <div className={styles.cardsPageWrapper}>
           <div className={styles.cardsPageTitle}>

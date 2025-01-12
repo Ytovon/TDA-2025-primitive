@@ -13,6 +13,8 @@
   gap: 5px;
   margin-block: 8vh 5vh;
   color: var(--textColor);
+  z-index: 999;
+  position: relative;
 }
 
 .cardsPageTitle h1 {
@@ -29,6 +31,8 @@
 .filtration {
   background-color: var(--firstBackground);
   border-radius: 10px;
+  z-index: 999;
+  position: relative;
 }
 
 .filtrationMenu {

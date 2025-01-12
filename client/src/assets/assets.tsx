@@ -48,6 +48,7 @@ import barsBlack from "./images/bars-staggered-solid-black.svg";
 
 import nahledPiskvorek from "../assets/images/piskvorky.png";
 import settingsButton from "../assets/images/setting.png";
+import zarovkaFigma from "../assets/images/zarovkaFigma.svg";
 
 export {
   symbolX,
@@ -83,4 +84,5 @@ export {
   loadingSpinnerGif,
   barsWhite,
   barsBlack,
+  zarovkaFigma,
 };

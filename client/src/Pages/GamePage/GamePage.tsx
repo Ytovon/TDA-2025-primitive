@@ -10,11 +10,11 @@ import {
   resetBtnWhite,
   winnerBlue,
   winnerRed,
-  cervenaZarovkaX,
   modraZarovkaO,
   darkModeButton,
   lightModeButton,
 } from "../../assets/assets";
+import BlinkingEyesSVG from "../../Components/Animation/lightbulb";
 import { useDarkMode } from "../../DarkModeContext";
 
 interface GamePageProps {
@@ -252,7 +252,8 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
           <h2 className={styles.gameState}>{game.gameState}</h2>
 
           <div className={styles.game}>
-            <img className={styles.imgNextToGame} src={cervenaZarovkaX} />
+            <BlinkingEyesSVG isRedPlayer={true} OnMove={player} />
+
             <div className={styles.gameGrid}>
               {Array.isArray(grid) &&
                 grid.map((row, rowIndex) =>
@@ -272,7 +273,7 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
                   ))
                 )}
             </div>
-            <img className={styles.imgNextToGame} src={modraZarovkaO} />
+            <BlinkingEyesSVG isRedPlayer={false} OnMove={!player} />
           </div>
         </div>
       </div>
