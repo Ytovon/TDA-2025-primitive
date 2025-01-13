@@ -3,14 +3,14 @@
   flex-direction: column;
   width: clamp(970px, 60vw, 1100px);
   margin: 0 auto;
-  margin-top: 50px;
+  padding-top: 50px;
   color: var(--textColor);
 }
 
 .footerTop {
   margin: 0 auto;
   width: 100%;
-  
+
   display: flex;
 }
 
@@ -68,7 +68,6 @@
   }
 
   .bigFooter {
-
     height: 25vh;
   }
 }
@@ -79,7 +78,6 @@
   }
 
   .bigFooter {
-
     height: 20vh;
   }
 

@@ -1,5 +1,8 @@
 .headerBackground {
-  background-color: var(--firstBackground);
+  background-color: var(--primary1);
+  position: fixed;
+  width: 100%;
+  z-index: 100;
 }
 
 header {
@@ -10,7 +13,7 @@ header {
   user-select: none;
   padding: 7px 10px;
   color: var(--textColor);
-  background-color: var(--firstBackground);
+  background-color: var(--primary1);
 }
 
 header * {
@@ -24,7 +27,7 @@ button {
 
 .logo {
   width: 190px;
-  background-color: var(--firstBackground);
+  background-color: var(--primary1);
 }
 
 nav {
@@ -83,7 +86,7 @@ a {
   padding: 20px;
   margin: 0 auto;
   gap: 15px;
-  background-color: var(--firstBackground);
+  background-color: var(--primary1);
   font-size: 19px;
 }
 

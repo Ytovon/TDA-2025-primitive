@@ -29,7 +29,7 @@
 }
 
 .filtration {
-  background-color: var(--firstBackground);
+  background-color: var(--primary1);
   border-radius: 10px;
   z-index: 999;
   position: relative;
@@ -139,27 +139,27 @@
 
 .difficultyColor1 {
   background-color: #6bc4ff60;
-  color: var(--difficulty1Color);
+  color: var(--secondary1);
 }
 
 .difficultyColor2 {
   background-color: #5b8be460;
-  color: var(--difficulty2Color);
+  color: var(--secondary2);
 }
 
 .difficultyColor3 {
   background-color: #ba6cc660;
-  color: var(--difficulty3Color);
+  color: var(--secondary3);
 }
 
 .difficultyColor4 {
   background-color: #db2a6550;
-  color: var(--difficulty4Color);
+  color: var(--secondary4);
 }
 
 .difficultyColor5 {
   background-color: #e3183750;
-  color: var(--difficulty5Color);
+  color: var(--secondary5);
 }
 
 .cards {

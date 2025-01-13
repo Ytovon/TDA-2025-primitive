@@ -142,7 +142,7 @@
 .winnerCard {
   width: clamp(290px, 28vw, 440px);
   color: var(--textColor);
-  background-color: var(--secondBackground);
+  background-color: var(--primary2);
   border-radius: 10px;
   padding: 30px;
 }

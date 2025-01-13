@@ -9,7 +9,6 @@ import { GamePage } from "./Pages/GamePage/GamePage";
 import NotFoundPage from "./Components/NotFoundPage/NotFoundPage";
 import HomePage from "./Pages/HomePage/HomePage";
 import { EditorPage } from "./Pages/EditorPage/EditorPage";
-import path from "path";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement

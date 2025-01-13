@@ -1,0 +1,81 @@
+.body {
+  background-color: var(--primary3);
+}
+
+.section {
+  color: var(--textColor);
+  padding: 0 5vw;
+}
+
+/* 1. sekce */
+
+.homePageOpening {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  height: 60vh;
+}
+
+.openingText {
+  width: clamp(100px, 25vw, 500px);
+  height: min-content;
+  gap: 35px;
+  display: flex;
+  flex-direction: column;
+}
+
+.openingTitle {
+  font-size: 3.5rem;
+}
+
+.openingSubtitle {
+  font-size: 1.75rem;
+}
+
+.openingBtns {
+  display: flex;
+  gap: 15px;
+}
+
+.openingImg {
+  width: 50vw;
+}
+
+/* 2. sekce */
+
+.ourMissionSection {
+  height: 65vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-color: aliceblue;
+  background: linear-gradient(
+    to bottom,
+    var(--primary2) 50%,
+    var(--primary3) 50%
+  );
+}
+
+.ourMissionTitle {
+  font-size: 6rem;
+  position: absolute;
+  top: 48%;
+  left: 25%;
+  transform: translate(-50%, -50%);
+}
+
+.ourMissionText {
+  font-size: 1.5rem;
+  width: clamp(200px, 30svw, 600px);
+  margin-right: 10vw;
+}
+
+.ourMissionTop {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  text-align: left;
+  height: 50%;
+}
+
+/* 3. sekce */
