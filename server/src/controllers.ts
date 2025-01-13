@@ -4,7 +4,7 @@ import { getGameState } from "./gameLogic.js";
 import BitmapGenerator from "./bitmapGenerator.js"; // Import the bitmap generator utility
 
 // 1. Get all games
-const getAllGames = async (req: any, res: any) => {
+const getAllGames = async (req: Request, res: Response): Promise<void> => {
   try {
     const games = await Game.findAll();
     res.json(games);
@@ -14,11 +14,14 @@ const getAllGames = async (req: any, res: any) => {
 };
 
 // 2. Get a game by UUID
-const getGameById = async (req: any, res: any) => {
+const getGameById = async (req: Request, res: Response): Promise<void> => {
   const { uuid } = req.params;
   try {
     const game = await Game.findByPk(uuid);
-    if (!game) return res.status(404).json({ message: "Game not found" });
+    if (!game) {
+      res.status(404).json({ message: "Game not found" });
+      return;
+    }
     res.json(game);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch game", error });
@@ -26,26 +29,28 @@ const getGameById = async (req: any, res: any) => {
 };
 
 // 3. Create a new game
-const createGame = async (req: any, res: any) => {
+const createGame = async (req: Request, res: Response): Promise<void> => {
   const { name, difficulty, board } = req.body;
 
   try {
     if (!name || !difficulty || !board) {
-      return res.status(400).json({
+      res.status(400).json({
         status: "error",
         message: "Missing required fields: name, difficulty, or board.",
       });
+      return;
     }
 
     const processedBoard = Array.isArray(board) ? board : JSON.parse(board);
     const result = getGameState(processedBoard);
 
     if (result.statusCode === 422) {
-      return res.status(422).json({
+      res.status(422).json({
         status: "error",
         message: result.error,
         debugInfo: result.debugInfo,
       });
+      return;
     }
 
     // Ensure gameState is a string
@@ -74,13 +79,16 @@ const createGame = async (req: any, res: any) => {
 };
 
 // 4. Update a game by UUID
-const updateGame = async (req: any, res: any) => {
+const updateGame = async (req: Request, res: Response): Promise<void> => {
   const { uuid } = req.params;
   const { name, difficulty, board } = req.body;
 
   try {
     const game = await Game.findByPk(uuid);
-    if (!game) return res.status(404).json({ message: "Game not found" });
+    if (!game) {
+      res.status(404).json({ message: "Game not found" });
+      return;
+    }
 
     const processedBoard = board ? board : game.board;
     const result = board
@@ -88,19 +96,20 @@ const updateGame = async (req: any, res: any) => {
       : { gameState: game.gameState };
 
     if (result.statusCode === 422) {
-      return res.status(422).json({
+      res.status(422).json({
         status: "error",
         message: result.error,
         debugInfo: result.debugInfo,
       });
+      return;
     }
 
     // Ensure gameState is a string
-    const gameState = result.gameState ?? "ongoing";
+    const gameState = result.gameState ?? "unknown";
 
     // Generate the bitmap for the updated board
     const bitmap = board
-      ? BitmapGenerator.generateBitmap(JSON.parse(processedBoard))
+      ? BitmapGenerator.generateBitmap(processedBoard)
       : game.bitmap;
 
     // Update the game object
@@ -124,11 +133,14 @@ const updateGame = async (req: any, res: any) => {
 };
 
 // 5. Delete a game by UUID
-const deleteGame = async (req: any, res: any) => {
+const deleteGame = async (req: Request, res: Response): Promise<void> => {
   const { uuid } = req.params;
   try {
     const game = await Game.findByPk(uuid);
-    if (!game) return res.status(404).json({ message: "Game not found" });
+    if (!game) {
+      res.status(404).json({ message: "Game not found" });
+      return;
+    }
 
     await game.destroy();
     res.status(204).send();
