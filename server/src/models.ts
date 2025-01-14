@@ -6,7 +6,7 @@ interface GameAttributes {
   uuid: string;
   name: string;
   difficulty: string;
-  board: string[][]; // Store the board as a JSON string
+  board: string[][]; // Store the board as a JSON array
   gameState: string;
   bitmap?: string; // Optional because it can be null
   createdAt?: Date; // Optional because it will be auto-managed by Sequelize
@@ -17,18 +17,15 @@ interface GameAttributes {
 interface GameCreationAttributes extends Optional<GameAttributes, "uuid"> {}
 
 // Define the Game model using an interface
-class Game
-  extends Model<GameAttributes, GameCreationAttributes>
-  implements GameAttributes
-{
+class Game extends Model<GameAttributes, GameCreationAttributes> implements GameAttributes {
   public uuid!: string;
   public name!: string;
   public difficulty!: string;
-  public board!: string[][]; // Store the board as a JSON string
+  public board!: string[][]; // Store the board as a JSON array
   public gameState!: string;
   public bitmap?: string; // Optional because it can be null
 
-  // timestamps
+  // Timestamps
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -49,9 +46,9 @@ Game.init(
       allowNull: false,
     },
     board: {
-      type: DataTypes.JSON, // Store the board as a JSON string
+      type: DataTypes.JSON, // Store the board as a JSON array
       allowNull: false,
-      defaultValue: JSON.stringify(Array(15).fill(Array(15).fill(null))),
+      defaultValue: () => Array(15).fill(Array(15).fill(null)), // Default to a 15x15 empty board
     },
     gameState: {
       type: DataTypes.STRING,
