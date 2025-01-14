@@ -3,6 +3,14 @@
 import darkModeButton from "./images/Primary.svg";
 import lightModeButton from "./images/sun.png";
 
+/* HomePage */
+
+import homePageEntering from "./images/homePageEnteringImg.svg";
+import redRiverLightMode from "./images/redRiverLightMode.svg";
+import redRiverDarkMode from "./images/redRiverDarkMode.svg";
+import blueRiverLightMode from "./images/blueRiverLightMode.svg";
+import blueRiverDarkMode from "./images/blueRiverDarkMode.svg";
+
 /* CardsPage */
 
 import xMarkWhite from "./images/xmark-solid-white.svg";
@@ -85,4 +93,9 @@ export {
   barsWhite,
   barsBlack,
   zarovkaFigma,
+  homePageEntering,
+  redRiverLightMode,
+  redRiverDarkMode,
+  blueRiverLightMode,
+  blueRiverDarkMode,
 };

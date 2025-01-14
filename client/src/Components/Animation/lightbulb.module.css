@@ -6,7 +6,7 @@
 .oko2 {
   transform-origin: center;
   animation: blink 4s ease-in-out infinite;
-  fill: var(--firstBackground) !important;
+  fill: var(--primary1) !important;
   position: relative;
 }
 

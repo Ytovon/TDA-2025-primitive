@@ -1,0 +1,32 @@
+<svg width="594" height="573" viewBox="0 0 594 573" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect width="593" height="573" fill="#0070BB"/>
+<path d="M155.5 405.5C261.5 432.5 273 439 431.5 572.5H0V304C16.5 328.833 70.7 383.9 155.5 405.5Z" fill="#395A9A"/>
+<path d="M438 167C332 140 320.5 133.5 162 0H593.5V268.5C577 243.667 522.8 188.6 438 167Z" fill="#395A9A"/>
+<rect x="21" y="111" width="45" height="45" fill="url(#pattern0_609_96)"/>
+<rect x="58" y="244" width="93" height="93" fill="url(#pattern1_609_96)"/>
+<rect x="177" y="123" width="65" height="65" fill="url(#pattern2_609_96)"/>
+<rect x="296" y="350" width="47" height="47" fill="url(#pattern3_609_96)"/>
+<rect x="374" y="221" width="101" height="101" fill="url(#pattern4_609_96)"/>
+<rect x="455" y="465" width="105" height="105" fill="url(#pattern5_609_96)"/>
+<defs>
+<pattern id="pattern0_609_96" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_609_96" transform="scale(0.00840336)"/>
+</pattern>
+<pattern id="pattern1_609_96" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_609_96" transform="scale(0.00840336)"/>
+</pattern>
+<pattern id="pattern2_609_96" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_609_96" transform="scale(0.00840336)"/>
+</pattern>
+<pattern id="pattern3_609_96" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_609_96" transform="scale(0.00840336)"/>
+</pattern>
+<pattern id="pattern4_609_96" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_609_96" transform="scale(0.00840336)"/>
+</pattern>
+<pattern id="pattern5_609_96" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_609_96" transform="scale(0.00840336)"/>
+</pattern>
+<image id="image0_609_96" width="119" height="119" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHcAAAB3CAMAAAAO5y+4AAAAAXNSR0IB2cksfwAAAAlwSFlzAAAuIwAALiMBeKU/dgAAADNQTFRFAAAAOVqaOVqaOVqaOVqaOVqaOVqaOVqaOVqaOVqaOVqaOVqaOVqaOVqaOVqaOVqaOVqaR8SXIgAAABF0Uk5TAEBQgMCwMOD/0KBwIPBgEJAgbkyfAAAE4UlEQVR4nO2b23ajMAxFIwIkTdMy//+V0zRtc+EyGBKuxufIwMzLnLesBd6xLUuWbGSjlohspP2Vb/Lopm9E93QQBNY3yv9yV8F57rG4hs4HosuLfCzMPRZ5wTyXsWiKG2y3VGP1wz/MP8TcpLjqjGAj0Wk2Nzkf7jqqUbFDZMB91/a1Id/co+1sVvaUMdmV7s9+3EQu/lSje+bDldhziDtNZJO+ZLLtXzM7WynKv3TcBJgFrSCy+xE7N955LB67ZGs1Lyv3XR9fphVdba3ZuItiS/BXTnEPlsfmKR57rzF3eawNPOKugbWAh9yF57bRdbAuB9y1sCOr7nPjYCVsGaD2PQfS4yb5Yu5irDSd5L4s5Bzt2v+e4C4SChzq2laHK7t1sZsoaKe45SaX2fEWKWvNp2WtPcpGt8YpNdzVR9moXUwNd11bfqrZcj25qzmqgcJzj6szquiS55tqfJLTW3B2p2t9Bd897jai3yxevgdjk3zu+SD26HDN5R1kmlsRfDrz6HDNZWc3zSatjybXHa65O2p2I3FmW8k3la3WbroCBjHzQvqKUur3guhy9NlwI+aP9sLJhGIhBq7a85jnjil6dGPdE1rE5BlVIDbcV0fepsNyYGNZhku4SBZLeaDtV8UlhvnpZRjh3MoMtDDDLD88lnEGuw/DhdYcFa6KgeV51GAZhkvuHrWznUqeJwS9bjltggN+cdVh8cyV8yZ4enlbboT87u5D4Gzou4tN61oI/G/a2TVCM3zPBJrVjq7tdgSy2eBbkFmljPMeN+yOcGkKuT7DXOrNOdDRp6CdVe630QTWeoFczywCNBsKsACda+68556+q4Tu3a+fWcHKAeRqImBP7uUJua4a8gxu/I+49//cvnztea5d+XITd/SE3Dqr0Av6DeQnvcIgjPyYOyykkgLVoYug7ZWnQYMc5ALjr19gADmI/AjMUkLdpr0WGMVyvwH3V14DDYbZ7OvAQvLax6L6eXwSXJf02Lejw5H8Jjh903cY2UzpjIRIf9UdRlNXOl8hikjdejUjWB4q98bCnFRlquMOXPwr98ZCVa9UI41GuTIYgSGrkmL3juv2Zq9o5pYom9kPcW0iSp2m2i/cozSYaKsK6ZUtu5MoDZgpwVUFx4rLnb1i40ruTENVoKm4VIGyXE4H9zqOt8weod6x1T4Dmn4tZwGavd5SnyHVXPrwaLLgTpfbH97+4SPJDpv3wnA82vGBdmkPK3lwVadlWdy9w5ecEsXe7xncnjGB7/DjvXvF2t22utPM56J4vvVXjgc76Ufzb9e5PzFUMyMNd9Wz/afa6kE7O4yLm6nOBqJjFVrT0qs9du5yj7LySHdrNN1VwB2beat3c6S3+lY94u8H0v6qX/OwvR9G+9wV71IMjhcHnAUv9PU1rPsN+7cSeJRFj8Z1latQEg9j53g+g9fFezzG2u4TLj7UFqz1/uTCYGsp2bpujtPXFvSyn8/b1yt5NYHQ1BZ0yk8sFBUnb0BP+ifqagLS1C1k133v2dfM7RdyIXf2TfN94Uhr3C2/Bt4rynGVB3PL9IO/INUV/HACjuQx1FVVKCr1XUxyDlXznKWE1+Fa5D/IKV5Sqn7L9iQpfjB6fAVuNtcoeHdc4YsuseZLL+0KlUN0HqaAqeTFQVkd9/QM7Wse39IZ/QGleZqxcLXKoQAAAABJRU5ErkJggg=="/>
+</defs>
+</svg>

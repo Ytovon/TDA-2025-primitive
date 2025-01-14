@@ -11,7 +11,12 @@ export const Footer: React.FC<FooterProps> = ({ landingPageFooter = true }) => {
   const className = landingPageFooter ? "" : "smallFooter";
 
   return (
-    <footer className={styles.footer}>
+    <footer
+      className={styles.footer}
+      style={
+        landingPageFooter ? { paddingTop: "100px" } : { paddingTop: "50px" }
+      }
+    >
       <div
         className={`${styles.footerTop} ${
           landingPageFooter ? styles.bigFooter : styles.smallFooter
