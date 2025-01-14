@@ -86,6 +86,7 @@ export default function HomePage() {
                   text="Jdu do toho"
                   backgroundColor="#0070BB"
                   color="white"
+                  onClick={() => navigate("/game")}
                 />
               </div>
             </div>
@@ -107,6 +108,7 @@ export default function HomePage() {
                   text="Chci trénovat"
                   backgroundColor="#E31837"
                   color="white"
+                  onClick={() => navigate("/games")}
                 />
               </div>
               <div>
