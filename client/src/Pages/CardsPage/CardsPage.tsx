@@ -17,7 +17,7 @@ import {
 } from "../../assets/assets";
 import { Card } from "../../Components/Card/Card";
 import Header from "../../Components/Header/Header";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styles from "./CardsPage.module.css";
 import { useDarkMode } from "../../DarkModeContext";
 import { useEffect, useState } from "react";

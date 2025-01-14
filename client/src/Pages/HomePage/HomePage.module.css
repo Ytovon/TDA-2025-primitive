@@ -1,0 +1,107 @@
+.body {
+  background-color: var(--primary3);
+  overflow-x: hidden;
+}
+
+.section {
+  color: var(--textColor);
+  width: clamp(300px, 65vw, 1100px);
+  margin: 0 auto;
+}
+
+/* 1. sekce */
+
+.homePageOpening {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  position: relative;
+}
+
+.openingText {
+  width: clamp(100px, 25vw, 500px);
+  height: min-content;
+  gap: 40px;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 14vh;
+  padding-top: 35vh;
+}
+
+.openingTitle {
+  font-size: 3.5rem;
+}
+
+.openingSubtitle {
+  font-size: 1.75rem;
+}
+
+.openingBtns {
+  display: flex;
+  gap: 15px;
+}
+
+.openingImg {
+  width: 800px;
+  position: absolute;
+  bottom: -73px;
+  right: -18vw;
+}
+
+/* 2. sekce */
+
+.ourMissionSection {
+  width: 100%;
+  padding-block: 9vh;
+  margin-bottom: 30vh;
+  display: flex;
+  position: relative;
+  background-color: var(--primary2);
+}
+
+.ourMissionTitle {
+  font-size: 6rem;
+  position: absolute;
+  bottom: -105px;
+  left: 25%;
+  transform: translate(-50%, -50%);
+}
+
+.ourMissionContainer {
+  width: 50%;
+}
+
+.ourMissionText {
+  font-size: 1.4rem;
+  width: clamp(200px, 35vw, 600px);
+}
+
+/* 3. sekce */
+
+.offer {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.offer_container {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.offer_img {
+  width: clamp(300px, 30vw, 450px);
+  aspect-ratio: 1/1;
+}
+
+.offer_box {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.offer_text {
+  font-size: 1.4rem;
+}

@@ -20,7 +20,7 @@ import {
 } from "../../assets/assets";
 import { Button } from "../../Components/Button/Button";
 import { useDarkMode } from "../../DarkModeContext";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface EditorPageProps {
   uuid?: string;
