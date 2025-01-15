@@ -111,6 +111,10 @@
 .resetBtn {
   width: 2rem;
   cursor: pointer;
+  transition: 0.5s ease-in-out;
+}
+.resetBtn:hover {
+  transform: rotate(270deg);
 }
 
 .darkModeBtn {
@@ -120,6 +124,10 @@
   padding: 7px;
   border-radius: 50%;
   cursor: pointer;
+}
+
+.darkModeBtn:hover {
+  transform: rotate(210deg);
 }
 
 /* Card styles */

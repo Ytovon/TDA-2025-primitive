@@ -261,6 +261,11 @@ export default function CardsPage() {
               </div>
               <div className={styles.filtrationSection}>
                 <img
+                  style={
+                    nameFilter !== ""
+                      ? { display: "flex" }
+                      : { display: "none" }
+                  }
                   src={xMarkGrey}
                   onClick={() => setNameFilter("")}
                   className={styles.resetFiltrationSection}
@@ -276,6 +281,11 @@ export default function CardsPage() {
               </div>
               <div className={`${styles.filtrationSection}`}>
                 <img
+                  style={
+                    dateFilter !== ""
+                      ? { display: "flex" }
+                      : { display: "none" }
+                  }
                   src={xMarkGrey}
                   onClick={() => setDateFilter("")}
                   className={styles.resetFiltrationSection}

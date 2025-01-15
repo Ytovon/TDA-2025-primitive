@@ -33,6 +33,10 @@
   cursor: pointer;
 }
 
+.darkModeBtn:hover {
+  transform: rotate(210deg);
+}
+
 .editorPageTitle {
   text-align: center;
   font-size: 2rem;
@@ -114,19 +118,6 @@ input::placeholder {
 .editacePlochyTitle {
   display: flex;
   place-items: center;
-  justify-content: space-between;
-}
-
-.info {
-  font-weight: 600;
-  font-size: 1rem;
-  text-align: center;
-  width: 20px;
-  height: 20px;
-  border: 1px solid var(--textColor);
-  border-radius: 50px;
-  cursor: help;
-  margin-bottom: 20px;
 }
 
 .selectSymbolImg {

@@ -228,6 +228,11 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
             </button>
             <button onClick={toggleDarkMode}>
               <img
+                style={
+                  darkMode
+                    ? { transition: "0.5s ease-in-out" }
+                    : { transition: "0.75s ease-in-out" }
+                }
                 className={styles.darkModeBtn}
                 src={darkMode ? darkModeButton : lightModeButton}
               />
