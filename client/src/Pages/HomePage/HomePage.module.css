@@ -19,13 +19,13 @@
 }
 
 .openingText {
-  width: clamp(100px, 25vw, 500px);
+  width: clamp(300px, 25vw, 500px);
   height: min-content;
   gap: 40px;
   display: flex;
   flex-direction: column;
-  padding-bottom: 14vh;
-  padding-top: 35vh;
+  padding-bottom: 25vh;
+  padding-top: 30vh;
 }
 
 .openingTitle {
@@ -34,6 +34,7 @@
 
 .openingSubtitle {
   font-size: 1.75rem;
+  max-width: 350px;
 }
 
 .openingBtns {
@@ -42,9 +43,9 @@
 }
 
 .openingImg {
-  width: 800px;
+  width: clamp(800px, 60vw, 1000px);
   position: absolute;
-  bottom: -73px;
+  bottom: -80px;
   right: -18vw;
 }
 
@@ -63,7 +64,7 @@
   font-size: 6rem;
   position: absolute;
   bottom: -105px;
-  left: 25%;
+  left: 32%;
   transform: translate(-50%, -50%);
 }
 
@@ -86,7 +87,7 @@
 
 .offer_container {
   display: flex;
-  gap: 1.5rem;
+  gap: 4rem;
   align-items: center;
   justify-content: center;
 }
@@ -104,4 +105,75 @@
 
 .offer_text {
   font-size: 1.4rem;
+}
+
+@media screen and (max-width: 1050px) {
+  .openingText {
+    padding-bottom: 370px;
+    padding-top: 150px;
+  }
+
+  .offer {
+    gap: 5rem;
+  }
+
+  .offer_container {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .offer_img {
+    width: 100%;
+    max-width: 600px;
+    aspect-ratio: 1/1;
+  }
+  .offer_box {
+    order: 2;
+  }
+
+  .ourMissionTitle {
+    font-size: 6rem;
+    position: relative;
+    bottom: unset;
+    left: 0;
+    transform: unset;
+    line-height: 1;
+  }
+
+  .ourMissionSection {
+    padding-block: 9vh !important;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-inline: clamp(40px, 12vw, 150px);
+    margin-bottom: 75px;
+  }
+  .ourMissionText {
+    width: 60vw;
+  }
+  .ourMissionContainer {
+    width: 20%;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .offer_img {
+    width: 100%;
+    max-width: 600px;
+    aspect-ratio: 1/1;
+  }
+
+  .openingImg {
+    width: max(140vw, 540px);
+    bottom: -38px;
+    right: -17vw;
+  }
+
+  .section {
+    width: unset;
+    padding: 0 2rem;
+  }
+  .ourMissionText {
+    width: 80vw;
+  }
 }

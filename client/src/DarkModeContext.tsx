@@ -32,10 +32,16 @@ export const DarkModeProvider: React.FC<DarkModeProviderProps> = ({
 
   // Ukládání darkMode do localStorage při každé změně a aplikace třídy na body
   useEffect(() => {
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+
     if (!darkMode) {
       document.body.classList.add("dark-mode");
+      metaThemeColor != null &&
+        metaThemeColor.setAttribute("content", "#1a1a1a");
     } else {
       document.body.classList.remove("dark-mode");
+      metaThemeColor != null &&
+        metaThemeColor.setAttribute("content", "#ffffff");
     }
     localStorage.setItem("darkMode", JSON.stringify(darkMode));
   }, [darkMode]);
