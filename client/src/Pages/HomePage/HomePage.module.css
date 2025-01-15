@@ -18,12 +18,13 @@
 }
 
 .openingText {
-  width: clamp(350px, 25vw, 500px);
+  width: clamp(300px, 25vw, 500px);
   height: min-content;
   gap: 40px;
   display: flex;
   flex-direction: column;
-  padding-block: 35vh 14vh;
+  padding-bottom: 25vh;
+  padding-top: 30vh;
 }
 
 .openingTitle {
@@ -32,6 +33,7 @@
 
 .openingSubtitle {
   font-size: 1.75rem;
+  max-width: 350px;
 }
 
 .openingBtns {
@@ -40,9 +42,9 @@
 }
 
 .openingImg {
-  width: 800px;
+  width: clamp(800px, 60vw, 1000px);
   position: absolute;
-  bottom: -65px;
+  bottom: -80px;
   right: -18vw;
   z-index: 10;
   cursor: auto;
@@ -63,7 +65,7 @@
   font-size: 6rem;
   position: absolute;
   bottom: -105px;
-  left: 25%;
+  left: 32%;
   transform: translate(-50%, -50%);
 }
 
@@ -86,7 +88,7 @@
 
 .offer_container {
   display: flex;
-  gap: 3rem;
+  gap: 4rem;
   align-items: center;
   justify-content: center;
 }
@@ -106,114 +108,73 @@
   font-size: 1.4rem;
 }
 
-@media screen and (max-width: 1100px) {
+@media screen and (max-width: 1050px) {
   .openingText {
-    padding-block: 30vh 15vh;
+    padding-bottom: 370px;
+    padding-top: 150px;
   }
 
-  .openingImg {
-    width: 600px;
-    right: -13vw;
-    bottom: -48px;
-  }
-}
-
-@media screen and (max-width: 900px) {
-  .section {
-    width: clamp(400px, 65vw, 900px);
-  }
-
-  .homePageOpening {
-    flex-direction: column;
-    align-items: start;
-  }
-
-  .openingText {
-    padding-block: 15vh 0vh;
-  }
-
-  .openingImg {
-    display: block;
-    position: static;
-    width: clamp(400px, 65vw, 900px);
-    aspect-ratio: 1/1;
-    margin-bottom: -126px;
-  }
-
-  .ourMissionSection {
-    width: 100vw;
-  }
-
-  .ourMissionSection {
-    flex-direction: column;
-    padding-block: 8vh;
-    background-color: var(--primary3);
-  }
-
-  .ourMissionTitle {
-    display: flex;
-    position: unset;
-    font-size: 4rem;
-    background-color: var(--primary3);
-    transform: none;
-    justify-content: center;
-  }
-
-  .ourMissionText {
-    font-size: 19px;
-    background-color: var(--primary2);
-    width: 80vw;
-    padding: 5vh 10vw;
+  .offer {
+    gap: 5rem;
   }
 
   .offer_container {
+    flex-direction: column;
     gap: 2rem;
   }
 
-  .offer_text {
-    font-size: 17px;
-  }
-
   .offer_img {
-    width: clamp(150px, 40vw, 300px);
+    width: 100%;
+    max-width: 600px;
+    aspect-ratio: 1/1;
   }
-}
-
-@media screen and (max-width: 600px) {
-  .offer_container {
-    gap: 1rem;
-  }
-
-  .offer_text {
-    font-size: 16px;
-  }
-}
-
-@media screen and (min-width: 1350px) {
-  :root {
-    font-size: 18px;
-  }
-
-  .openingText {
-    padding-block: 34vh 15vh;
-    gap: 50px;
-  }
-
-  .openingImg {
-    width: 950px;
-    right: -19vw;
-    bottom: -75px;
+  .offer_box {
+    order: 2;
   }
 
   .ourMissionTitle {
-    bottom: -120px;
+    font-size: 6rem;
+    position: relative;
+    bottom: unset;
+    left: 0;
+    transform: unset;
+    line-height: 1;
+  }
+
+  .ourMissionSection {
+    padding-block: 9vh !important;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-inline: clamp(40px, 12vw, 150px);
+    margin-bottom: 75px;
+  }
+  .ourMissionText {
+    width: 60vw;
+  }
+  .ourMissionContainer {
+    width: 20%;
   }
 }
 
-@media screen and (min-width: 1700px) {
+@media screen and (max-width: 500px) {
+  .offer_img {
+    width: 100%;
+    max-width: 600px;
+    aspect-ratio: 1/1;
+  }
+
   .openingImg {
-    width: 1000px;
-    right: -25vw;
-    bottom: -79px;
+    width: max(140vw, 540px);
+    bottom: -38px;
+    right: -17vw;
+  }
+
+  .section {
+    width: unset;
+    padding: 0 2rem;
+  }
+  .ourMissionText {
+    width: 80vw;
   }
 }

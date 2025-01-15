@@ -16,6 +16,7 @@
   user-select: none;
   aspect-ratio: 9/10;
   z-index: 10;
+  z-index: 200;
 }
 
 .cardImage {

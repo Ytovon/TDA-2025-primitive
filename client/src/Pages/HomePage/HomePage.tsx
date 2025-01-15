@@ -85,6 +85,7 @@ export default function HomePage() {
                 <Button
                   text="Jdu do toho"
                   backgroundColor={true}
+                  backgroundColor="#E31837"
                   color="white"
                   onClick={() => navigate("/game")}
                 />
@@ -107,13 +108,14 @@ export default function HomePage() {
                 <Button
                   text="Chci trénovat"
                   backgroundColor={false}
+                  backgroundColor="#0070BB"
                   color="white"
                   onClick={() => navigate("/games")}
                 />
               </div>
-              <div>
+              <div className={styles.offer_img2}>
                 <img
-                  className={styles.offer_img}
+                  className={`${styles.offer_img}`}
                   src={darkMode ? blueRiverLightMode : blueRiverDarkMode}
                 />
               </div>

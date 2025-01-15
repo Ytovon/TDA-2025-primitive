@@ -31,7 +31,7 @@
   background-color: var(--primary1);
   border-radius: 10px;
   position: relative;
-  z-index: 100;
+  z-index: 200;
 }
 
 .filtrationMenu {
