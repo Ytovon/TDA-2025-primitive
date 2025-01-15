@@ -14,7 +14,7 @@ export const Footer: React.FC<FooterProps> = ({ landingPageFooter = true }) => {
     <footer
       className={styles.footer}
       style={
-        landingPageFooter ? { paddingTop: "100px" } : { paddingTop: "50px" }
+        landingPageFooter ? { paddingTop: "150px" } : { paddingTop: "50px" }
       }
     >
       <div

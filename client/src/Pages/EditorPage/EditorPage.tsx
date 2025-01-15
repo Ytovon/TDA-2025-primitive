@@ -404,6 +404,11 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
         </Link>
         <button onClick={toggleDarkMode}>
           <img
+            style={
+              darkMode
+                ? { transition: "0.5s ease-in-out" }
+                : { transition: "0.75s ease-in-out" }
+            }
             className={styles.darkModeBtn}
             src={darkMode ? darkModeButton : lightModeButton}
           />
@@ -491,7 +496,6 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
           <div className={styles.editArea2}>
             <div className={styles.editacePlochyTitle}>
               <h3 className={styles.leftSideTitle}>Editace plochy</h3>
-              <p className={styles.info}>?</p>
             </div>
 
             <div className={styles.selectSymbolImg}>
@@ -542,7 +546,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
               text="Vytvořit hru"
               image={whitePlus}
               color="white"
-              backgroundColor="#0070BB"
+              backgroundColor={true}
               onClick={() => handleButtonClick("create")}
               isDisabled={
                 isThereWinner ? false : goodNumberOfSymbols ? false : true
@@ -553,7 +557,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
               text="Uložit úlohu"
               image={check}
               color="white"
-              backgroundColor="#0070BB"
+              backgroundColor={true}
               onClick={() => handleButtonClick("send")}
               isDisabled={
                 isThereWinner ? false : goodNumberOfSymbols ? false : true
@@ -565,7 +569,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
                 text="Vymazat úlohu"
                 image={trashBin}
                 color="#E31837"
-                border="2px solid #E31837"
+                border={false}
                 onClick={() => deleteGame(game.uuid)}
               />
             </Link>

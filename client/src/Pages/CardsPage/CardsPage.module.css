@@ -39,7 +39,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 5px 15px;
-  border-bottom: 2px solid rgb(230, 230, 230);
+  border-bottom: 2px solid var(--filtrationBorder);
   color: var(--textColor);
 }
 
@@ -111,7 +111,7 @@
 }
 
 .filtrationSection:not(:first-child):not(:last-child) {
-  border-inline: 2px solid rgb(230, 230, 230);
+  border-inline: 2px solid var(--filtrationBorder);
 }
 
 .filtrationSectionTitle {
@@ -129,11 +129,16 @@
 
 .difficultyBtn {
   border: none;
-  padding: 0.5rem 0.9375rem;
+  padding: 8px 15px;
   border-radius: 50px;
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
+  transition: 0.3s ease-in-out;
+}
+
+.difficultyBtn:hover {
+  filter: brightness(1.5);
 }
 
 .difficultyColor1 {
@@ -187,6 +192,13 @@
   right: clamp(10px, 5vw, 50px);
   bottom: 100px;
   cursor: pointer;
+  transition: 0.3s ease-in-out;
+  z-index: 10;
+}
+
+.addGameBtn:hover {
+  transform: rotate(90deg);
+  background-color: var(--grey);
 }
 
 @media screen and (max-width: 1100px) {
@@ -239,7 +251,7 @@
 
   .filtrationSection:not(:first-child):not(:last-child) {
     border-inline: none;
-    border-block: 1px solid rgb(230, 230, 230);
+    border-block: 1px solid var(--filtrationBorder);
   }
 
   .filtrationSectionName {

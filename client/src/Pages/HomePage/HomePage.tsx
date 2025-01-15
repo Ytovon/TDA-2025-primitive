@@ -32,14 +32,14 @@ export default function HomePage() {
                 <Button
                   text="Lokální multiplayer"
                   color="white"
-                  backgroundColor="#0070BB"
+                  backgroundColor={true}
                   onClick={() => navigate("/game")}
                 />
 
                 <Button
                   text="Tréninkové úlohy"
                   color="#0070BB"
-                  border="3px solid #0070BB"
+                  border={true}
                   onClick={() => navigate("/games")}
                 />
               </div>
@@ -84,8 +84,10 @@ export default function HomePage() {
                 </p>
                 <Button
                   text="Jdu do toho"
+                  backgroundColor={true}
                   backgroundColor="#E31837"
                   color="white"
+                  onClick={() => navigate("/game")}
                 />
               </div>
             </div>
@@ -105,8 +107,10 @@ export default function HomePage() {
 
                 <Button
                   text="Chci trénovat"
+                  backgroundColor={false}
                   backgroundColor="#0070BB"
                   color="white"
+                  onClick={() => navigate("/games")}
                 />
               </div>
               <div className={styles.offer_img2}>

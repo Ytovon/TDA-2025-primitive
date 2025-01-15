@@ -5,7 +5,7 @@
 
 .section {
   color: var(--textColor);
-  width: clamp(300px, 65vw, 1100px);
+  width: clamp(800px, 65vw, 1100px);
   margin: 0 auto;
 }
 
@@ -13,7 +13,6 @@
 
 .homePageOpening {
   display: flex;
-  justify-content: space-between;
   align-items: end;
   position: relative;
 }
@@ -47,6 +46,8 @@
   position: absolute;
   bottom: -80px;
   right: -18vw;
+  z-index: 10;
+  cursor: auto;
 }
 
 /* 2. sekce */
@@ -74,7 +75,7 @@
 
 .ourMissionText {
   font-size: 1.4rem;
-  width: clamp(200px, 35vw, 600px);
+  width: clamp(400px, 35vw, 600px);
 }
 
 /* 3. sekce */

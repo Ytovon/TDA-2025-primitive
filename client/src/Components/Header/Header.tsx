@@ -53,11 +53,16 @@ export default function Header() {
             </Link>
             <button onClick={toggleDarkMode}>
               <img
+                style={
+                  darkMode
+                    ? { transition: "0.5s ease-in-out" }
+                    : { transition: "0.75s ease-in-out" }
+                }
                 className={styles.darkModeBtn}
                 src={darkMode ? darkModeButton : lightModeButton}
               />
             </button>
-            <p>
+            <p className={styles.playBtnContainer}>
               <Link className={styles.playBtn} to="/Game">
                 Chci hrát!
               </Link>
@@ -84,11 +89,16 @@ export default function Header() {
         </Link>
         <button onClick={toggleDarkMode}>
           <img
+            style={
+              darkMode
+                ? { transition: "0.5s ease-in-out" }
+                : { transition: "0.75s ease-in-out" }
+            }
             className={`${styles.darkModeBtn} ${styles.menuDarkModeBtn}`}
             src={darkMode ? darkModeButton : lightModeButton}
           />
         </button>
-        <p>
+        <p className={styles.playBtnContainer}>
           <Link className={styles.playBtn} to="/Game">
             Chci hrát!
           </Link>
