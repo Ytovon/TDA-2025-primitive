@@ -27,22 +27,33 @@ const BackgroundSymbol: React.FC<BackgroundSymbolProps> = ({
 
     const calculatedMaxScroll = document.documentElement.scrollHeight;
     setMaxScroll(calculatedMaxScroll);
-  }, []);
+  }, [width]);
 
   const handleScroll = () => {
     const currentScrollY = window.scrollY;
+    const documentHeight = document.documentElement.scrollHeight;
+    const windowHeight = window.innerHeight;
 
-    // Only adjust if the current scroll is less than maxScroll
+    // Calculate the bottom position of the element
+    const elementBottom = topPosition + height;
+
+    // Stop moving if the symbol is 100px from the bottom of the page
     if (currentScrollY < maxScroll) {
       let newTopPosition = topPosition;
 
       if (currentScrollY > lastScrollY) {
-        // Scrolling down, increase topPosition by 2 units
+        // Scrolling down, increase topPosition by scrollAmount
         newTopPosition += scrollAmount;
+
+        // Ensure the symbol stops 100px before the bottom
+        if (elementBottom + scrollAmount > documentHeight - 100) {
+          newTopPosition = documentHeight - 100 - height; // Stop 100px before bottom
+        }
       } else if (currentScrollY < lastScrollY) {
-        // Scrolling up, decrease topPosition by 2 units
+        // Scrolling up, decrease topPosition by scrollAmount
         newTopPosition -= scrollAmount;
       }
+
       setTopPosition(newTopPosition);
       setLastScrollY(currentScrollY);
     }
@@ -55,7 +66,7 @@ const BackgroundSymbol: React.FC<BackgroundSymbolProps> = ({
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [lastScrollY, maxScroll]); // Adding maxScroll as a dependency ensures it works after the initialization
+  }, [lastScrollY, maxScroll]); // Adding maxScroll as a dependency ensures it works after initialization
 
   return (
     <div

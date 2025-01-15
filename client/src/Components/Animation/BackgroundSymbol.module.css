@@ -9,3 +9,9 @@
   fill: var(--SymbolBackround);
   stroke: var(--SymbolBackround);
 }
+
+@media screen and (max-width: 1050px) {
+  .XBackground {
+    display: none;
+  }
+}
