@@ -84,8 +84,7 @@ export default function HomePage() {
                 </p>
                 <Button
                   text="Jdu do toho"
-                  backgroundColor={true}
-                  backgroundColor="#E31837"
+                  backgroundColor={false}
                   color="white"
                   onClick={() => navigate("/game")}
                 />
@@ -107,8 +106,7 @@ export default function HomePage() {
 
                 <Button
                   text="Chci trénovat"
-                  backgroundColor={false}
-                  backgroundColor="#0070BB"
+                  backgroundColor={true}
                   color="white"
                   onClick={() => navigate("/games")}
                 />
