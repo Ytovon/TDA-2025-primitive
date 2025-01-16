@@ -38,7 +38,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 5px 15px;
+  padding: 10px 25px;
   border-bottom: 2px solid var(--filtrationBorder);
   color: var(--textColor);
 }
@@ -47,9 +47,22 @@
   font-size: 1.5rem;
 }
 
+.filtrationChevronUp {
+  color: var(--textColor);
+  transition: 0.3s;
+  transform: rotate(0);
+}
+
+.filtrationChevronDown {
+  transform: rotate(180deg);
+  transition: 0.3s;
+}
+
 .filtrationMenuBtns {
   display: flex;
   cursor: pointer;
+  position: absolute;
+  right: 10px;
 }
 
 .filtrationMenuBtns img {
@@ -60,17 +73,30 @@
 .lineBtns {
   width: 2px;
   margin-block: 3px;
-  background-color: rgb(230, 230, 230);
-}
-
-.filtrationSections {
-  display: flex;
+  background-color: var(--filtrationBorder);
 }
 
 .filtrationSection {
   padding: 25px;
   width: 33%;
   position: relative;
+}
+.filtrationSections {
+  display: flex; /* Set default to ensure space is reserved */
+  flex-direction: row; /* Adjust as needed */
+  max-height: 0; /* Start with no height */
+  overflow: hidden; /* Hide content that doesn't fit */
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+.filterMenuOpened {
+  max-height: 500px; /* Set a value large enough to fit all content */
+  opacity: 1; /* Fully visible */
+}
+
+.filterMenuClosed {
+  max-height: 0;
+  opacity: 0; /* Fully hidden */
 }
 
 .filtrationSectionName {
@@ -81,6 +107,7 @@
   border: none;
   border-radius: 5px;
   background-color: var(--filtrationNameInput);
+  color: var(--textColor);
 }
 
 .filtrationSectionDate {
@@ -93,10 +120,19 @@
   gap: 5px;
   font-size: 1.1rem;
 }
+.filtrationMessage {
+  color: var(--textColor);
+  margin: 0 auto;
+}
 
 .filtrationSectionDate input {
   transform: scale(1.1);
   margin-right: 5px;
+  cursor: pointer;
+}
+
+.filtrationSectionDate label {
+  cursor: pointer;
 }
 
 .resetFiltrationSection {
@@ -135,10 +171,11 @@
   font-size: 14px;
   cursor: pointer;
   transition: 0.3s ease-in-out;
+  opacity: 0.8;
 }
 
 .difficultyBtn:hover {
-  filter: brightness(1.5);
+  opacity: 1;
 }
 
 .difficultyColor1 {
