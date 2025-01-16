@@ -12,10 +12,77 @@ import {
   redRiverDarkMode,
   redRiverLightMode,
 } from "../../assets/assets";
+import { randomInt } from "crypto";
 
 export default function HomePage() {
   const navigate = useNavigate();
   const { darkMode, toggleDarkMode } = useDarkMode();
+  const defaultText = "Pojďte s námi ovládnout svět logiky";
+  const defaultHeading = "Moudro dne";
+  const randomInt: number = Math.floor(Math.random() * 15);
+
+  const headerText = [
+    {
+      heading: defaultHeading,
+      text: "Prošvihnete 100 % tahů, které neuděláte.",
+    },
+    {
+      heading: "Život je jako piškvorky",
+      text: "Nejde o to vyhrát každý tah, ale každou hru.",
+    },
+    {
+      heading: "Piškvorky nás učí",
+      text: "Že i malý tah může znamenat velký rozdíl.",
+    },
+    {
+      heading: "Být či nebýt?",
+      text: "Nah. Křížek nebo kolečko? Toť otázka!",
+    },
+    {
+      heading: "Přišel jsem, viděl jsem",
+      text: "Spojil jsem pět.",
+    },
+    {
+      heading: "Blokovaná čtyřka",
+      text: "Jediná věc, které se musíme bát.",
+    },
+    {
+      heading: "Dejte mi svobodu",
+      text: "Nebo výherní tah!",
+    },
+    {
+      heading: "Je to malý krok pro člověka",
+      text: "Ale velký skok pro piškvorky!",
+    },
+    {
+      heading: "Cesta tisíce výher",
+      text: "Začíná pouhým X.",
+    },
+    {
+      heading: "Vítězství miluje přípravu",
+      text: "A solidní diagonální strategii.",
+    },
+    {
+      heading: "225 čtverečků...",
+      text: "Nekonečných možností! Jsi připraven?",
+    },
+    {
+      heading: "Více než hra",
+      text: "Je to bitva myslí.",
+    },
+    {
+      heading: defaultHeading,
+      text: "Přemýšlej, přelsti, vyhraj!",
+    },
+    {
+      heading: "Zlepši svou strategii",
+      text: "zdemoluj svého soupeře!",
+    },
+    {
+      heading: "Nehraj - dominuj!",
+      text: defaultText,
+    },
+  ];
 
   return (
     <div>
@@ -24,9 +91,11 @@ export default function HomePage() {
         <div className={styles.homePageWrapper}>
           <section className={`${styles.homePageOpening} ${styles.section}`}>
             <div className={styles.openingText}>
-              <h1 className={styles.openingTitle}>Být či nebýt?</h1>
+              <h1 className={styles.openingTitle}>
+                {headerText[randomInt].heading}
+              </h1>
               <p className={styles.openingSubtitle}>
-                Nah. Radši s námi pojď ovládnout svět logiky.
+                {headerText[randomInt].text}{" "}
               </p>
               <div className={styles.openingBtns}>
                 <Button
