@@ -200,32 +200,42 @@ export default function CardsPage() {
               <h4 className={styles.filtrationMenuTitle}>Filtrace</h4>
               <div className={styles.filtrationMenuBtns}>
                 <img
+                  style={
+                    difficultyFilter.length === 0 &&
+                    nameFilter === "" &&
+                    dateFilter === ""
+                      ? { display: "none" }
+                      : { display: "flex" }
+                  }
                   src={darkMode ? xMarkBlack : xMarkWhite}
                   onClick={resetFilters}
                 />
                 <span className={styles.lineBtns}></span>
                 <img
-                  onClick={openFiltration}
-                  src={
+                  className={
                     isFiltrationOpen
-                      ? darkMode
-                        ? chevronUpBlack
-                        : chevronUpWhite
-                      : darkMode
-                      ? chevronDownBlack
-                      : chevronDownWhite
+                      ? styles.filtrationChevronUp
+                      : styles.filtrationChevronDown
                   }
+                  onClick={openFiltration}
+                  src={darkMode ? chevronUpBlack : chevronUpWhite}
                 />
               </div>
             </div>
             <div
-              style={
-                isFiltrationOpen ? { display: "flex" } : { display: "none" }
-              }
-              className={styles.filtrationSections}
+              className={`${
+                isFiltrationOpen
+                  ? styles.filterMenuOpened
+                  : styles.filterMenuClosed
+              } ${styles.filtrationSections}`}
             >
               <div className={styles.filtrationSection}>
                 <img
+                  style={
+                    difficultyFilter.length !== 0
+                      ? { display: "flex" }
+                      : { display: "none" }
+                  }
                   src={xMarkGrey}
                   onClick={() => setDifficultyFilter([])}
                   className={styles.resetFiltrationSection}
@@ -336,14 +346,21 @@ export default function CardsPage() {
             style={isLoading ? { display: "none" } : { display: "flex" }}
             className={styles.cards}
           >
-            {filteredGames.map((game) => (
-              <Card
-                name={game.name}
-                type={game.difficulty}
-                uuid={game.uuid}
-                bitmapUrl={game.bitmapUrl}
-              />
-            ))}
+            {filteredGames.length > 0 ? (
+              filteredGames.map((game) => (
+                <Card
+                  key={game.uuid} // Always use a unique `key` when mapping
+                  name={game.name}
+                  type={game.difficulty}
+                  uuid={game.uuid}
+                  bitmapUrl={game.bitmapUrl}
+                />
+              ))
+            ) : (
+              <p className={styles.filtrationMessage}>
+                Nenašli jsme žádné položky odpovídající vašemu filtru
+              </p>
+            )}
           </div>
         </div>
       </body>
