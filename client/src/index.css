@@ -22,6 +22,7 @@ body {
   --brightness: 1;
   --darkModeBtn: #c7c7c7;
   --cardShadow: 0px 6px 37.5px 0px #948d8d78;
+  --cardBorder: none;
   --player: #e21836b5;
   --gameBackground: #cacaca;
   --gameBorder: #ffffff;
@@ -49,6 +50,7 @@ body {
   --brightness: 1.5;
   --darkModeBtn: #e1e1e1;
   --cardShadow: none;
+  --cardBorder: #3e3e3e;
   --gameBackground: #1a1a1a;
   --gameBorder: #5b5b5b;
   --grey: #dcdcdc;

@@ -99,8 +99,14 @@
   max-width: 26px;
   background-color: rgba(0, 0, 0, 0);
 }
+
 .arrow {
   width: 2rem;
+  transition: 0.3s ease-in-out;
+}
+
+.arrow:hover {
+  transform: scale(1.15);
 }
 
 .gameBtns {
@@ -118,16 +124,10 @@
 }
 
 .darkModeBtn {
-  width: 1.25rem;
   aspect-ratio: 1/1;
   background-color: var(--darkModeBtn);
-  padding: 7px;
   border-radius: 50%;
   cursor: pointer;
-}
-
-.darkModeBtn:hover {
-  transform: rotate(210deg);
 }
 
 /* Card styles */

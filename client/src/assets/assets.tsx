@@ -1,7 +1,7 @@
 /* Everywhere */
 
 import darkModeButton from "./images/Primary.svg";
-import lightModeButton from "./images/sun.png";
+import lightModeButton from "./images/sun.svg";
 
 /* HomePage */
 

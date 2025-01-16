@@ -67,7 +67,7 @@ nav p:not(.playBtnContainer)::after,
 menu p:not(.playBtnContainer)::after {
   content: "";
   position: absolute;
-  bottom: 0px;
+  bottom: -2px;
   left: 0;
   width: 100%;
   height: 2px;
@@ -78,17 +78,11 @@ menu p:not(.playBtnContainer)::after {
 }
 
 .darkModeBtn {
-  width: 17px;
   aspect-ratio: 1/1;
   background-color: var(--darkModeBtn);
-  padding: 7px;
   border-radius: 50%;
   cursor: pointer;
   transition: 0.3s ease-in-out;
-}
-
-.darkModeBtn:hover {
-  transform: rotate(-180deg);
 }
 
 .playBtn {
