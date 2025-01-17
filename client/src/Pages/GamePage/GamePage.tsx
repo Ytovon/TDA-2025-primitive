@@ -92,7 +92,7 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/api/v1/Games/${uuid}`
+        `https://2a459380.app.deploy.tourde.app/api/v1/Games/${uuid}`
       );
 
       if (!response.ok) {

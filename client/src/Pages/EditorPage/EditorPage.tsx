@@ -79,7 +79,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
         updatedAt: new Date().toISOString(),
       };
 
-      const response = await fetch("http://localhost:5000/api/v1/games", {
+      const response = await fetch("https://2a459380.app.deploy.tourde.app/api/v1/games", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -116,7 +116,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/api/v1/Games/${uuid}`
+        `https://2a459380.app.deploy.tourde.app/api/v1/Games/${uuid}`
       );
 
       if (!response.ok) {
@@ -155,7 +155,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
 
       // Odeslání dat pomocí fetch
       const response = await fetch(
-        `http://localhost:5000/api/v1/Games/${game.uuid}`,
+        `https://2a459380.app.deploy.tourde.app/api/v1/Games/${game.uuid}`,
         {
           method: "PUT",
           headers: {
@@ -185,7 +185,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
   async function deleteGame(uuid: string) {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/v1/Games/${uuid}`,
+        `https://2a459380.app.deploy.tourde.app/api/v1/Games/${uuid}`,
         {
           method: "DELETE",
         }
