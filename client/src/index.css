@@ -7,57 +7,63 @@
 }
 
 body {
-  background-color: var(--mainBackground);
+  background-color: var(--primary);
   position: relative;
 }
 
 :root {
-  --mainBackground: #f4f4f4;
-  --firstBackground: white;
-  --secondBackground: #f4f4f4;
-  --thirdBackground: white;
+  --primary: #f4f4f4;
+  --primary1: white;
+  --primary2: #f4f4f4;
+  --primary3: white;
   --textColor: black;
   --textColorInverted: white;
   --startBtnColor: #e81837;
-  --halfBrightness: 1;
   --brightness: 1;
   --darkModeBtn: #c7c7c7;
   --cardShadow: 0px 6px 37.5px 0px #948d8d78;
+  --cardBorder: none;
   --player: #e21836b5;
   --gameBackground: #cacaca;
   --gameBorder: #ffffff;
   --winnerColor: #0070bb;
   --grey: #363636;
-  --difficulty1Color: white;
-  --difficulty2Color: white;
-  --difficulty3Color: white;
-  --difficulty4Color: white;
-  --difficulty5Color: white;
-  --difficulty1Color: #0070bb;
-  --difficulty2Color: #39599a;
-  --difficulty3Color: #724479;
-  --difficulty4Color: #ab2e58;
-  --difficulty5Color: #e31837;
+  --secondary1: #0070bb;
+  --secondary2: #39599a;
+  --secondary3: #724479;
+  --secondary4: #ab2e58;
+  --secondary5: #e31837;
+  --addGameBtnColor: #395a9a;
+  --addGameBtnBorder: #395a9a35;
+  --filtrationNameInput: #d9d9d98f;
+  --SymbolBackround: white;
+  --filtrationBorder: #f5f5f5;
 }
 
 .dark-mode {
-  --mainBackground: #080808;
-  --firstBackground: #1a1a1a;
-  --secondBackground: #1a1a1a;
+  --primary: #080808;
+  --primary1: #1a1a1a;
+  --primary2: #1a1a1a;
+  --primary3: #080808;
   --textColor: white;
   --textColorInverted: black;
-  --halfBrightness: 1.5;
-  --brightness: 1.6;
+  --brightness: 1.5;
   --darkModeBtn: #e1e1e1;
   --cardShadow: none;
+  --cardBorder: #3e3e3e;
   --gameBackground: #1a1a1a;
   --gameBorder: #5b5b5b;
   --grey: #dcdcdc;
-  --difficulty1Color: white;
-  --difficulty2Color: white;
-  --difficulty3Color: white;
-  --difficulty4Color: white;
-  --difficulty5Color: white;
+  --secondary1: white;
+  --secondary2: white;
+  --secondary3: white;
+  --secondary4: white;
+  --secondary5: white;
+  --addGameBtnColor: #395a9a35;
+  --addGameBtnBorder: #395a9a;
+  --filtrationNameInput: #242424;
+  --SymbolBackround: black;
+  --filtrationBorder: #353535;
 }
 
 .winnerRed {

@@ -1,17 +1,19 @@
 .body {
   display: flex;
   justify-content: center;
+  min-height: 101vh;
 }
 
 .cardsPageWrapper {
-  width: 60vw;
+  width: clamp(970px, 60vw, 1100px);
 }
 
 .cardsPageTitle {
   display: flex;
   gap: 5px;
-  margin-block: 7vh 5vh;
+  margin-block: 20vh 6vh;
   color: var(--textColor);
+  position: relative;
 }
 
 .cardsPageTitle h1 {
@@ -22,20 +24,22 @@
   font-size: 1.75rem;
   display: flex;
   align-items: flex-end;
-  padding-bottom: 4.8px;
+  padding-bottom: 6.8px;
 }
 
 .filtration {
-  background-color: var(--firstBackground);
+  background-color: var(--primary1);
   border-radius: 10px;
+  position: relative;
+  z-index: 200;
 }
 
 .filtrationMenu {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 5px 15px;
-  border-bottom: 2px solid rgb(230, 230, 230);
+  padding: 10px 25px;
+  border-bottom: 2px solid var(--filtrationBorder);
   color: var(--textColor);
 }
 
@@ -43,9 +47,22 @@
   font-size: 1.5rem;
 }
 
+.filtrationChevronUp {
+  color: var(--textColor);
+  transition: 0.3s;
+  transform: rotate(0);
+}
+
+.filtrationChevronDown {
+  transform: rotate(180deg);
+  transition: 0.3s;
+}
+
 .filtrationMenuBtns {
   display: flex;
   cursor: pointer;
+  position: absolute;
+  right: 10px;
 }
 
 .filtrationMenuBtns img {
@@ -56,22 +73,70 @@
 .lineBtns {
   width: 2px;
   margin-block: 3px;
-  background-color: rgb(230, 230, 230);
-}
-
-.filtrationSections {
-  display: flex;
+  background-color: var(--filtrationBorder);
 }
 
 .filtrationSection {
-  padding: 15px 25px;
+  padding: 25px;
   width: 33%;
-  height: 15vh;
   position: relative;
+}
+.filtrationSections {
+  display: flex; /* Set default to ensure space is reserved */
+  flex-direction: row; /* Adjust as needed */
+  max-height: 0; /* Start with no height */
+  overflow: hidden; /* Hide content that doesn't fit */
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+}
+.filterMenuOpened {
+  max-height: 500px; /* Set a value large enough to fit all content */
+  opacity: 1; /* Fully visible */
+}
+
+.filterMenuClosed {
+  max-height: 0;
+  opacity: 0; /* Fully hidden */
+}
+
+.filtrationSectionName {
+  width: clamp(160px, 70%, 400px);
+  height: 1.875rem;
+  padding: 5px 10px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--filtrationNameInput);
+  color: var(--textColor);
+}
+
+.filtrationSectionDate {
+  display: grid;
+  grid-template-columns: 40% 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "first second"
+    "third fourth";
+  gap: 5px;
+  font-size: 1.1rem;
+}
+.filtrationMessage {
+  color: var(--textColor);
+  margin: 0 auto;
+}
+
+.filtrationSectionDate input {
+  transform: scale(1.1);
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.filtrationSectionDate label {
+  cursor: pointer;
 }
 
 .resetFiltrationSection {
-  width: 0.85rem;
+  width: 1rem;
   position: absolute;
   right: 6px;
   top: 5px;
@@ -82,7 +147,7 @@
 }
 
 .filtrationSection:not(:first-child):not(:last-child) {
-  border-inline: 2px solid rgb(230, 230, 230);
+  border-inline: 2px solid var(--filtrationBorder);
 }
 
 .filtrationSectionTitle {
@@ -105,42 +170,156 @@
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
+  transition: 0.3s ease-in-out;
+  opacity: 0.8;
+}
+
+.difficultyBtn:hover {
+  opacity: 1;
 }
 
 .difficultyColor1 {
   background-color: #6bc4ff60;
-  color: var(--difficulty1Color);
+  color: var(--secondary1);
 }
 
 .difficultyColor2 {
   background-color: #5b8be460;
-  color: var(--difficulty2Color);
+  color: var(--secondary2);
 }
 
 .difficultyColor3 {
   background-color: #ba6cc660;
-  color: var(--difficulty3Color);
+  color: var(--secondary3);
 }
 
 .difficultyColor4 {
   background-color: #db2a6550;
-  color: var(--difficulty4Color);
+  color: var(--secondary4);
 }
 
 .difficultyColor5 {
   background-color: #e3183750;
-  color: var(--difficulty5Color);
+  color: var(--secondary5);
 }
 
 .cards {
-  display: grid;
-  grid-template-columns: repeat(3, auto);
-  width: 48vw;
-  min-width: 840px;
-  margin: 0 auto;
+  margin-block: 25px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
-.loadingSpinner {
+.loadingSpinnerDark {
   width: 70px;
   margin: 20px auto;
+}
+.loadingSpinnerLight {
+  filter: invert(1);
+  width: 70px;
+  margin: 20px auto;
+}
+
+.addGameBtn {
+  position: fixed;
+  align-items: center;
+  width: 28px;
+  aspect-ratio: 1/1;
+  padding: 8px;
+  background-color: var(--addGameBtnColor);
+  border: 2px solid var(--addGameBtnBorder);
+  border-radius: 50px;
+  right: clamp(10px, 5vw, 50px);
+  bottom: 100px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+  z-index: 1000;
+}
+
+.addGameBtn:hover {
+  transform: scale(1.1);
+}
+
+@media screen and (max-width: 1100px) {
+  .cardsPageWrapper {
+    width: 700px;
+  }
+
+  .cardsPageTitle {
+    flex-direction: column;
+  }
+
+  .filtrationSection {
+    padding: 15px 15px;
+  }
+
+  .resetFiltrationSection {
+    width: 1.2rem;
+  }
+  .cards {
+    justify-content: space-between;
+    column-gap: 3.25rem;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .cardsPageWrapper {
+    width: clamp(300px, 80vw, 800px);
+  }
+
+  .cardsPageTitle h1 {
+    font-size: 3rem;
+  }
+
+  .cardsPageTitle {
+    font-size: 1.6rem;
+  }
+
+  .filtration {
+    margin: 0 auto;
+  }
+
+  .filtrationSections {
+    flex-direction: column;
+  }
+
+  .filtrationSection {
+    width: 90%;
+    padding: 13px 5% 27px 5%;
+  }
+
+  .filtrationSection:not(:first-child):not(:last-child) {
+    border-inline: none;
+    border-block: 1px solid var(--filtrationBorder);
+  }
+
+  .filtrationSectionName {
+    width: 90%;
+  }
+
+  .cards {
+    margin: 20px;
+    justify-content: center;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .cardsPageWrapper {
+    width: 80vw;
+  }
+
+  .filtration {
+    width: 80vw;
+    padding: 5px 0;
+  }
+
+  .resetFiltrationSection {
+    width: 1.1rem;
+  }
+
+  .cards {
+    margin: 0;
+  }
 }

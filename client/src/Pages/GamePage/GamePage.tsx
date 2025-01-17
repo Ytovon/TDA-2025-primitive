@@ -10,12 +10,14 @@ import {
   resetBtnWhite,
   winnerBlue,
   winnerRed,
-  cervenaZarovkaX,
   modraZarovkaO,
   darkModeButton,
   lightModeButton,
 } from "../../assets/assets";
+import BlinkingEyesSVG from "../../Components/Animation/lightbulb";
 import { useDarkMode } from "../../DarkModeContext";
+import { Button } from "../../Components/Button/Button";
+import { useNavigate } from "react-router-dom";
 
 interface GamePageProps {
   uuid?: string;
@@ -30,7 +32,7 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
     updatedAt: string;
     uuid: string;
   };
-
+  const navigate = useNavigate();
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [player, setPlayer] = useState(true); // true = hráč X, false = hráč O
   const [winner, setWinner] = useState<string | null>(null);
@@ -58,6 +60,29 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
 
     fetchSpecificGame(typeof uuid == "string" ? uuid : "");
   }, []);
+
+  useEffect(() => {
+    let xCount = 0;
+    let oCount = 0;
+
+    // Projde každou buňku v gridu a spočítá počet X a O
+    grid.forEach((row) => {
+      row.forEach((cell) => {
+        if (cell === "X") {
+          xCount++;
+        } else if (cell === "O") {
+          oCount++;
+        }
+      });
+    });
+
+    // Nastaví, který hráč má hrát na základě počtu X a O
+    if (xCount === oCount) {
+      setPlayer(true); // Hráč X na tahu
+    } else {
+      setPlayer(false); // Hráč O na tahu
+    }
+  }, [grid]);
 
   async function fetchSpecificGame(uuid: string) {
     try {
@@ -87,7 +112,7 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
 
       setInitialBoard(data.board);
       setGrid(data.board);
-      
+
       console.log(data.board);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -205,6 +230,11 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
             </button>
             <button onClick={toggleDarkMode}>
               <img
+                style={
+                  darkMode
+                    ? { width: "20px", padding: "7px" }
+                    : { width: "22px", padding: "6px" }
+                }
                 className={styles.darkModeBtn}
                 src={darkMode ? darkModeButton : lightModeButton}
               />
@@ -229,7 +259,8 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
           <h2 className={styles.gameState}>{game.gameState}</h2>
 
           <div className={styles.game}>
-            <img className={styles.imgNextToGame} src={cervenaZarovkaX} />
+            <BlinkingEyesSVG isRedPlayer={true} OnMove={player} />
+
             <div className={styles.gameGrid}>
               {Array.isArray(grid) &&
                 grid.map((row, rowIndex) =>
@@ -249,7 +280,7 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
                   ))
                 )}
             </div>
-            <img className={styles.imgNextToGame} src={modraZarovkaO} />
+            <BlinkingEyesSVG isRedPlayer={false} OnMove={!player} />
           </div>
         </div>
       </div>
@@ -273,15 +304,19 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
           </div>
 
           <div className={styles.winnerCardBtns}>
-            <p className={styles.winnerCardBtn} onClick={resetGame}>
-              odveta
-            </p>
-            <Link
-              className={styles.winnerCardBtn}
-              to={game.uuid !== "" ? "/Games" : "/"}
-            >
-              Ukončit
-            </Link>
+            <Button
+              text="Odveta"
+              color="white"
+              backgroundColor={winner === "red" ? false : true}
+              onClick={() => resetGame()}
+            />
+
+            <Button
+              text="Ukončit"
+              color={winner === "red" ? "#E31837" : "#0070BB"}
+              border={winner === "red" ? false : true}
+              onClick={() => navigate(game.uuid !== "" ? "/Games" : "/")}
+            />
           </div>
         </div>
       </div>

@@ -1,7 +1,17 @@
 /* Everywhere */
 
 import darkModeButton from "./images/Primary.svg";
-import lightModeButton from "./images/sun.png";
+import lightModeButton from "./images/sun.svg";
+
+/* HomePage */
+
+import landingImageBlack from "./images/landing_image_black.png";
+import landingImageWhite from "./images/landing_image_white.png";
+// import homePageEntering from "./images/homePageEnteringImg.svg";
+import redRiverLightMode from "./images/redRiverLightMode.svg";
+import redRiverDarkMode from "./images/redRiverDarkMode.svg";
+import blueRiverLightMode from "./images/blueRiverLightMode.svg";
+import blueRiverDarkMode from "./images/blueRiverDarkMode.svg";
 
 /* CardsPage */
 
@@ -13,6 +23,8 @@ import chevronUpBlack from "./images/chevron-up-solid-black.svg";
 import chevronDownWhite from "./images/chevron-down-solid-white.svg";
 import chevronDownBlack from "./images/chevron-down-solid-black.svg";
 import loadingSpinnerGif from "./images/Dual Ring@1x-1.0s-200px-200px.gif";
+import bluePlus from "./images/plus-solid-blue.svg";
+import whitePlus from "./images/plus-solid.svg";
 
 /* GamePage */
 
@@ -39,11 +51,19 @@ import trashBin from "./images/trash-solid.svg";
 
 import lightModeLogo from "./images/Think-different-Academy_LOGO_oficialni_1.png";
 import darkModeLogo from "./images/Think-different-Academy_LOGO_oficialni_1_dark-mode.png";
+import barsWhite from "./images/bars-staggered-solid-white.svg";
+import barsBlack from "./images/bars-staggered-solid-black.svg";
+
+/* Footer */
+
+import footerLogoWhite from "./images/Think-different-Academy_LOGO_textove-bile2.svg";
+import footerLogoBlack from "./images/Think-different-Academy_LOGO_textove-cerne2.svg";
 
 /* Card */
 
 import nahledPiskvorek from "../assets/images/piskvorky.png";
 import settingsButton from "../assets/images/setting.png";
+import zarovkaFigma from "../assets/images/zarovkaFigma.svg";
 
 export {
   symbolX,
@@ -74,5 +94,18 @@ export {
   check,
   redCancel,
   trashBin,
+  whitePlus,
+  bluePlus,
   loadingSpinnerGif,
+  barsWhite,
+  barsBlack,
+  zarovkaFigma,
+  redRiverLightMode,
+  redRiverDarkMode,
+  blueRiverLightMode,
+  blueRiverDarkMode,
+  footerLogoWhite,
+  footerLogoBlack,
+  landingImageBlack,
+  landingImageWhite,
 };

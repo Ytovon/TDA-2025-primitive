@@ -1,5 +1,10 @@
-// DarkModeContext.tsx
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 // Typy pro kontext
 interface DarkModeContextType {
@@ -20,15 +25,30 @@ interface DarkModeProviderProps {
 export const DarkModeProvider: React.FC<DarkModeProviderProps> = ({
   children,
 }) => {
-  const [darkMode, setDarkMode] = useState(true);
+  // Inicializace darkMode z localStorage
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    return JSON.parse(localStorage.getItem("darkMode") || "true");
+  });
 
+  // Ukládání darkMode do localStorage při každé změně a aplikace třídy na body
+  useEffect(() => {
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+
+    if (!darkMode) {
+      document.body.classList.add("dark-mode");
+      metaThemeColor != null &&
+        metaThemeColor.setAttribute("content", "#1a1a1a");
+    } else {
+      document.body.classList.remove("dark-mode");
+      metaThemeColor != null &&
+        metaThemeColor.setAttribute("content", "#ffffff");
+    }
+    localStorage.setItem("darkMode", JSON.stringify(darkMode));
+  }, [darkMode]);
+
+  // Funkce pro přepínání režimu
   const toggleDarkMode = () => {
     setDarkMode((prevMode) => !prevMode);
-    if (darkMode) {
-      document.documentElement.classList.add("dark-mode");
-    } else {
-      document.documentElement.classList.remove("dark-mode");
-    }
   };
 
   return (

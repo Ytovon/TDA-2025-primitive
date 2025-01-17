@@ -1,0 +1,37 @@
+.RedPlayer svg path {
+  fill: #e31837;
+}
+
+.BluePlayer svg path {
+  fill: var(--winnerColor);
+}
+
+.oko1,
+.oko2 {
+  transform-origin: center;
+  animation: blink 4s ease-in-out infinite;
+  fill: var(--primary1) !important;
+  position: relative;
+}
+
+.blinking-eyes {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.paused {
+  animation: none !important;
+}
+
+@keyframes blink {
+  0% {
+    transform: scaleY(1); /* Keep the right position during shrinking */
+  }
+  10% {
+    transform: scaleY(0); /* Keep the right position during shrinking */
+  }
+  30% {
+    transform: scaleY(1); /* Moves it slightly to the right */
+  }
+}
