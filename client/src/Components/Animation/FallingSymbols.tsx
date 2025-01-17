@@ -25,7 +25,7 @@ export const FallingSymbols: React.FC<FallingSymbolsProps> = ({
           style={
             {
               animationDuration: `${speed}s`,
-              left: `${position}%`,
+              left: `${position * 1.5}%`,
               "--rotation": `${rotation}deg`,
             } as React.CSSProperties
           }

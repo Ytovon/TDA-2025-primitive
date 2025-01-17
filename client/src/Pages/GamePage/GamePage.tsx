@@ -17,6 +17,7 @@ import {
 import BlinkingEyesSVG from "../../Components/Animation/lightbulb";
 import { useDarkMode } from "../../DarkModeContext";
 import { FallingSymbols } from "../../Components/Animation/FallingSymbols";
+import { randomInt } from "crypto";
 
 interface GamePageProps {
   uuid?: string;
@@ -198,6 +199,11 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
     setPlayer(!player);
   };
 
+  const generateRandomNumber = (min: number, max: number) => {
+    const rand = Math.floor(Math.random() * (max - min + 1)) + min;
+    return rand;
+  };
+
   const resetGame = () => {
     setPlayer(true);
     setGrid(initialBoard);
@@ -208,9 +214,9 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
   return (
     <body className={styles.body}>
       <FallingSymbols
-        speed={7}
-        position={68}
-        rotation={45}
+        speed={generateRandomNumber(2, 9)}
+        position={generateRandomNumber(0, 99)}
+        rotation={generateRandomNumber(0, 90)}
         img={player ? symbolX : symbolO}
       />
 
