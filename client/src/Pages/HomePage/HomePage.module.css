@@ -20,7 +20,6 @@
 .openingText {
   width: clamp(300px, 25vw, 500px);
   height: min-content;
-  gap: 40px;
   display: flex;
   flex-direction: column;
   padding-bottom: 25vh;
@@ -29,11 +28,13 @@
 
 .openingTitle {
   font-size: 3.5rem;
+  margin-bottom: 8px;
 }
 
 .openingSubtitle {
   font-size: 1.75rem;
   max-width: 350px;
+  margin-bottom: 8vh;
 }
 
 .openingBtns {

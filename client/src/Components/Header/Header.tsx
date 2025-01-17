@@ -55,8 +55,8 @@ export default function Header() {
               <img
                 style={
                   darkMode
-                    ? { transition: "0.5s ease-in-out" }
-                    : { transition: "0.75s ease-in-out" }
+                    ? { width: "17px", padding: "7px" }
+                    : { width: "19px", padding: "6px" }
                 }
                 className={styles.darkModeBtn}
                 src={darkMode ? darkModeButton : lightModeButton}
