@@ -27,7 +27,7 @@ export const DarkModeProvider: React.FC<DarkModeProviderProps> = ({
 }) => {
   // Inicializace darkMode z localStorage
   const [darkMode, setDarkMode] = useState<boolean>(() => {
-    return JSON.parse(localStorage.getItem("darkMode") || "false");
+    return JSON.parse(localStorage.getItem("darkMode") || "true");
   });
 
   // Ukládání darkMode do localStorage při každé změně a aplikace třídy na body

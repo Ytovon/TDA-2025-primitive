@@ -356,6 +356,12 @@ export default function CardsPage() {
                   bitmapUrl={game.bitmapUrl}
                 />
               ))
+            ) : nameFilter === "" &&
+              difficultyFilter.length === 0 &&
+              dateFilter === "" ? (
+              <p className={styles.filtrationMessage}>
+                Zatím neexistuje žádná úloha.
+              </p>
             ) : (
               <p className={styles.filtrationMessage}>
                 Nenašli jsme žádné položky odpovídající vašemu filtru
