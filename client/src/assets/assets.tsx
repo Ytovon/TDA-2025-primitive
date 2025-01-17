@@ -54,6 +54,11 @@ import darkModeLogo from "./images/Think-different-Academy_LOGO_oficialni_1_dark
 import barsWhite from "./images/bars-staggered-solid-white.svg";
 import barsBlack from "./images/bars-staggered-solid-black.svg";
 
+/* Footer */
+
+import footerLogoWhite from "./images/Think-different-Academy_LOGO_textove-bile2.svg";
+import footerLogoBlack from "./images/Think-different-Academy_LOGO_textove-cerne2.svg";
+
 /* Card */
 
 import nahledPiskvorek from "../assets/images/piskvorky.png";
@@ -99,6 +104,8 @@ export {
   redRiverDarkMode,
   blueRiverLightMode,
   blueRiverDarkMode,
+  footerLogoWhite,
+  footerLogoBlack,
   landingImageBlack,
   landingImageWhite,
 };

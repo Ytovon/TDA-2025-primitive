@@ -1,0 +1,33 @@
+/* src/components/FallingImage.module.css */
+.body {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: unset;
+}
+
+.image {
+  position: absolute;
+  top: -100px;
+  animation: fall linear infinite;
+  filter: brightness(0.3);
+}
+
+@keyframes fall {
+  0% {
+    top: -100px;
+    transform: rotate(0deg);
+  }
+  100% {
+    top: 110vh;
+    transform: rotate(var(--rotation));
+  }
+}
