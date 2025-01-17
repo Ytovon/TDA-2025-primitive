@@ -212,7 +212,12 @@
   justify-content: space-between;
 }
 
-.loadingSpinner {
+.loadingSpinnerDark {
+  width: 70px;
+  margin: 20px auto;
+}
+.loadingSpinnerLight {
+  filter: invert(1);
   width: 70px;
   margin: 20px auto;
 }
@@ -308,10 +313,6 @@
   .filtration {
     width: 80vw;
     padding: 5px 0;
-  }
-
-  .filtrationMenu {
-    padding: 0 15px;
   }
 
   .resetFiltrationSection {

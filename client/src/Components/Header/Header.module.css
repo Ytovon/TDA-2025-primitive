@@ -103,10 +103,14 @@ menu p:not(.playBtnContainer)::after {
   background-color: #0070bb;
   filter: brightness(1);
 }
+.barsOpened {
+  transform: translate(-20px, 0);
+}
 
 .openNav {
   width: 30px;
   display: none;
+  fill: var(--textColor);
 }
 
 .fullNav {

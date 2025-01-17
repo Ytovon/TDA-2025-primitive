@@ -1,3 +1,7 @@
+.RedPlayer svg path {
+  fill: #e31837;
+}
+
 .BluePlayer svg path {
   fill: var(--winnerColor);
 }

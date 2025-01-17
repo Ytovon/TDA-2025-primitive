@@ -16,6 +16,8 @@ import {
 } from "../../assets/assets";
 import BlinkingEyesSVG from "../../Components/Animation/lightbulb";
 import { useDarkMode } from "../../DarkModeContext";
+import { Button } from "../../Components/Button/Button";
+import { useNavigate } from "react-router-dom";
 
 interface GamePageProps {
   uuid?: string;
@@ -30,7 +32,7 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
     updatedAt: string;
     uuid: string;
   };
-
+  const navigate = useNavigate();
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [player, setPlayer] = useState(true); // true = hráč X, false = hráč O
   const [winner, setWinner] = useState<string | null>(null);
@@ -302,15 +304,19 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
           </div>
 
           <div className={styles.winnerCardBtns}>
-            <p className={styles.winnerCardBtn} onClick={resetGame}>
-              odveta
-            </p>
-            <Link
-              className={styles.winnerCardBtn}
-              to={game.uuid !== "" ? "/Games" : "/"}
-            >
-              Ukončit
-            </Link>
+            <Button
+              text="Odveta"
+              color="white"
+              backgroundColor={winner === "red" ? false : true}
+              onClick={() => resetGame()}
+            />
+
+            <Button
+              text="Ukončit"
+              color={winner === "red" ? "#E31837" : "#0070BB"}
+              border={winner === "red" ? false : true}
+              onClick={() => navigate(game.uuid !== "" ? "/Games" : "/")}
+            />
           </div>
         </div>
       </div>

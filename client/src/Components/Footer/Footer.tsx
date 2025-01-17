@@ -10,9 +10,6 @@ interface FooterProps {
 export const Footer: React.FC<FooterProps> = ({ landingPageFooter = true }) => {
   const { darkMode, toggleDarkMode } = useDarkMode();
   const currentYear = new Date().getFullYear();
-
-  const className = landingPageFooter ? "" : "smallFooter";
-
   return (
     <footer
       className={styles.footer}
@@ -38,8 +35,8 @@ export const Footer: React.FC<FooterProps> = ({ landingPageFooter = true }) => {
           alt="Think Different Academy"
         />
         <div className={styles.copyright}>
-          <p className={styles.teamName}>Primitive ++</p>
-          <p>© {currentYear}</p>
+          <p className={styles.teamName}> Primitive++</p>
+          <p>© {currentYear} Think different Academy </p>
         </div>
       </div>
     </footer>

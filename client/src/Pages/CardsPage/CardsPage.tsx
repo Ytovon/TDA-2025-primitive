@@ -338,7 +338,7 @@ export default function CardsPage() {
 
           <img
             style={isLoading ? { display: "block" } : { display: "none" }}
-            className={styles.loadingSpinner}
+            className={darkMode ? styles.loadingSpinnerDark : styles.loadingSpinnerLight}
             src={loadingSpinnerGif}
             alt=""
           />
