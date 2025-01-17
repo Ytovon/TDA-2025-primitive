@@ -45,7 +45,7 @@
 .openingImg {
   width: clamp(800px, 60vw, 1000px);
   position: absolute;
-  bottom: -80px;
+  bottom: 0px;
   right: -18vw;
   z-index: 10;
   cursor: auto;
@@ -113,6 +113,11 @@
   .openingText {
     padding-bottom: 370px;
     padding-top: 150px;
+    padding-left: 2rem;
+  }
+
+  .openingImg {
+    right: 0vw;
   }
 
   .offer {
@@ -163,6 +168,10 @@
     width: 100%;
     max-width: 600px;
     aspect-ratio: 1/1;
+  }
+
+  .openingText {
+    padding-left: 0px;
   }
 
   .openingImg {

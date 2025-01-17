@@ -8,11 +8,11 @@ import { useDarkMode } from "../../DarkModeContext";
 import {
   blueRiverDarkMode,
   blueRiverLightMode,
-  homePageEntering,
   redRiverDarkMode,
   redRiverLightMode,
+  landingImageWhite,
+  landingImageBlack,
 } from "../../assets/assets";
-import { randomInt } from "crypto";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -114,7 +114,10 @@ export default function HomePage() {
               </div>
             </div>
             <div>
-              <img className={styles.openingImg} src={homePageEntering} />
+              <img
+                className={styles.openingImg}
+                src={darkMode ? landingImageWhite : landingImageBlack}
+              />
             </div>
           </section>
 

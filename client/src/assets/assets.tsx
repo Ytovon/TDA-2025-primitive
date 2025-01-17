@@ -5,7 +5,9 @@ import lightModeButton from "./images/sun.svg";
 
 /* HomePage */
 
-import homePageEntering from "./images/homePageEnteringImg.svg";
+import landingImageBlack from "./images/landing_image_black.png";
+import landingImageWhite from "./images/landing_image_white.png";
+// import homePageEntering from "./images/homePageEnteringImg.svg";
 import redRiverLightMode from "./images/redRiverLightMode.svg";
 import redRiverDarkMode from "./images/redRiverDarkMode.svg";
 import blueRiverLightMode from "./images/blueRiverLightMode.svg";
@@ -93,9 +95,10 @@ export {
   barsWhite,
   barsBlack,
   zarovkaFigma,
-  homePageEntering,
   redRiverLightMode,
   redRiverDarkMode,
   blueRiverLightMode,
   blueRiverDarkMode,
+  landingImageBlack,
+  landingImageWhite,
 };
