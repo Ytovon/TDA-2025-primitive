@@ -55,16 +55,13 @@ const createGame = async (req, res) => {
         const newGame = await Game.create({
             name,
             difficulty,
-            board: processedBoard,
-            gameState,
+            board: board || Array(15).fill(Array(15).fill("")),
+            gameState: result.gameState || gameState,
             bitmap, // Save the Base64-encoded bitmap
         });
-        res.status(201).json(newGame);
-        // res.status(201).json({
-        //   status: "success",
-        //   message: "Game created successfully.",
-        //   game: newGame,
-        // });
+        res.status(201).json({
+            newGame,
+        });
     }
     catch (error) {
         res.status(500).json({ message: "Failed to create game", error });
@@ -106,6 +103,9 @@ const updateGame = async (req, res) => {
             gameState, // Use recalculated or existing game state
             bitmap, // Save the updated Base64-encoded bitmap
             updatedAt: new Date(),
+        });
+        res.json({
+            game,
         });
         res.status(201).json(game);
         // // Create a response object and parse the board field back into an object if necessary

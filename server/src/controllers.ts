@@ -69,9 +69,7 @@ const createGame = async (req: Request, res: Response): Promise<void> => {
     });
 
     res.status(201).json({
-      status: "success",
-      message: "Game created successfully.",
-      game: newGame,
+      newGame,
     });
   } catch (error) {
     res.status(500).json({ message: "Failed to create game", error });
@@ -123,8 +121,6 @@ const updateGame = async (req: Request, res: Response): Promise<void> => {
     });
 
     res.json({
-      status: "success",
-      message: "Game updated successfully.",
       game,
     });
     res.status(201).json(game);

@@ -2,15 +2,12 @@
 const getGameState = (board) => {
     const debugInfo = {}; // Collect debugging information here
     // Validate board dimensions
-    if (!Array.isArray(board) ||
-        board.length !== 15 ||
-        board.some((row) => row.length !== 15)) {
+    if (!isValidBoard(board)) {
         debugInfo.error = "Invalid board dimensions.";
         return { statusCode: 422, error: "Invalid board size.", debugInfo };
     }
     // Validate symbols
-    const validSymbols = ["X", "O", ""];
-    if (!board.flat().every((cell) => validSymbols.includes(cell))) {
+    if (!isValidSymbols(board)) {
         debugInfo.error = "Invalid symbols on the board.";
         return { statusCode: 422, error: "Invalid symbols.", debugInfo };
     }
@@ -19,7 +16,7 @@ const getGameState = (board) => {
     const oCount = countSymbols(board, "O");
     debugInfo.xCount = xCount;
     debugInfo.oCount = oCount;
-    if (xCount < oCount || xCount > oCount + 1) {
+    if (!isValidTurnOrder(xCount, oCount)) {
         debugInfo.error = "Invalid turn sequence.";
         return {
             statusCode: 422,
@@ -34,7 +31,6 @@ const getGameState = (board) => {
     const currentWinningMove = hasWinningMove(board, currentPlayer);
     debugInfo.currentWinningMove = currentWinningMove;
     if (currentWinningMove) {
-        // If a player can win within one move, classify as "endgame" regardless of the number of rounds
         debugInfo.condition = "Winning move detected for current player";
         return { gameState: "endgame", debugInfo };
     }
@@ -56,9 +52,22 @@ const getGameState = (board) => {
     debugInfo.condition = "Default midgame classification";
     return { gameState: "midgame", debugInfo };
 };
+// Validate board dimensions
+const isValidBoard = (board) => {
+    return Array.isArray(board) && board.length === 15 && board.every(row => row.length === 15);
+};
+// Validate symbols on the board
+const isValidSymbols = (board) => {
+    const validSymbols = ["X", "O", ""];
+    return board.flat().every(cell => validSymbols.includes(cell));
+};
+// Validate turn order
+const isValidTurnOrder = (xCount, oCount) => {
+    return !(xCount < oCount || xCount > oCount + 1);
+};
 // Count occurrences of a symbol
 const countSymbols = (board, symbol) => {
-    return board.flat().filter((cell) => cell === symbol).length;
+    return board.flat().filter(cell => cell === symbol).length;
 };
 // Check if the player has a winning move
 const hasWinningMove = (board, player) => {

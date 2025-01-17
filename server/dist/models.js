@@ -5,10 +5,10 @@ class Game extends Model {
     uuid;
     name;
     difficulty;
-    board; // Store the board as a JSON string
+    board; // Store the board as a JSON array
     gameState;
     bitmap; // Optional because it can be null
-    // timestamps
+    // Timestamps
     createdAt;
     updatedAt;
 }
@@ -27,9 +27,9 @@ Game.init({
         allowNull: false,
     },
     board: {
-        type: DataTypes.JSON, // Store the board as a JSON string
+        type: DataTypes.JSON, // Store the board as a JSON array
         allowNull: false,
-        defaultValue: JSON.stringify(Array(15).fill(Array(15).fill(null))),
+        defaultValue: () => Array(15).fill(Array(15).fill(null)), // Default to a 15x15 empty board
     },
     gameState: {
         type: DataTypes.STRING,
