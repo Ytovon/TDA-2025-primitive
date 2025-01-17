@@ -16,7 +16,6 @@ import {
 } from "../../assets/assets";
 import BlinkingEyesSVG from "../../Components/Animation/lightbulb";
 import { useDarkMode } from "../../DarkModeContext";
-import { FallingSymbols } from "../../Components/Animation/FallingSymbols";
 
 interface GamePageProps {
   uuid?: string;
@@ -207,19 +206,6 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
 
   return (
     <body className={styles.body}>
-      <FallingSymbols
-        speed={7}
-        position={68}
-        rotation={45}
-        img={player ? symbolX : symbolO}
-      />
-
-      <FallingSymbols
-        speed={5}
-        position={18}
-        rotation={-57}
-        img={player ? symbolX : symbolO}
-      />
       <div className={styles.gamePage}>
         <div className={styles.gameMenu}>
           <button>
