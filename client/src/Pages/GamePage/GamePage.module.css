@@ -103,6 +103,7 @@
 .arrow {
   width: 2rem;
   transition: 0.3s ease-in-out;
+  z-index: 10;
 }
 
 .arrow:hover {
