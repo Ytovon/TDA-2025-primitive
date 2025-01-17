@@ -78,6 +78,8 @@ menu p:not(.playBtnContainer)::after {
 }
 
 .darkModeBtn {
+  font-size: 17px;
+  padding: 7px;
   aspect-ratio: 1/1;
   background-color: var(--darkModeBtn);
   border-radius: 50%;
