@@ -11,6 +11,7 @@
 }
 
 /* ********************************** */
+
 .editorPageMenu {
   width: 98vw;
   margin: 0 auto;
@@ -63,8 +64,8 @@
   top: 0;
   right: 21vw;
 }
-
 /* ****************************** */
+
 .leftSide {
   display: flex;
   flex-direction: column;
@@ -123,7 +124,7 @@ input::placeholder {
   justify-content: space-between;
 }
 
-.selectSymbolImg img:nth-child(2n+0) {
+.selectSymbolImg img:nth-child(2n + 0) {
   width: 7.5rem;
 }
 
@@ -147,6 +148,7 @@ input::placeholder {
 }
 
 /* ******************************* */
+
 .rightSide {
   position: relative;
 }
@@ -172,19 +174,15 @@ input::placeholder {
 .cell:nth-child(1) {
   border-radius: 8px 0 0 0;
 }
-
 .cell:nth-child(15) {
   border-radius: 0 8px 0 0;
 }
-
 .cell:nth-last-child(15) {
   border-radius: 0 0 0 8px;
 }
-
 .cell:nth-last-child(1) {
   border-radius: 0 0 8px 0;
 }
-
 .cell:nth-child(15n) {
   width: var(--cellSizeClamped);
   border-right: 0;
@@ -211,113 +209,143 @@ input::placeholder {
     --cellSize: 6vw;
     --cellSizeClamped: clamp(18px, var(--cellSize), 40px);
   }
+
   .editorPageMenu {
     padding: 0 7px 0 0;
     margin: 10px auto;
     width: 97%;
   }
+
   .editWrapper {
     flex-direction: column;
     gap: 0;
   }
+
   .leftSide {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-areas: "item1 item2" "item3 item3";
+    grid-template-areas:
+      "item1 item2"
+      "item3 item3";
     margin: 0px auto 4vh;
     width: 600px;
     gap: 25px;
     padding: 0;
   }
+
   .editArea1 {
     grid-area: item1;
   }
+
   .editorPageInputs {
     display: flex;
     flex-direction: column;
     height: 60%;
     gap: 15%;
   }
+
   .editorPageInput {
     margin: 0;
   }
+
   .editArea2 {
     grid-area: item2;
   }
-  .selectSymbolImg img:nth-child(2n+0) {
+
+  .selectSymbolImg img:nth-child(2n + 0) {
     width: 6rem;
   }
+
   .leftSideBtns {
     grid-area: item3;
   }
+
   .rightSide {
     width: min-content;
     margin: 0 auto;
   }
+
   .editorPageTitle {
     margin-bottom: 50px;
   }
+
   .leftSideTitle {
     margin-bottom: 25px;
   }
+
   .editacePlochyTitle {
     gap: 25px;
   }
+
   .editorPageSelect {
     margin-bottom: 20px;
   }
+
   .gameGrid {
     justify-content: center;
     border: 0;
     padding-right: 3px;
     margin-bottom: 3%;
   }
+
   .cell:nth-child(15n) {
     border-right: 1px solid var(--gameBorder);
   }
+
   .selectSymbolImg {
     justify-content: space-around;
     margin-bottom: 10px;
   }
+
   .leftSideBtns {
     justify-content: center;
     gap: 3vw;
   }
+
   .clearGame {
     top: -23px;
     font-size: 1rem;
   }
+
   .errorWin {
     width: 220px;
   }
 }
+
 @media screen and (max-height: 800px) {
   .editWrapper {
     margin-block: 15px 10px;
   }
+
   .leftSide {
     justify-content: space-between;
   }
 }
+
 @media screen and (max-width: 800px) {
   .editorPageTitle {
     margin-bottom: 40px;
   }
+
   .leftSide {
     display: flex;
     width: 50vw;
     margin-bottom: 50px;
   }
+
   .editorPageInputs {
     gap: 10px;
   }
+
   .leftSideBtns {
     gap: 30px;
   }
+
   .errorWin {
     right: 30px;
   }
 }
+
 @media screen and (max-width: 500px) {
   .errorWin {
     right: 15px;
@@ -325,5 +353,3 @@ input::placeholder {
     padding: 10px;
   }
 }
-
-/*# sourceMappingURL=EditorPage.module.css.map */

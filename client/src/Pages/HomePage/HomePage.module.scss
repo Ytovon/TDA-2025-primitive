@@ -10,6 +10,7 @@
 }
 
 /* 1. sekce */
+
 .homePageOpening {
   display: flex;
   align-items: end;
@@ -51,6 +52,7 @@
 }
 
 /* 2. sekce */
+
 .ourMissionSection {
   width: 100%;
   padding-block: 9vh;
@@ -78,6 +80,7 @@
 }
 
 /* 3. sekce */
+
 .offer {
   display: flex;
   flex-direction: column;
@@ -112,16 +115,20 @@
     padding-top: 150px;
     padding-left: 2rem;
   }
+
   .openingImg {
     right: 0vw;
   }
+
   .offer {
     gap: 5rem;
   }
+
   .offer_container {
     flex-direction: column;
     gap: 2rem;
   }
+
   .offer_img {
     width: 100%;
     max-width: 600px;
@@ -130,6 +137,7 @@
   .offer_box {
     order: 2;
   }
+
   .ourMissionTitle {
     font-size: 6rem;
     position: relative;
@@ -138,6 +146,7 @@
     transform: unset;
     line-height: 1;
   }
+
   .ourMissionSection {
     padding-block: 9vh !important;
     display: flex;
@@ -153,20 +162,24 @@
     width: 20%;
   }
 }
+
 @media screen and (max-width: 500px) {
   .offer_img {
     width: 100%;
     max-width: 600px;
     aspect-ratio: 1/1;
   }
+
   .openingText {
     padding-left: 0px;
   }
+
   .openingImg {
     width: max(140vw, 540px);
     bottom: -38px;
     right: -17vw;
   }
+
   .section {
     width: unset;
     padding: 0 2rem;
@@ -175,5 +188,3 @@
     width: 80vw;
   }
 }
-
-/*# sourceMappingURL=HomePage.module.css.map */
