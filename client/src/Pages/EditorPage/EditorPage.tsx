@@ -18,6 +18,7 @@ import {
   symbolO,
   whitePlus,
 } from "../../assets/assets";
+import { ApiClient } from "../../Components/API/Api";
 import { Button } from "../../Components/Button/Button";
 import { useDarkMode } from "../../DarkModeContext";
 import { Link, useNavigate } from "react-router-dom";
@@ -65,142 +66,17 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
     const url = new URL(window.location.href);
     const uuid: string | undefined = url.pathname.split("/").pop(); // Poslední část cesty
 
-    fetchSpecificGame(typeof uuid == "string" ? uuid : "");
+    ApiClient.updateGame(typeof uuid == "string" ? uuid : "", setGame, setGrid);
   }, []);
 
-  async function createGame() {
-    try {
-      const newGame = {
-        name: game.name,
-        difficulty: game.difficulty,
-        gameState: game.gameState,
-        board: grid,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
-      const response = await fetch("http://localhost:5000/api/v1/games", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newGame),
-      });
-
-      navigate("/Games");
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data.game.uuid; // returns UUID of recently created game
-    } catch (error) {
-      console.error("Error creating new game:", error);
-    }
-  }
-
   const handleCreateGame = async () => {
-    const newGameUuid = await createGame(); // Vytvoření hry a získání UUID
+    const newGameUuid = await ApiClient.createGame(game, grid); // Vytvoření hry a získání UUID
+    navigate("/games");
 
     if (newGameUuid) {
-      fetchSpecificGame(newGameUuid);
+      await ApiClient.updateGame(newGameUuid, setGame, setGrid, setHasSymbol);
     }
   };
-
-  async function fetchSpecificGame(uuid: string) {
-    try {
-      // pokud je uuid prázdné, spustí se normální hra
-      if (uuid === "") {
-        return;
-      }
-
-      const response = await fetch(
-        `http://localhost:5000/api/v1/Games/${uuid}`
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      setGame({
-        createdAt: data.createdAt,
-        difficulty: data.difficulty,
-        gameState: data.gameState,
-        name: data.name,
-        updatedAt: data.updatedAt,
-        uuid: uuid,
-        bitmap: data.bitmap,
-      });
-
-      setHasSymbol(true);
-      setGrid(data.board);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }
-
-  async function sendGameData() {
-    try {
-      // Připravte data pro odeslání
-      const editGameData = {
-        board: grid,
-        difficulty: game.difficulty,
-        name: game.name,
-      };
-
-      console.log(game.uuid);
-
-      // Odeslání dat pomocí fetch
-      const response = await fetch(
-        `http://localhost:5000/api/v1/Games/${game.uuid}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(editGameData),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      // Zpracování odpovědi
-      const responseData = await response.json();
-      console.log(responseData);
-
-      // Navigace na stránku her
-      navigate("/Games");
-
-      return responseData;
-    } catch (error) {
-      console.error("Error in sendGameData:", error);
-    }
-  }
-
-  async function deleteGame(uuid: string) {
-    try {
-      const response = await fetch(
-        `http://localhost:5000/api/v1/Games/${uuid}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      console.log("Game deleted successfully");
-      clearGame(); // Vyčistí mřížku po smazání hry
-    } catch (error) {
-      console.error("Error deleting game:", error);
-    }
-  }
 
   const getDifficultyValue = (difficulty: string): string => {
     switch (difficulty.toLowerCase()) {
@@ -383,7 +259,8 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
       if (method === "create") {
         handleCreateGame();
       } else if (method === "send") {
-        sendGameData();
+        ApiClient.sendGameData(game.uuid, grid, game);
+        navigate("/games");
       }
     }
   };
@@ -570,7 +447,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
                 image={trashBin}
                 color="#E31837"
                 border={false}
-                onClick={() => deleteGame(game.uuid)}
+                onClick={() => ApiClient.deleteGame(game.uuid)}
               />
             </Link>
           </div>

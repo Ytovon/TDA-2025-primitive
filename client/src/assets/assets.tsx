@@ -1,7 +1,9 @@
 /* Everywhere */
 
-import darkModeButton from "./images/Primary.svg";
-import lightModeButton from "./images/sun.svg";
+// TODO
+// smazat Primary.svg
+import darkModeButton from "./images/moon-solid.svg";
+import lightModeButton from "./images/lightbulb-solid.svg";
 
 /* HomePage */
 
@@ -39,13 +41,16 @@ import winnerRed from "./images/vyherniZarovkaCervena.svg";
 import cervenaZarovkaX from "./images/cervenaZarovkaX.svg";
 import modraZarovkaO from "./images/modraZarovkaO.svg";
 
-/* editorPage */
+/* EditorPage */
 
 import blueBulb from "./images/modraZarovka.svg";
 import redBulb from "./images/cervenaZarovka.svg";
 import check from "./images/check-solid.svg";
 import redCancel from "./images/xmark-solid-red.svg";
 import trashBin from "./images/trash-solid.svg";
+
+/* NotFoundPage*/
+import NotFoundPageImg from "./images/NotFoundPageImg.svg";
 
 /* Header */
 
@@ -61,7 +66,6 @@ import footerLogoBlack from "./images/Think-different-Academy_LOGO_textove-cerne
 
 /* Card */
 
-import nahledPiskvorek from "../assets/images/piskvorky.png";
 import settingsButton from "../assets/images/setting.png";
 import zarovkaFigma from "../assets/images/zarovkaFigma.svg";
 
@@ -80,7 +84,6 @@ export {
   lightModeButton,
   lightModeLogo,
   darkModeLogo,
-  nahledPiskvorek,
   settingsButton,
   xMarkWhite,
   xMarkBlack,
@@ -108,4 +111,5 @@ export {
   footerLogoBlack,
   landingImageBlack,
   landingImageWhite,
+  NotFoundPageImg,
 };

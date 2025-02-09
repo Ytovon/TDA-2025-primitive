@@ -51,15 +51,10 @@ export default function Header() {
             <Link className={styles.navLink} to="/Games">
               <p>Tréninkové úlohy</p>
             </Link>
-            <button onClick={toggleDarkMode}>
+            <button className={styles.darkModeBtn} onClick={toggleDarkMode}>
               <img
-                style={
-                  darkMode
-                    ? { width: "17px", padding: "7px" }
-                    : { width: "19px", padding: "6px" }
-                }
-                className={styles.darkModeBtn}
                 src={darkMode ? darkModeButton : lightModeButton}
+                className={styles.darkModeBtnImg}
               />
             </button>
             <p className={styles.playBtnContainer}>
@@ -89,7 +84,7 @@ export default function Header() {
         </Link>
         <button onClick={toggleDarkMode}>
           <img
-            className={`${styles.darkModeBtn} ${styles.menuDarkModeBtn}`}
+            className={`${styles.darkModeBtnImg} ${styles.menuDarkModeBtn}`}
             src={darkMode ? darkModeButton : lightModeButton}
           />
         </button>

@@ -6,7 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import { DarkModeProvider } from "./DarkModeContext";
 import CardsPage from "./Pages/CardsPage/CardsPage";
 import { GamePage } from "./Pages/GamePage/GamePage";
-import NotFoundPage from "./Components/NotFoundPage/NotFoundPage";
+import NotFoundPage from "./Pages/NotFoundPage/NotFoundPage";
 import HomePage from "./Pages/HomePage/HomePage";
 import { EditorPage } from "./Pages/EditorPage/EditorPage";
 

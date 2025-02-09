@@ -15,10 +15,10 @@ import {
   symbolO,
   symbolX,
 } from "../../assets/assets";
+import styles from "./CardsPage.module.css";
 import { Card } from "../../Components/Card/Card";
 import Header from "../../Components/Header/Header";
 import { Link } from "react-router-dom";
-import styles from "./CardsPage.module.css";
 import { useDarkMode } from "../../DarkModeContext";
 import { useEffect, useState } from "react";
 import { Footer } from "../../Components/Footer/Footer";
@@ -338,7 +338,9 @@ export default function CardsPage() {
 
           <img
             style={isLoading ? { display: "block" } : { display: "none" }}
-            className={darkMode ? styles.loadingSpinnerDark : styles.loadingSpinnerLight}
+            className={
+              darkMode ? styles.loadingSpinnerDark : styles.loadingSpinnerLight
+            }
             src={loadingSpinnerGif}
             alt=""
           />

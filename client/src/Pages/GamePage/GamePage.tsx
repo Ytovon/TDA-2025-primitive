@@ -18,6 +18,7 @@ import BlinkingEyesSVG from "../../Components/Animation/lightbulb";
 import { useDarkMode } from "../../DarkModeContext";
 import { Button } from "../../Components/Button/Button";
 import { useNavigate } from "react-router-dom";
+import { ApiClient } from "../../Components/API/Api";
 
 interface GamePageProps {
   uuid?: string;
@@ -58,7 +59,12 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
     const url = new URL(window.location.href);
     const uuid: string | undefined = url.pathname.split("/").pop(); // Poslední část cesty
 
-    fetchSpecificGame(typeof uuid == "string" ? uuid : "");
+    ApiClient.fetchSpecificGame(
+      typeof uuid == "string" ? uuid : "",
+      setGame,
+      setInitialBoard,
+      setGrid
+    );
   }, []);
 
   useEffect(() => {
@@ -83,41 +89,6 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
       setPlayer(false); // Hráč O na tahu
     }
   }, [grid]);
-
-  async function fetchSpecificGame(uuid: string) {
-    try {
-      // pokud je uuid prázdné, spustí se normální hra
-      if (uuid === "") {
-        return;
-      }
-
-      const response = await fetch(
-        `http://localhost:5000/api/v1/Games/${uuid}`
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      setGame({
-        createdAt: data.createdAt,
-        difficulty: data.difficulty,
-        gameState: data.gameState,
-        name: data.name,
-        updatedAt: data.updatedAt,
-        uuid: uuid,
-      });
-
-      setInitialBoard(data.board);
-      setGrid(data.board);
-
-      console.log(data.board);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }
 
   // Funkce pro kontrolu výhry
   const checkWin = (row: number, col: number, symbol: string) => {
