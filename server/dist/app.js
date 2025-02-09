@@ -2,9 +2,15 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import cors from "cors";
-import { router as gameRoutes } from "./routes.js"; // Import game routes
-import { sequelize } from "./database.js"; // Import Sequelize instance
+import http from "http";
+import initializeWebSocket from "./websocket"; // Import WebSocket initialization
+import { router as gameRoutes } from "./routes";
+import userRoutes from "./userRoutes";
+import { sequelize } from "./database";
 const app = express();
+const server = http.createServer(app); // Create an HTTP server
+// Initialize WebSocket server
+initializeWebSocket(server);
 const PORT = process.env.PORT || 5000;
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS || "http://localhost:3000";
 // Use CORS middleware
@@ -16,13 +22,26 @@ app.use(cors({
 // Middleware
 app.use(express.json()); // Parse JSON request bodies
 // Routes
-app.use("/api/v1/games", gameRoutes);
+app.use("/api/v1/games", gameRoutes); // Game endpoints
+app.use("/api/users", userRoutes); // User endpoints
+// Database sync
+(async () => {
+    try {
+        await sequelize.authenticate();
+        console.log("Database connected successfully.");
+        await sequelize.sync(); // Sync models
+        console.log("Database synced.");
+    }
+    catch (err) {
+        console.error("Database connection error:", err);
+    }
+})();
 // Start server with database sync
 sequelize
     .sync() // Sync database tables (creates them if they don't exist)
     .then(() => {
     console.log("Database synchronized successfully.");
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
         console.log(`Server is running on PORT ${PORT}`);
     });
 })

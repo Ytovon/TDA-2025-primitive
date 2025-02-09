@@ -1,33 +1,31 @@
-import { DataTypes, Model, Optional } from "sequelize";
-import { sequelize } from "./database.js"; // Adjust path as needed
+import { DataTypes, Model, Optional } from 'sequelize';
+import { sequelize } from './database';
 
-// Define the interface for the Game attributes
+// Define the attributes for the Game model
 interface GameAttributes {
   uuid: string;
   name: string;
   difficulty: string;
-  board: string[][]; // Store the board as a JSON array
+  board: string[][];
   gameState: string;
-  bitmap?: string; // Optional because it can be null
-  createdAt?: Date; // Optional because it will be auto-managed by Sequelize
-  updatedAt?: Date; // Optional because it will be auto-managed by Sequelize
+  bitmap?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
-// Define a type for optional attributes (e.g., when creating a game)
-interface GameCreationAttributes extends Optional<GameAttributes, "uuid"> {}
+// Define the creation attributes for the Game model
+interface GameCreationAttributes extends Optional<GameAttributes, 'uuid' | 'bitmap' | 'createdAt' | 'updatedAt'> {}
 
-// Define the Game model using an interface
+// Define the Game model
 class Game extends Model<GameAttributes, GameCreationAttributes> implements GameAttributes {
   public uuid!: string;
   public name!: string;
   public difficulty!: string;
-  public board!: string[][]; // Store the board as a JSON array
+  public board!: string[][];
   public gameState!: string;
-  public bitmap?: string; // Optional because it can be null
-
-  // Timestamps
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  public bitmap?: string;
+  public createdAt?: Date;
+  public updatedAt?: Date;
 }
 
 Game.init(
@@ -48,12 +46,12 @@ Game.init(
     board: {
       type: DataTypes.JSON, // Store the board as a JSON array
       allowNull: false,
-      defaultValue: () => Array(15).fill(Array(15).fill(null)), // Default to a 15x15 empty board
+      defaultValue: () => Array(15).fill(null).map(() => Array(15).fill(null)), // Ensures unique rows
     },
     gameState: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: "ongoing",
+      defaultValue: 'ongoing',
     },
     bitmap: {
       type: DataTypes.TEXT, // Store the bitmap as a string
@@ -70,9 +68,96 @@ Game.init(
   },
   {
     sequelize,
-    tableName: "Games",
-    timestamps: true, // Enable `createdAt`, `updatedAt`
+    tableName: 'Games',
+    timestamps: true, // `createdAt` and `updatedAt` are automatically handled
   }
 );
 
-export { Game, GameAttributes, GameCreationAttributes };
+// Define the attributes for the User model
+interface UserAttributes {
+  uuid: string;
+  username: string;
+  email: string;
+  password: string;
+  elo: number;
+  wins: number;
+  draws: number;
+  losses: number;
+  refreshToken?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+// Define the creation attributes for the User model
+interface UserCreationAttributes extends Optional<UserAttributes, 'uuid' | 'createdAt' | 'updatedAt'> {}
+
+// Define the User model
+class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+  public uuid!: string;
+  public username!: string;
+  public email!: string;
+  public password!: string;
+  public elo!: number;
+  public wins!: number;
+  public draws!: number;
+  public losses!: number;
+  public refreshToken?: string;
+  public createdAt?: Date;
+  public updatedAt?: Date;
+}
+
+User.init(
+  {
+    uuid: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
+    username: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isEmail: true, // Ensure valid email format
+      },
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    elo: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+      defaultValue: 400,
+    },
+    wins: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    draws: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    losses: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    refreshToken: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+  },
+  {
+    sequelize,
+    tableName: 'Users',
+    timestamps: true, // `createdAt` and `updatedAt` are automatically handled
+  }
+);
+
+export { Game, User };
