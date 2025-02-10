@@ -80,19 +80,19 @@
   justify-content: center;
   align-items: center;
 
-  :nth-child(1) {
+  &:nth-child(1) {
     border-radius: 8px 0 0 0;
   }
 
-  :nth-child(15) {
+  &:nth-child(15) {
     border-radius: 0 8px 0 0;
   }
 
-  :nth-last-child(15) {
+  &:nth-last-child(15) {
     border-radius: 0 0 0 8px;
   }
 
-  :nth-last-child(1) {
+  &:nth-last-child(1) {
     border-radius: 0 0 8px 0;
   }
 }
@@ -123,7 +123,7 @@
   cursor: pointer;
   transition: 0.5s ease-in-out;
 
-  :hover {
+  &:hover {
     transform: rotate(270deg);
   }
 }
@@ -145,12 +145,12 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.667);
-}
 
-.winnerCardWrapper .active {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  .active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 .winnerCard {
@@ -209,14 +209,14 @@
   cursor: pointer;
   font-weight: 600;
 
-  :nth-child(1) {
+  &:nth-child(1) {
     color: white;
     letter-spacing: 0.5px;
     background-color: var(--winnerColor);
     filter: brightness(var(--global-brightness));
   }
 
-  :nth-child(2) {
+  &:nth-child(2) {
     color: var(--winnerColor);
     text-decoration: none;
     border: 2px solid var(--winnerColor);

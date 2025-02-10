@@ -39,9 +39,10 @@
   cursor: pointer;
   transform: rotate(0deg);
   transition: 0.2s ease-in-out;
-}
-.cardUpdate:hover {
-  transform: rotate(45deg);
+
+  &:hover {
+    transform: rotate(45deg);
+  }
 }
 
 .cardTitle {
@@ -72,13 +73,13 @@
   text-decoration: none;
   position: relative;
   transition: ease 0.3s;
-}
 
-.cardStart:hover {
-  color: var(--color-text-primary);
-  background-color: #00000000;
-  border: 2px solid var(--color-text-primary);
-  padding: 7.5px 17.5px;
+  &:hover {
+    color: var(--color-text-primary);
+    background-color: #00000000;
+    border: 2px solid var(--color-text-primary);
+    padding: 7.5px 17.5px;
+  }
 }
 
 @media screen and (max-width: 1300px) {

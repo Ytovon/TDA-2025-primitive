@@ -89,11 +89,10 @@ menu p:not(.playBtnContainer)::after {
   border: 3px solid #0070bb;
   filter: brightness(var(--global-brightness));
   transition: 0.3s;
-}
 
-.darkModeBtnImg:hover {
-  border: 3px solid#00000000;
-  background-color: #e81837;
+  &:hover {
+    background-color: red;
+  }
 }
 
 .playBtn {
@@ -105,13 +104,14 @@ menu p:not(.playBtnContainer)::after {
   border-radius: 5px;
   filter: brightness(var(--global-brightness));
   transition: 0.3s ease;
+
+  &:hover {
+    color: white;
+    background-color: #0070bb;
+    filter: brightness(1);
+  }
 }
 
-.playBtn:hover {
-  color: white;
-  background-color: #0070bb;
-  filter: brightness(1);
-}
 .barsOpened {
   transform: translate(-20px, 0);
 }

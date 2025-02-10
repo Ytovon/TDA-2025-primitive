@@ -80,14 +80,14 @@
   padding: 25px;
   width: 33%;
   position: relative;
-}
 
-.filtrationSection label {
-  color: var(--color-text-primary);
-}
+  label {
+    color: var(--color-text-primary);
+  }
 
-.filtrationSection:not(:first-child):not(:last-child) {
-  border-inline: 2px solid var(--color-border-filtration);
+  &:not(:first-child):not(:last-child) {
+    border-inline: 2px solid var(--color-border-filtration);
+  }
 }
 
 .filtrationSections {
@@ -140,6 +140,7 @@
     cursor: pointer;
   }
 }
+
 .filtrationMessage {
   color: var(--color-text-primary);
   margin: 0 auto;
@@ -265,6 +266,7 @@
   .resetFiltrationSection {
     width: 1.2rem;
   }
+
   .cards {
     justify-content: space-between;
     column-gap: 3.25rem;

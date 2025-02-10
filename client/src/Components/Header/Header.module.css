@@ -90,10 +90,8 @@ menu p:not(.playBtnContainer)::after {
   filter: brightness(var(--global-brightness));
   transition: 0.3s;
 }
-
 .darkModeBtnImg:hover {
-  border: 3px solid rgba(0, 0, 0, 0);
-  background-color: #e81837;
+  background-color: red;
 }
 
 .playBtn {
@@ -106,7 +104,6 @@ menu p:not(.playBtnContainer)::after {
   filter: brightness(var(--global-brightness));
   transition: 0.3s ease;
 }
-
 .playBtn:hover {
   color: white;
   background-color: #0070bb;

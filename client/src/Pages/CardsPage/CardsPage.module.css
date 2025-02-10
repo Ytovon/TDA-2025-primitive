@@ -78,11 +78,9 @@
   width: 33%;
   position: relative;
 }
-
 .filtrationSection label {
   color: var(--color-text-primary);
 }
-
 .filtrationSection:not(:first-child):not(:last-child) {
   border-inline: 2px solid var(--color-border-filtration);
 }

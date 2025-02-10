@@ -18,7 +18,7 @@ import BlinkingEyesSVG from "../../Components/Animation/lightbulb";
 import { useDarkMode } from "../../DarkModeContext";
 import { Button } from "../../Components/Button/Button";
 import { useNavigate } from "react-router-dom";
-import { ApiClient } from "../../Components/API/Api";
+import { ApiClient } from "../../API/Api";
 
 interface GamePageProps {
   uuid?: string;

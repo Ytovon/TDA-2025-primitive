@@ -24,7 +24,7 @@
   width: 2rem;
   transition: 0.3s ease-in-out;
 
-  :hover {
+  &:hover {
     transform: scale(1.15);
   }
 }
@@ -103,7 +103,7 @@ input::placeholder {
   border-radius: 5px;
   font-size: 1rem;
 
-  :focus {
+  &:focus {
     outline: none;
   }
 }
@@ -170,23 +170,23 @@ input::placeholder {
   justify-content: center;
   align-items: center;
 
-  :nth-child(1) {
+  &:nth-child(1) {
     border-radius: 8px 0 0 0;
   }
 
-  :nth-child(15) {
+  &:nth-child(15) {
     border-radius: 0 8px 0 0;
   }
 
-  :nth-last-child(15) {
+  &:nth-last-child(15) {
     border-radius: 0 0 0 8px;
   }
 
-  :nth-last-child(1) {
+  &:nth-last-child(1) {
     border-radius: 0 0 8px 0;
   }
 
-  :nth-child(15n) {
+  &:nth-child(15n) {
     width: var(--cellSizeClamped);
     border-right: 0;
   }

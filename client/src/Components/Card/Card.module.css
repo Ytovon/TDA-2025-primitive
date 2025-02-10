@@ -40,7 +40,6 @@
   transform: rotate(0deg);
   transition: 0.2s ease-in-out;
 }
-
 .cardUpdate:hover {
   transform: rotate(45deg);
 }
@@ -74,7 +73,6 @@
   position: relative;
   transition: ease 0.3s;
 }
-
 .cardStart:hover {
   color: var(--color-text-primary);
   background-color: rgba(0, 0, 0, 0);
