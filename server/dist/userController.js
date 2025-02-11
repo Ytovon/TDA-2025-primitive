@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
-import { User } from "./models"; // Import the User model
+import { User } from "./models.js"; // Import the User model
 // Secret keys (Replace with environment variables in production)
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "your-access-token-secret";
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || "your-refresh-token-secret";
@@ -46,25 +46,25 @@ const login = async (req, res) => {
         if (!usernameOrEmail || !password) {
             return res.status(400).json({ message: "Username or email and password are required." });
         }
-        // Find user by either email OR username
-        const user = await User.findOne({
-            where: {
-                [Op.or]: [{ username: usernameOrEmail }, { email: usernameOrEmail }]
-            }
+        // Find user and explicitly include the password field
+        const user = await User.scope("withPassword").findOne({
+            where: { [Op.or]: [{ username: usernameOrEmail }, { email: usernameOrEmail }] },
         });
         if (!user) {
             return res.status(404).json({ message: "User not found." });
+        }
+        // Check if password is valid
+        if (!user.password) {
+            return res.status(500).json({ message: "User password is missing in database." });
         }
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(401).json({ message: "Invalid password." });
         }
-        // Generate access token (short-lived)
+        // Generate JWT tokens
         const accessToken = jwt.sign({ uuid: user.uuid, username: user.username }, ACCESS_TOKEN_SECRET, { expiresIn: "1h" });
-        // Generate refresh token (long-lived)
         const refreshToken = jwt.sign({ uuid: user.uuid, username: user.username }, REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
-        // Save refresh token in database
-        await user.update({ refreshToken: refreshToken });
+        await user.update({ refreshToken });
         return res.status(200).json({ message: "Login successful!", accessToken, refreshToken });
     }
     catch (err) {
@@ -121,5 +121,72 @@ const logout = async (req, res) => {
         return res.status(500).json({ message: "Internal server error." });
     }
 };
-export { register, login, refreshToken, logout };
+// Retrieve all users
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.findAll();
+        return res.status(200).json(users);
+    }
+    catch (err) {
+        console.error("Error retrieving users:", err);
+        return res.status(500).json({ message: "Internal server error." });
+    }
+};
+// Retrieve user by UUID
+const getUserByUUID = async (req, res) => {
+    try {
+        const { uuid } = req.params;
+        const user = await User.findByPk(uuid);
+        if (!user) {
+            return res.status(404).json({ message: "User not found." });
+        }
+        return res.status(200).json(user);
+    }
+    catch (err) {
+        console.error("Error retrieving user:", err);
+        return res.status(500).json({ message: "Internal server error." });
+    }
+};
+// Update user by UUID
+const updateUserByUUID = async (req, res) => {
+    try {
+        const { uuid } = req.params;
+        const { username, email, password, elo, wins, draws, losses } = req.body;
+        const user = await User.findByPk(uuid);
+        if (!user) {
+            return res.status(404).json({ message: "User not found." });
+        }
+        const updatedUser = await user.update({
+            username,
+            email,
+            password: password ? await bcrypt.hash(password, SALT_ROUNDS) : user.password,
+            elo,
+            wins,
+            draws,
+            losses,
+        });
+        return res.status(200).json(updatedUser);
+    }
+    catch (err) {
+        console.error("Error updating user:", err);
+        return res.status(500).json({ message: "Internal server error." });
+    }
+};
+// Delete user by UUID
+const deleteUserByUUID = async (req, res) => {
+    try {
+        const { uuid } = req.params;
+        const user = await User.findByPk(uuid);
+        if (!user) {
+            return res.status(404).json({ message: "User not found." });
+        }
+        await user.destroy();
+        return res.status(204).send();
+    }
+    catch (err) {
+        console.error("Error deleting user:", err);
+        return res.status(500).json({ message: "Internal server error." });
+    }
+};
+export { register, login, refreshToken, logout, getAllUsers, getUserByUUID, updateUserByUUID, deleteUserByUUID };
 //# sourceMappingURL=userController.js.map

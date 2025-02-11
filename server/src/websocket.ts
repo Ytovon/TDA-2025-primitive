@@ -1,9 +1,9 @@
 import WebSocket, { WebSocketServer } from "ws";
 import jwt from "jsonwebtoken";
 import { Request } from "express";
-import { hasWon, calculateElo, isDraw } from "./MPLogic";
-import BitmapGenerator from "./bitmapGenerator";
-import { User } from "./models";
+import { hasWon, calculateElo, isDraw } from "./MPLogic.js";
+import BitmapGenerator from "./bitmapGenerator.js";
+import { User } from "./models.js";
 
 interface UserStats {
   uuid: string;
@@ -54,14 +54,14 @@ function initializeWebSocket(server: any): void {
           return;
         }
 
-        // Attach user data to WebSocket connection
+        // Attach user data to WebSocket connection with default values
         (ws as any).user = {
           uuid: user.uuid,
           username: user.username,
-          elo: user.elo || 400,
-          wins: user.wins || 0,
-          draws: user.draws || 0,
-          losses: user.losses || 0,
+          elo: user.elo ?? 400,
+          wins: user.wins ?? 0,
+          draws: user.draws ?? 0,
+          losses: user.losses ?? 0,
         };
 
         console.log(`User ${(ws as any).user.username} connected with stats:`, (ws as any).user);

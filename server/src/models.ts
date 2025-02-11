@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional } from 'sequelize';
-import { sequelize } from './database';
+import { sequelize } from './database.js';
 
 // Define the attributes for the Game model
 interface GameAttributes {
@@ -91,19 +91,40 @@ interface UserAttributes {
 // Define the creation attributes for the User model
 interface UserCreationAttributes extends Optional<UserAttributes, 'uuid' | 'createdAt' | 'updatedAt'> {}
 
-// Define the User model
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-  public uuid!: string;
-  public username!: string;
-  public email!: string;
-  public password!: string;
-  public elo!: number;
-  public wins!: number;
-  public draws!: number;
-  public losses!: number;
-  public refreshToken?: string;
-  public createdAt?: Date;
-  public updatedAt?: Date;
+  get uuid(): string {
+    return this.getDataValue('uuid');
+  }
+  get username(): string {
+    return this.getDataValue('username');
+  }
+  get email(): string {
+    return this.getDataValue('email');
+  }
+  get password(): string {
+    return this.getDataValue('password');
+  }
+  get elo(): number {
+    return this.getDataValue('elo');
+  }
+  get wins(): number {
+    return this.getDataValue('wins');
+  }
+  get draws(): number {
+    return this.getDataValue('draws');
+  }
+  get losses(): number {
+    return this.getDataValue('losses');
+  }
+  get refreshToken(): string | undefined {
+    return this.getDataValue('refreshToken');
+  }
+  get createdAt(): Date | undefined {
+    return this.getDataValue('createdAt');
+  }
+  get updatedAt(): Date | undefined {
+    return this.getDataValue('updatedAt');
+  }
 }
 
 User.init(
@@ -120,9 +141,8 @@ User.init(
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: {
-        isEmail: true, // Ensure valid email format
-      },
+      unique: true,
+      validate: { isEmail: true },
     },
     password: {
       type: DataTypes.STRING,
@@ -155,8 +175,14 @@ User.init(
   },
   {
     sequelize,
-    tableName: 'Users',
-    timestamps: true, // `createdAt` and `updatedAt` are automatically handled
+    tableName: "Users",
+    timestamps: true,
+    defaultScope: {
+      attributes: { exclude: ["password"] }, // Password is excluded by default
+    },
+    scopes: {
+      withPassword: { attributes: { include: ["password"] } }, // Explicitly include password when needed
+    },
   }
 );
 

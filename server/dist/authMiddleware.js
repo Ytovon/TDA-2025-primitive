@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { User } from "./models";
+import { User } from "./models.js";
 // Secret keys
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "your-access-token-secret";
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || "your-refresh-token-secret";
@@ -28,7 +28,7 @@ const refreshToken = async (req, res, next) => {
         if (!refreshToken) {
             return res.status(401).json({ message: "Refresh token is required." });
         }
-        const user = await User.findOne({ where: { refreshToken } });
+        const user = await User.findOne({ where: { refreshToken } }); // Cast to any to avoid type issues
         if (!user) {
             return res.status(403).json({ message: "Invalid refresh token." });
         }
@@ -38,7 +38,7 @@ const refreshToken = async (req, res, next) => {
                 return res.status(403).json({ message: "Invalid or expired refresh token." });
             }
             // Generate a new access token
-            const newAccessToken = jwt.sign({ id: user.id, username: user.username }, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+            const newAccessToken = jwt.sign({ uuid: user.uuid, username: user.username }, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
             res.setHeader("x-new-access-token", newAccessToken); // Send new token in headers
             req.user = decoded; // Attach user data
             next();

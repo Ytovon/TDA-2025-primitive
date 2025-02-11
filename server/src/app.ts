@@ -3,10 +3,10 @@ import path from "path";
 import { fileURLToPath } from "url";
 import cors from "cors";
 import http from "http";
-import initializeWebSocket from "./websocket"; // Import WebSocket initialization
-import { router as gameRoutes } from "./routes";
-import userRoutes from "./userRoutes";
-import { sequelize } from "./database";
+import initializeWebSocket from "./websocket.js"; // Import WebSocket initialization
+import { router as gameRoutes } from "./routes.js";
+import userRoutes from "./userRoutes.js";
+import { sequelize } from "./database.js";
 
 const app = express();
 const server = http.createServer(app); // Create an HTTP server

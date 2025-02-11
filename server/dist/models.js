@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import { sequelize } from './database';
+import { sequelize } from './database.js';
 // Define the Game model
 class Game extends Model {
     uuid;
@@ -52,19 +52,40 @@ Game.init({
     tableName: 'Games',
     timestamps: true, // `createdAt` and `updatedAt` are automatically handled
 });
-// Define the User model
 class User extends Model {
-    uuid;
-    username;
-    email;
-    password;
-    elo;
-    wins;
-    draws;
-    losses;
-    refreshToken;
-    createdAt;
-    updatedAt;
+    get uuid() {
+        return this.getDataValue('uuid');
+    }
+    get username() {
+        return this.getDataValue('username');
+    }
+    get email() {
+        return this.getDataValue('email');
+    }
+    get password() {
+        return this.getDataValue('password');
+    }
+    get elo() {
+        return this.getDataValue('elo');
+    }
+    get wins() {
+        return this.getDataValue('wins');
+    }
+    get draws() {
+        return this.getDataValue('draws');
+    }
+    get losses() {
+        return this.getDataValue('losses');
+    }
+    get refreshToken() {
+        return this.getDataValue('refreshToken');
+    }
+    get createdAt() {
+        return this.getDataValue('createdAt');
+    }
+    get updatedAt() {
+        return this.getDataValue('updatedAt');
+    }
 }
 User.init({
     uuid: {
@@ -79,9 +100,8 @@ User.init({
     email: {
         type: DataTypes.STRING,
         allowNull: false,
-        validate: {
-            isEmail: true, // Ensure valid email format
-        },
+        unique: true,
+        validate: { isEmail: true },
     },
     password: {
         type: DataTypes.STRING,
@@ -113,8 +133,14 @@ User.init({
     },
 }, {
     sequelize,
-    tableName: 'Users',
-    timestamps: true, // `createdAt` and `updatedAt` are automatically handled
+    tableName: "Users",
+    timestamps: true,
+    defaultScope: {
+        attributes: { exclude: ["password"] }, // Password is excluded by default
+    },
+    scopes: {
+        withPassword: { attributes: { include: ["password"] } }, // Explicitly include password when needed
+    },
 });
 export { Game, User };
 //# sourceMappingURL=models.js.map

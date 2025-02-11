@@ -1,8 +1,8 @@
 import WebSocket, { WebSocketServer } from "ws";
 import jwt from "jsonwebtoken";
-import { hasWon, calculateElo, isDraw } from "./MPLogic";
-import BitmapGenerator from "./bitmapGenerator";
-import { User } from "./models";
+import { hasWon, calculateElo, isDraw } from "./MPLogic.js";
+import BitmapGenerator from "./bitmapGenerator.js";
+import { User } from "./models.js";
 // Store active games and matchmaking queue
 const games = {};
 const matchmakingQueue = [];
@@ -28,14 +28,14 @@ function initializeWebSocket(server) {
                     ws.close(4001, "Unauthorized: User not found");
                     return;
                 }
-                // Attach user data to WebSocket connection
+                // Attach user data to WebSocket connection with default values
                 ws.user = {
                     uuid: user.uuid,
                     username: user.username,
-                    elo: user.elo || 400,
-                    wins: user.wins || 0,
-                    draws: user.draws || 0,
-                    losses: user.losses || 0,
+                    elo: user.elo ?? 400,
+                    wins: user.wins ?? 0,
+                    draws: user.draws ?? 0,
+                    losses: user.losses ?? 0,
                 };
                 console.log(`User ${ws.user.username} connected with stats:`, ws.user);
                 ws.on("message", (message) => handleMessage(ws, message));
