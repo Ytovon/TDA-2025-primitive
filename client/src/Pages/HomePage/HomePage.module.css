@@ -70,6 +70,7 @@
 
 .ourMissionContainer {
   width: 50%;
+  margin-left: 50%;
 }
 
 .ourMissionText {
@@ -151,6 +152,7 @@
   }
   .ourMissionContainer {
     width: 20%;
+    margin-left: 0;
   }
 }
 @media screen and (max-width: 500px) {

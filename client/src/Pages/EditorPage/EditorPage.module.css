@@ -82,9 +82,13 @@
   margin-bottom: 15px;
   background-color: var(--color-background-light);
   color: var(--color-text-primary);
+  border: none;
   border-radius: 5px;
   padding: 10px;
   font-size: 1rem;
+}
+.editorPageInput:focus {
+  outline: none;
 }
 
 input::placeholder {
@@ -128,6 +132,8 @@ input::placeholder {
   font-size: 1.45rem;
   font-weight: 700;
   margin-bottom: 5px;
+  color: var(--color-text-primary);
+  border: none;
 }
 
 .circleBtn {

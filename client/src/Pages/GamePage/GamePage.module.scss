@@ -63,6 +63,11 @@
   justify-content: space-between;
 }
 
+.gameMenu button {
+  background-color: var(--color-background-primary);
+  border: none;
+}
+
 .gameGrid {
   display: grid;
   grid-template-columns: repeat(15, var(--gameCellSizeClamped));
@@ -113,13 +118,9 @@
   transform: scale(1.15);
 }
 
-.gameBtns {
-  display: flex;
-  gap: 20px;
-}
-
-.resetBtn {
+.resetGame {
   width: 2rem;
+  background-color: var(--color-background-primary);
   cursor: pointer;
   transition: 0.5s ease-in-out;
 
@@ -156,7 +157,7 @@
 .winnerCard {
   width: clamp(290px, 28vw, 440px);
   color: var(--color-text-primary);
-  background-color: var(--color-background-secondary);
+  background-color: var(--color-background-primary);
   border-radius: 10px;
   padding: 30px;
 }

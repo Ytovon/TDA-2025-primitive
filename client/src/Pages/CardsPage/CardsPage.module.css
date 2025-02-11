@@ -235,7 +235,7 @@
   transition: 0.3s ease-in-out;
   z-index: 1000;
 }
-.addGameBtn :hover {
+.addGameBtn:hover {
   transform: scale(1.1);
 }
 

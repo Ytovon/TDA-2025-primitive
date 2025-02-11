@@ -6,10 +6,6 @@ import {
   blueBulb,
   check,
   redCancel,
-  chevronDownBlack,
-  chevronDownWhite,
-  chevronUpBlack,
-  chevronUpWhite,
   darkModeButton,
   lightModeButton,
   redBulb,
@@ -40,9 +36,9 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
 
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [player, setPlayer] = useState<boolean>(true);
-  const [hasSymbol, setHasSymbol] = useState<boolean>();
-  const [nameInputStyle, setNameInputStyle] = useState({ border: "none" });
-  const [diffInputStyle, setDiffInputStyle] = useState({ border: "none" });
+  const [hasSymbol, setHasSymbol] = useState<boolean>(false);
+  const [nameInputStyle, setNameInputStyle] = useState({});
+  const [diffInputStyle, setDiffInputStyle] = useState({});
   const [isThereWinner, setIsThereWinner] = useState<boolean>(false);
   const [goodNumberOfSymbols, setGoodNumberOfSymbols] =
     useState<boolean>(false);
@@ -63,87 +59,52 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const url = new URL(window.location.href);
-    const uuid: string | undefined = url.pathname.split("/").pop(); // Poslední část cesty
-
-    ApiClient.updateGame(typeof uuid == "string" ? uuid : "", setGame, setGrid);
+    const uuid = new URL(window.location.href).pathname.split("/").pop();
+    if (uuid) ApiClient.updateGame(uuid, setGame, setGrid);
   }, []);
 
-  const handleCreateGame = async () => {
-    const newGameUuid = await ApiClient.createGame(game, grid); // Vytvoření hry a získání UUID
-    navigate("/games");
-
-    if (newGameUuid) {
-      await ApiClient.updateGame(newGameUuid, setGame, setGrid, setHasSymbol);
-    }
-  };
-
-  const getDifficultyValue = (difficulty: string): string => {
-    switch (difficulty.toLowerCase()) {
-      case "začátečník":
-      case "easy":
-        return "Začátečník";
-      case "jednoduchá":
-        return "Jednoduchá";
-      case "pokročilá":
-      case "medium":
-        return "Pokročilá";
-      case "těžká":
-      case "hard":
-        return "Těžká";
-      case "nejtěžší":
-        return "Nejtěžší";
-      default:
-        return "";
-    }
-  };
-
-  // Inicializace hodnoty z API při načtení komponenty
   useEffect(() => {
-    setGame({ ...game, difficulty: getDifficultyValue(game.difficulty) });
+    setGame((prevGame) => ({
+      ...prevGame,
+      difficulty: getDifficultyValue(prevGame.difficulty),
+    }));
   }, [game.difficulty]);
 
-  const difficultyCHange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setGame({ ...game, difficulty: event.target.value });
-  };
-
-  const handleNameInputChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setGame({ ...game, name: event.target.value });
-  };
-
-  const changePlayerOnRed = () => {
-    setPlayer(false);
-  };
-
-  const changePlayerOnBlue = () => {
-    setPlayer(true);
-  };
-
   useEffect(() => {
-    let xCount = 0;
-    let oCount = 0;
-
-    grid.forEach((row) => {
+    let xCount = 0,
+      oCount = 0;
+    grid.forEach((row) =>
       row.forEach((cell) => {
-        if (cell === "X") {
-          xCount++;
-        } else if (cell === "O") {
-          oCount++;
-        }
-
-        if (xCount - 1 === oCount || xCount === oCount) {
-          setGoodNumberOfSymbols(true);
-        } else {
-          setGoodNumberOfSymbols(false);
-        }
-      });
-    });
-
+        if (cell === "X") xCount++;
+        if (cell === "O") oCount++;
+      })
+    );
     setXCount(xCount);
     setOCount(oCount);
+    setGoodNumberOfSymbols(xCount - 1 === oCount || xCount === oCount);
   }, [grid]);
+
+  const getDifficultyValue = (difficulty: string): string => {
+    const difficulties: { [key: string]: string } = {
+      začátečník: "Začátečník",
+      easy: "Začátečník",
+      jednoduchá: "Jednoduchá",
+      pokročilá: "Pokročilá",
+      medium: "Pokročilá",
+      těžká: "Těžká",
+      hard: "Těžká",
+      nejtěžší: "Nejtěžší",
+    };
+    return difficulties[difficulty.toLowerCase()] || "";
+  };
+
+  const handleCreateGame = async () => {
+    const newGameUuid = await ApiClient.createGame(game, grid);
+    if (newGameUuid) {
+      await ApiClient.updateGame(newGameUuid, setGame, setGrid, setHasSymbol);
+      navigate("/games");
+    }
+  };
 
   const checkWinner = (grid: string[][]) => {
     const directions = [
@@ -190,75 +151,24 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
 
   const cellClick = (row: number, col: number) => {
     setGrid((prevGrid) => {
-      const currentCell = prevGrid[row][col];
-      const newGrid = [...prevGrid];
-      newGrid[row] = [...prevGrid[row]]; // Vytvoří kopii řádku.
-
-      if (currentCell !== "") {
-        // Pokud buňka již obsahuje symbol, smaže ho.
-        newGrid[row][col] = "";
-      } else {
-        // Pokud je buňka prázdná, nastaví symbol podle aktuálního hráče.
-        const symbol = player ? "X" : "O";
-        newGrid[row][col] = symbol;
-      }
-
+      const newGrid = prevGrid.map((r, i) => (i === row ? [...r] : r));
+      newGrid[row][col] = newGrid[row][col] === "" ? (player ? "X" : "O") : "";
       setHasSymbol(newGrid.some((row) => row.some((cell) => cell !== "")));
-
-      if (checkWinner(newGrid)) {
-        setIsThereWinner(true); // Aktualizace stavu pro zobrazení zprávy o vítězství
-      } else {
-        setIsThereWinner(false);
-      }
-
+      setIsThereWinner(!!checkWinner(newGrid));
       return newGrid;
     });
   };
 
-  const nameIsMissing = () => {
-    if (game.name === "") {
-      setNameInputStyle({ border: "1px solid red" });
-    } else {
-      setNameInputStyle({ border: "none" });
-    }
-  };
-
-  const difficultyIsMissing = () => {
-    if (game.difficulty === "") {
-      setDiffInputStyle({ border: "1px solid red" });
-    } else {
-      setDiffInputStyle({ border: "none" });
-    }
-  };
-
   const handleButtonClick = (method: string) => {
-    let isValid = true;
+    const isValid = game.name !== "" && game.difficulty !== "";
+    setNameInputStyle({ border: game.name === "" ? "1px solid red" : "none" });
+    setDiffInputStyle({
+      border: game.difficulty === "" ? "1px solid red" : "none",
+    });
 
-    if (game.name === "") {
-      // Pokud `game.name` není vyplněné
-      nameIsMissing();
-      setNameInputStyle({ border: "1px solid red" });
-      isValid = false;
-    } else {
-      // Pokud `game.name` je vyplněné
-      setNameInputStyle({ border: "none" });
-    }
-
-    if (game.difficulty === "") {
-      // Pokud `game.difficulty` není vyplněné
-      difficultyIsMissing();
-      setDiffInputStyle({ border: "1px solid red" });
-      isValid = false;
-    } else {
-      // Pokud `game.difficulty` je vyplněné
-      setDiffInputStyle({ border: "none" });
-    }
-
-    // Pokud jsou obě hodnoty validní, spustíme `handleCreateGame`
     if (isValid) {
-      if (method === "create") {
-        handleCreateGame();
-      } else if (method === "send") {
+      if (method === "create") handleCreateGame();
+      if (method === "send") {
         ApiClient.sendGameData(game.uuid, grid, game);
         navigate("/games");
       }
@@ -281,28 +191,18 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
         </Link>
         <button onClick={toggleDarkMode}>
           <img
-            style={
-              darkMode
-                ? { width: "20px", padding: "7px" }
-                : { width: "22px", padding: "6px" }
-            }
             className={styles.darkModeBtn}
             src={darkMode ? darkModeButton : lightModeButton}
           />
         </button>
       </div>
 
-      <div
-        style={isThereWinner ? { display: "flex" } : { display: "none" }}
-        className={styles.errorWin}
-      >
-        <img
-          style={{ backgroundColor: "white" }}
-          className={styles.circleBtn}
-          src={redCancel}
-        />
-        <p className={styles.errorWinText}>Úloha nesmí být již vyřešena</p>
-      </div>
+      {isThereWinner && (
+        <div className={styles.errorWin}>
+          <img className={styles.circleBtn} src={redCancel} />
+          <p className={styles.errorWinText}>Úloha nesmí být již vyřešena</p>
+        </div>
+      )}
 
       <h2 className={styles.editorPageTitle}>Editační stránka</h2>
 
@@ -317,131 +217,92 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
                 type="text"
                 placeholder="Zadejte název hry"
                 value={game.name}
-                onChange={handleNameInputChange}
+                onChange={(e) => setGame({ ...game, name: e.target.value })}
               />
-
               <select
                 style={diffInputStyle}
                 className={styles.editorPageSelect}
-                name="difficulty"
-                id=""
                 value={game.difficulty}
-                onChange={difficultyCHange}
+                onChange={(e) =>
+                  setGame({ ...game, difficulty: e.target.value })
+                }
               >
-                <option value="none" selected>
-                  Vyberte obtížnost
-                </option>
-                <option
-                  style={{ color: darkMode ? "black" : "#0070BB" }}
-                  className={styles.difficulty}
-                  value="Začátečník"
-                >
-                  Začátečník
-                </option>
-                <option
-                  style={{ color: darkMode ? "black" : "#395A9A" }}
-                  className={styles.difficulty}
-                  value="Jednoduchá"
-                >
-                  Jednoduchá
-                </option>
-                <option
-                  style={{ color: darkMode ? "black" : "#724479" }}
-                  className={styles.difficulty}
-                  value="Pokročilá"
-                >
-                  Pokročilá
-                </option>
-                <option
-                  style={{ color: darkMode ? "black" : "#AB2E58" }}
-                  className={styles.difficulty}
-                  value="Těžká"
-                >
-                  Těžká
-                </option>
-                <option
-                  style={{ color: darkMode ? "black" : "#E31837" }}
-                  className={styles.difficulty}
-                  value="Nejtěžší"
-                >
-                  Nejtěžší
-                </option>
+                <option value="">Vyberte obtížnost</option>
+                {[
+                  "Začátečník",
+                  "Jednoduchá",
+                  "Pokročilá",
+                  "Těžká",
+                  "Nejtěžší",
+                ].map((level) => (
+                  <option key={level} value={level}>
+                    {level}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
 
           <div className={styles.editArea2}>
-            <div className={styles.editacePlochyTitle}>
-              <h3 className={styles.leftSideTitle}>Editace plochy</h3>
-            </div>
-
+            <h3 className={styles.leftSideTitle}>Editace plochy</h3>
             <div className={styles.selectSymbolImg}>
               <button
-                style={player ? { opacity: "1" } : { opacity: "0.3" }}
-                onClick={changePlayerOnBlue}
+                style={{
+                  opacity: player ? 1 : 0.3,
+                  border: "none",
+                  backgroundColor: "var(--color-background-primary",
+                }}
+                onClick={() => setPlayer(true)}
               >
-                <p
-                  style={{ color: "#E31837" }}
-                  className={styles.numberAboveImg}
-                >
-                  {xCount}
-                </p>
+                <p className={styles.numberAboveImg}>{xCount}</p>
                 <img src={redBulb} />
               </button>
               <span>
                 <img
-                  style={
-                    goodNumberOfSymbols
-                      ? { backgroundColor: "#009e47d0" }
-                      : { backgroundColor: "#e318365d" }
-                  }
                   className={styles.circleBtn}
                   src={goodNumberOfSymbols ? check : redCancel}
+                  style={{
+                    backgroundColor: goodNumberOfSymbols
+                      ? "#009e47d0"
+                      : "#e318365d",
+                  }}
                 />
               </span>
               <button
-                style={
-                  player
-                    ? { opacity: "0.4", filter: "brightness(1)" }
-                    : { opacity: "1", filter: "brightness(1.25)" }
-                }
-                onClick={changePlayerOnRed}
+                style={{
+                  opacity: player ? 0.4 : 1,
+                  border: "none",
+                  backgroundColor: "var(--color-background-primary",
+                }}
+                onClick={() => setPlayer(false)}
               >
-                <p
-                  style={{ color: "#0070BB" }}
-                  className={styles.numberAboveImg}
-                >
-                  {oCount}
-                </p>
+                <p className={styles.numberAboveImg}>{oCount}</p>
                 <img src={blueBulb} />
               </button>
             </div>
           </div>
 
           <div className={styles.leftSideBtns}>
-            <Button
-              text="Vytvořit hru"
-              image={whitePlus}
-              color="white"
-              backgroundColor={true}
-              onClick={() => handleButtonClick("create")}
-              isDisabled={
-                isThereWinner ? false : goodNumberOfSymbols ? false : true
-              }
-              isVisible={game.uuid === "" ? true : false}
-            ></Button>
-            <Button
-              text="Uložit úlohu"
-              image={check}
-              color="white"
-              backgroundColor={true}
-              onClick={() => handleButtonClick("send")}
-              isDisabled={
-                isThereWinner ? false : goodNumberOfSymbols ? false : true
-              }
-              isVisible={game.uuid === "" ? false : true}
-            />
-            <Link style={{ textDecoration: "none" }} to="/Games">
+            {game.uuid === "" ? (
+              <Button
+                text="Vytvořit hru"
+                image={whitePlus}
+                color="white"
+                backgroundColor={true}
+                onClick={() => handleButtonClick("create")}
+                isDisabled={!goodNumberOfSymbols || isThereWinner}
+              />
+            ) : (
+              <Button
+                text="Uložit úlohu"
+                image={check}
+                color="white"
+                backgroundColor={true}
+                onClick={() => handleButtonClick("send")}
+                isDisabled={!goodNumberOfSymbols || isThereWinner}
+              />
+            )}
+            <Link to="/Games" style={{ textDecoration: "none" }}>
               <Button
                 text="Vymazat úlohu"
                 image={trashBin}
@@ -454,13 +315,11 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
         </div>
 
         <div className={styles.rightSide}>
-          <button
-            style={hasSymbol ? { display: "block" } : { display: "none" }}
-            onClick={clearGame}
-            className={styles.clearGame}
-          >
-            Vyčistit plochu
-          </button>
+          {hasSymbol && (
+            <button onClick={clearGame} className={styles.clearGame}>
+              Vyčistit plochu
+            </button>
+          )}
           <div className={styles.gameGrid}>
             {grid.map((row, rowIndex) =>
               row.map((cell, colIndex) => (

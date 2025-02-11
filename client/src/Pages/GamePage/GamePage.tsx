@@ -191,26 +191,13 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
             </Link>
           </button>
 
-          <div className={styles.gameBtns}>
-            <button onClick={resetGame}>
-              <img
-                className={styles.resetBtn}
-                src={darkMode ? resetBtnBlack : resetBtnWhite}
-                alt=""
-              />
-            </button>
-            <button onClick={toggleDarkMode}>
-              <img
-                style={
-                  darkMode
-                    ? { width: "20px", padding: "7px" }
-                    : { width: "22px", padding: "6px" }
-                }
-                className={styles.darkModeBtn}
-                src={darkMode ? darkModeButton : lightModeButton}
-              />
-            </button>
-          </div>
+          <button onClick={resetGame}>
+            <img
+              className={styles.resetGame}
+              src={darkMode ? resetBtnBlack : resetBtnWhite}
+              alt=""
+            />
+          </button>
         </div>
 
         <div className={styles.gameWrapper}>
