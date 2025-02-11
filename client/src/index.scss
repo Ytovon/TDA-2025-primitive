@@ -11,6 +11,11 @@ body {
   position: relative;
 }
 
+button {
+  background: #00000000;
+  border: none;
+}
+
 :root {
   --color-background-primary: #f4f4f4;
   --color-background-light: white;

@@ -4,6 +4,12 @@ header {
   background-color: var(--color-background-light);
   height: fit-content;
   z-index: 1000;
+  top: 0;
+}
+
+.headerContent {
+  width: 100%;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .headerContainer {
@@ -21,9 +27,9 @@ header {
 
 .links {
   display: flex;
-  gap: 20px;
+  gap: 25px;
   font-size: 1.1875rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .navLink {
@@ -43,6 +49,68 @@ header {
 .authLink:hover {
   background-color: #0070bb;
   color: white;
+}
+
+.openMobileMenu {
+  display: none;
+  height: 35px;
+  cursor: pointer;
+}
+
+.mobileMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-size: 1.375rem;
+  font-weight: 500;
+  text-align: right;
+  margin: 50px auto;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+.dropdown:hover .dropdownContent {
+  display: block;
+}
+
+.dropdownContent {
+  display: none;
+  position: absolute;
+  background-color: var(--color-background-light);
+  min-width: 160px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+.dropdownContent .navLink {
+  color: var(--color-text-primary);
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+.dropdownContent .navLink:hover {
+  background-color: var(--color-background-dark);
+}
+
+@media screen and (max-width: 1100px) {
+  .headerContainer,
+  .mobileMenu {
+    width: 700px;
+  }
+  .links,
+  .authLink {
+    display: none;
+  }
+  .openMobileMenu {
+    display: block;
+  }
+}
+@media screen and (max-width: 800px) {
+  .headerContainer,
+  .mobileMenu {
+    width: clamp(300px, 80vw, 800px);
+  }
 }
 
 /*# sourceMappingURL=Header.module.css.map */

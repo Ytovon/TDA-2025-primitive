@@ -33,46 +33,68 @@ export default function Header() {
 
   return (
     <header className={styles.header}>
-      <div className={styles.headerContainer}>
-        <img
-          className={styles.logo}
-          src={darkMode ? lightModeLogo : darkModeLogo}
-          alt="logo"
-        />
+      <div className={styles.headerContent}>
+        <div className={styles.headerContainer}>
+          <Link to="/">
+            <img
+              className={styles.logo}
+              src={darkMode ? lightModeLogo : darkModeLogo}
+              alt="logo"
+            />
+          </Link>
 
-        <div className={styles.links}>
-          <Link to="/game" className={styles.navLink}>
-            Hrát
-          </Link>
-          <Link to="/games" className={styles.navLink}>
-            Tréninkové úlohy
-          </Link>
-          <p className={styles.navLink}>Leaderboard</p>
-        </div>
+          <div className={styles.links}>
+            <div className={styles.dropdown}>
+              <Link to="/game" className={styles.navLink}>
+                Chci hrát
+              </Link>
+              <div className={styles.dropdownContent}>
+                <Link to="/game" className={styles.navLink}>
+                  Hrát online
+                </Link>
+                <Link to="/game" className={styles.navLink}>
+                  Hrát sólo
+                </Link>
+              </div>
+            </div>
+            <Link to="/games" className={styles.navLink}>
+              Tréninkové úlohy
+            </Link>
+            <p className={styles.navLink}>Leaderboard</p>
+          </div>
 
-        <div className={styles.links}>
-          <Link to="/register" className={styles.authLink}>
-            Přihlásit se
-          </Link>
+          <div className={styles.links}>
+            <Link to="/login" className={styles.authLink}>
+              Přihlásit se
+            </Link>
+          </div>
+
+          <button onClick={toggleMenu}>
+            <img
+              className={styles.openMobileMenu}
+              src={darkMode ? barsBlack : barsWhite}
+              alt=""
+            />
+          </button>
         </div>
       </div>
-
-      {menuIsOpen && (
-        <div className={styles.mobileMenu}>
-          <Link to="/play-online" className={styles.navLink}>
-            Hrajte online
-          </Link>
-          <Link to="/training-tasks" className={styles.navLink}>
-            Tréninkové úlohy
-          </Link>
-          <Link to="/login" className={styles.authLink}>
-            Přihlásit se
-          </Link>
-          <Link to="/register" className={styles.authLink}>
-            Zaregistrovat se
-          </Link>
-        </div>
-      )}
+      <div
+        style={{ display: menuIsOpen ? "flex" : "none" }}
+        className={styles.mobileMenu}
+      >
+        <Link to="/game" className={styles.navLink}>
+          Hrajte online
+        </Link>
+        <Link to="/games" className={styles.navLink}>
+          Tréninkové úlohy
+        </Link>
+        <Link to="/" className={styles.navLink}>
+          Leaderboard
+        </Link>
+        <Link to="/login" className={styles.navLink}>
+          Přihlásit se
+        </Link>
+      </div>
     </header>
   );
 }

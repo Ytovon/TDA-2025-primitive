@@ -9,6 +9,7 @@ import { GamePage } from "./Pages/GamePage/GamePage";
 import NotFoundPage from "./Pages/NotFoundPage/NotFoundPage";
 import HomePage from "./Pages/HomePage/HomePage";
 import { EditorPage } from "./Pages/EditorPage/EditorPage";
+import { LoginPage } from "./Pages/LoginPage/LoginPage";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
   {
     path: "/EditorPage/:uuid",
     element: <EditorPage />,
+  },
+  {
+    path: "/login",
+    element: <LoginPage />,
   },
 ]);
 

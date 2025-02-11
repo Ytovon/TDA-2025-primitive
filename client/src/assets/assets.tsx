@@ -30,8 +30,8 @@ import whitePlus from "./images/plus-solid.svg";
 
 /* GamePage */
 
-import symbolX from "./images/X_cervene.png";
-import symbolO from "./images/O_modre.png";
+import symbolX from "./images/X_cervene.svg";
+import symbolO from "./images/O_modre.svg";
 import arrowBlack from "./images/arrow-left-solid-black.svg";
 import arrowWhite from "./images/arrow-left-solid-white.svg";
 import resetBtnBlack from "./images/rotate-right-solid.svg";
@@ -48,6 +48,11 @@ import redBulb from "./images/cervenaZarovka.svg";
 import check from "./images/check-solid.svg";
 import redCancel from "./images/xmark-solid-red.svg";
 import trashBin from "./images/trash-solid.svg";
+
+/* LoginPage */
+
+import GoogleIcon from "./images/google.svg";
+import FacebookIcon from "./images/facebook-brands-solid.svg";
 
 /* NotFoundPage*/
 import NotFoundPageImg from "./images/NotFoundPageImg.svg";
@@ -112,4 +117,6 @@ export {
   landingImageBlack,
   landingImageWhite,
   NotFoundPageImg,
+  GoogleIcon,
+  FacebookIcon,
 };
