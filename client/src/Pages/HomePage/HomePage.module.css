@@ -1,10 +1,10 @@
 .body {
-  background-color: var(--primary3);
+  background-color: var(--color-background-light-alt);
   overflow-x: hidden;
 }
 
 .section {
-  color: var(--textColor);
+  color: var(--color-text-primary);
   width: clamp(800px, 65vw, 1100px);
   margin: 0 auto;
 }
@@ -57,7 +57,7 @@
   margin-bottom: 30vh;
   display: flex;
   position: relative;
-  background-color: var(--primary2);
+  background-color: var(--color-background-secondary);
 }
 
 .ourMissionTitle {
@@ -70,6 +70,7 @@
 
 .ourMissionContainer {
   width: 50%;
+  margin-left: 50%;
 }
 
 .ourMissionText {
@@ -151,6 +152,7 @@
   }
   .ourMissionContainer {
     width: 20%;
+    margin-left: 0;
   }
 }
 @media screen and (max-width: 500px) {

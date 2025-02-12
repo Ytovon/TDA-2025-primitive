@@ -1,5 +1,5 @@
 .body {
-  background-color: var(--primary);
+  background-color: var(--color-background-primary);
   margin: 0;
   padding: 0;
   height: 100vh;
@@ -23,15 +23,15 @@
 .arrow {
   width: 2rem;
   transition: 0.3s ease-in-out;
-}
 
-.arrow:hover {
-  transform: scale(1.15);
+  &:hover {
+    transform: scale(1.15);
+  }
 }
 
 .darkModeBtn {
   aspect-ratio: 1/1;
-  background-color: var(--darkModeBtn);
+  background-color: var(--darkmode-button);
   border-radius: 50%;
   cursor: pointer;
 }
@@ -39,7 +39,7 @@
 .editorPageTitle {
   text-align: center;
   font-size: 2rem;
-  color: var(--textColor);
+  color: var(--color-text-primary);
   margin-bottom: 4vh;
 }
 
@@ -73,7 +73,7 @@
   width: 15vw;
   min-width: 280px;
   position: relative;
-  color: var(--textColor);
+  color: var(--color-text-primary);
   margin: 1%;
   padding: 1%;
 }
@@ -82,30 +82,35 @@
   width: calc(100% - 20px);
   height: 22px;
   margin-bottom: 15px;
-  background-color: var(--primary1);
-  color: var(--textColor);
+  background-color: var(--color-background-light);
+  color: var(--color-text-primary);
+  border: none;
   border-radius: 5px;
   padding: 10px;
   font-size: 1rem;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 input::placeholder {
-  color: var(--textColor);
+  color: var(--color-text-primary);
 }
 
 .editorPageSelect {
   width: 100%;
   height: 40px;
-  background-color: var(--primary1);
-  color: var(--textColor);
+  background-color: var(--color-background-light);
+  color: var(--color-text-primary);
   padding: 0 10px;
   border: 0;
   border-radius: 5px;
   font-size: 1rem;
-}
 
-.editorPageSelect:focus {
-  outline: none;
+  &:focus {
+    outline: none;
+  }
 }
 
 .leftSideTitle {
@@ -122,16 +127,18 @@ input::placeholder {
 .selectSymbolImg {
   display: flex;
   justify-content: space-between;
-}
 
-.selectSymbolImg img:nth-child(2n + 0) {
-  width: 7.5rem;
+  img:nth-child(2n + 0) {
+    width: 7.5rem;
+  }
 }
 
 .numberAboveImg {
   font-size: 1.45rem;
   font-weight: 700;
   margin-bottom: 5px;
+  color: var(--color-text-primary);
+  border: none;
 }
 
 .circleBtn {
@@ -156,7 +163,7 @@ input::placeholder {
 .gameGrid {
   display: grid;
   grid-template-columns: repeat(15, var(--cellSizeClamped));
-  border: 1px solid var(--gameBorder);
+  border: 1px solid var(--color-border-game);
   padding-right: 2px;
   border-radius: 10px;
 }
@@ -164,28 +171,32 @@ input::placeholder {
 .cell {
   width: var(--cellSizeClamped);
   aspect-ratio: 1/0.95;
-  background-color: var(--gameBackground);
-  border: 1px solid var(--gameBorder);
+  background-color: var(--color-background-game);
+  border: 1px solid var(--color-border-game);
   display: flex;
   justify-content: center;
   align-items: center;
-}
 
-.cell:nth-child(1) {
-  border-radius: 8px 0 0 0;
-}
-.cell:nth-child(15) {
-  border-radius: 0 8px 0 0;
-}
-.cell:nth-last-child(15) {
-  border-radius: 0 0 0 8px;
-}
-.cell:nth-last-child(1) {
-  border-radius: 0 0 8px 0;
-}
-.cell:nth-child(15n) {
-  width: var(--cellSizeClamped);
-  border-right: 0;
+  &:nth-child(1) {
+    border-radius: 8px 0 0 0;
+  }
+
+  &:nth-child(15) {
+    border-radius: 0 8px 0 0;
+  }
+
+  &:nth-last-child(15) {
+    border-radius: 0 0 0 8px;
+  }
+
+  &:nth-last-child(1) {
+    border-radius: 0 0 8px 0;
+  }
+
+  &:nth-child(15n) {
+    width: var(--cellSizeClamped);
+    border-right: 0;
+  }
 }
 
 .symbol {
@@ -196,7 +207,7 @@ input::placeholder {
 
 .clearGame {
   position: absolute;
-  color: var(--grey);
+  color: var(--color-grey);
   font-size: 1.1rem;
   right: 8px;
   top: -27px;
@@ -289,7 +300,7 @@ input::placeholder {
   }
 
   .cell:nth-child(15n) {
-    border-right: 1px solid var(--gameBorder);
+    border-right: 1px solid var(--color-border-game);
   }
 
   .selectSymbolImg {

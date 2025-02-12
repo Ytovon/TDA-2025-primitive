@@ -12,23 +12,23 @@
   display: flex;
   gap: 5px;
   margin-block: 20vh 6vh;
-  color: var(--textColor);
+  color: var(--color-text-primary);
   position: relative;
-}
 
-.cardsPageTitle h1 {
-  font-size: 3.5rem;
-}
+  h1 {
+    font-size: 3.5rem;
+  }
 
-.cardsPageTitle p {
-  font-size: 1.75rem;
-  display: flex;
-  align-items: flex-end;
-  padding-bottom: 6.8px;
+  p {
+    font-size: 1.75rem;
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 6.8px;
+  }
 }
 
 .filtration {
-  background-color: var(--primary1);
+  background-color: var(--color-background-light);
   border-radius: 10px;
   position: relative;
   z-index: 200;
@@ -39,8 +39,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 25px;
-  border-bottom: 2px solid var(--filtrationBorder);
-  color: var(--textColor);
+  border-bottom: 2px solid var(--color-border-filtration);
+  color: var(--color-text-primary);
 }
 
 .filtrationMenuTitle {
@@ -48,7 +48,7 @@
 }
 
 .filtrationChevronUp {
-  color: var(--textColor);
+  color: var(--color-text-primary);
   transition: 0.3s;
   transform: rotate(0);
 }
@@ -63,24 +63,33 @@
   cursor: pointer;
   position: absolute;
   right: 10px;
-}
 
-.filtrationMenuBtns img {
-  width: 25px;
-  padding: 4px 9px;
+  img {
+    width: 25px;
+    padding: 4px 9px;
+  }
 }
 
 .lineBtns {
   width: 2px;
   margin-block: 3px;
-  background-color: var(--filtrationBorder);
+  background-color: var(--color-border-filtration);
 }
 
 .filtrationSection {
   padding: 25px;
   width: 33%;
   position: relative;
+
+  label {
+    color: var(--color-text-primary);
+  }
+
+  &:not(:first-child):not(:last-child) {
+    border-inline: 2px solid var(--color-border-filtration);
+  }
 }
+
 .filtrationSections {
   display: flex; /* Set default to ensure space is reserved */
   flex-direction: row; /* Adjust as needed */
@@ -89,6 +98,7 @@
   transition: max-height 0.3s ease, opacity 0.3s ease;
   opacity: 0;
 }
+
 .filterMenuOpened {
   max-height: 500px; /* Set a value large enough to fit all content */
   opacity: 1; /* Fully visible */
@@ -106,8 +116,8 @@
   font-size: 1rem;
   border: none;
   border-radius: 5px;
-  background-color: var(--filtrationNameInput);
-  color: var(--textColor);
+  background-color: var(--color-input-background-filtration);
+  color: var(--color-text-primary);
 }
 
 .filtrationSectionDate {
@@ -119,20 +129,21 @@
     "third fourth";
   gap: 5px;
   font-size: 1.1rem;
+
+  input {
+    transform: scale(1.1);
+    margin-right: 5px;
+    cursor: pointer;
+  }
+
+  label {
+    cursor: pointer;
+  }
 }
+
 .filtrationMessage {
-  color: var(--textColor);
+  color: var(--color-text-primary);
   margin: 0 auto;
-}
-
-.filtrationSectionDate input {
-  transform: scale(1.1);
-  margin-right: 5px;
-  cursor: pointer;
-}
-
-.filtrationSectionDate label {
-  cursor: pointer;
 }
 
 .resetFiltrationSection {
@@ -142,19 +153,11 @@
   top: 5px;
 }
 
-.filtrationSection label {
-  color: var(--textColor);
-}
-
-.filtrationSection:not(:first-child):not(:last-child) {
-  border-inline: 2px solid var(--filtrationBorder);
-}
-
 .filtrationSectionTitle {
   font-size: 17px;
   font-weight: 600;
   margin-block: 3% 4%;
-  color: var(--textColor);
+  color: var(--color-text-primary);
 }
 
 .difficultyBtns {
@@ -172,10 +175,10 @@
   cursor: pointer;
   transition: 0.3s ease-in-out;
   opacity: 0.8;
-}
 
-.difficultyBtn:hover {
-  opacity: 1;
+  :hover {
+    opacity: 1;
+  }
 }
 
 .difficultyColor1 {
@@ -212,6 +215,11 @@
   justify-content: space-between;
 }
 
+/* .cards::after {
+  content: "";
+  flex: auto;
+} */
+
 .loadingSpinnerDark {
   width: 70px;
   margin: 20px auto;
@@ -228,18 +236,18 @@
   width: 28px;
   aspect-ratio: 1/1;
   padding: 8px;
-  background-color: var(--addGameBtnColor);
-  border: 2px solid var(--addGameBtnBorder);
+  background-color: var(--color-button-addgame);
+  border: 2px solid var(--color-border-button-addgame);
   border-radius: 50px;
   right: clamp(10px, 5vw, 50px);
   bottom: 100px;
   cursor: pointer;
   transition: 0.3s ease-in-out;
   z-index: 1000;
-}
 
-.addGameBtn:hover {
-  transform: scale(1.1);
+  &:hover {
+    transform: scale(1.1);
+  }
 }
 
 @media screen and (max-width: 1100px) {
@@ -258,6 +266,7 @@
   .resetFiltrationSection {
     width: 1.2rem;
   }
+
   .cards {
     justify-content: space-between;
     column-gap: 3.25rem;
@@ -269,12 +278,12 @@
     width: clamp(300px, 80vw, 800px);
   }
 
-  .cardsPageTitle h1 {
-    font-size: 3rem;
-  }
-
   .cardsPageTitle {
     font-size: 1.6rem;
+
+    h1 {
+      font-size: 3rem;
+    }
   }
 
   .filtration {
@@ -292,7 +301,7 @@
 
   .filtrationSection:not(:first-child):not(:last-child) {
     border-inline: none;
-    border-block: 1px solid var(--filtrationBorder);
+    border-block: 1px solid var(--color-border-filtration);
   }
 
   .filtrationSectionName {

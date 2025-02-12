@@ -45,10 +45,11 @@ header {
   border: 3px solid #0070bb;
   border-radius: 5px;
   transition: 0.3s ease;
-}
-.authLink:hover {
-  background-color: #0070bb;
-  color: white;
+
+  &:hover {
+    background-color: #0070bb;
+    color: white;
+  }
 }
 
 .openMobileMenu {
@@ -70,9 +71,10 @@ header {
 .dropdown {
   position: relative;
   display: inline-block;
-}
-.dropdown:hover .dropdownContent {
-  display: block;
+
+  &:hover .dropdownContent {
+    display: block;
+  }
 }
 
 .dropdownContent {
@@ -82,15 +84,17 @@ header {
   min-width: 160px;
   box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
   z-index: 1;
-}
-.dropdownContent .navLink {
-  color: var(--color-text-primary);
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-.dropdownContent .navLink:hover {
-  background-color: var(--color-background-dark);
+
+  .navLink {
+    color: var(--color-text-primary);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+
+    &:hover {
+      background-color: var(--color-background-dark);
+    }
+  }
 }
 
 @media screen and (max-width: 1100px) {
@@ -98,19 +102,20 @@ header {
   .mobileMenu {
     width: 700px;
   }
+
   .links,
   .authLink {
     display: none;
   }
+
   .openMobileMenu {
     display: block;
   }
 }
+
 @media screen and (max-width: 800px) {
   .headerContainer,
   .mobileMenu {
     width: clamp(300px, 80vw, 800px);
   }
 }
-
-/*# sourceMappingURL=Header.module.css.map */

@@ -1,28 +1,20 @@
 import {
   chevronUpBlack,
   chevronUpWhite,
-  chevronDownWhite,
-  chevronDownBlack,
   xMarkBlack,
   xMarkWhite,
-  resetBtnBlack,
-  resetBtnWhite,
   xMarkGrey,
   loadingSpinnerGif,
   whitePlus,
   bluePlus,
-  trashBin,
-  symbolO,
-  symbolX,
 } from "../../assets/assets";
+import styles from "./CardsPage.module.css";
 import { Card } from "../../Components/Card/Card";
 import Header from "../../Components/Header/Header";
 import { Link } from "react-router-dom";
-import styles from "./CardsPage.module.css";
 import { useDarkMode } from "../../DarkModeContext";
 import { useEffect, useState } from "react";
 import { Footer } from "../../Components/Footer/Footer";
-import XBackground from "../../Components/Animation/BackgroundSymbol";
 import BackgroundSymbol from "../../Components/Animation/BackgroundSymbol";
 
 export default function CardsPage() {
@@ -38,14 +30,13 @@ export default function CardsPage() {
     bitmapUrl?: string;
   };
 
-  const { darkMode, toggleDarkMode } = useDarkMode();
+  const { darkMode } = useDarkMode();
   const [isFiltrationOpen, toggleIsFiltrationOpen] = useState(true);
   const [difficultyFilter, setDifficultyFilter] = useState<string[]>([]);
   const [nameFilter, setNameFilter] = useState<string>(""); // Název
   const [dateFilter, setDateFilter] = useState<string>(""); // Datum
   const [isLoading, setIsLoading] = useState(false);
   const [filteredGames, setFilteredGames] = useState<Game[]>([]); // Filtrované hry
-
   const [games, setGames] = useState<Game[]>([]);
 
   const openFiltration = () => {
@@ -159,6 +150,11 @@ export default function CardsPage() {
     setDateFilter("");
   };
 
+  const noItemsMessage =
+    nameFilter === "" && difficultyFilter.length === 0 && dateFilter === ""
+      ? "Zatím neexistuje žádná úloha."
+      : "Nenašli jsme žádné položky odpovídající vašemu filtru";
+
   return (
     <div>
       <Header />
@@ -190,9 +186,7 @@ export default function CardsPage() {
             <div
               style={
                 isFiltrationOpen
-                  ? {
-                      borderBottom: "",
-                    }
+                  ? { borderBottom: "" }
                   : { borderBottom: "none" }
               }
               className={styles.filtrationMenu}
@@ -327,25 +321,24 @@ export default function CardsPage() {
             </div>
           </div>
           <Link to="/EditorPage">
-            <button>
+            <button style={{ visibility: "hidden" }}>
               <img
                 className={styles.addGameBtn}
+                style={{ visibility: "visible" }}
                 src={darkMode ? whitePlus : bluePlus}
-                alt=""
               />
             </button>
           </Link>
 
           <img
             style={isLoading ? { display: "block" } : { display: "none" }}
-            className={darkMode ? styles.loadingSpinnerDark : styles.loadingSpinnerLight}
+            className={
+              darkMode ? styles.loadingSpinnerDark : styles.loadingSpinnerLight
+            }
             src={loadingSpinnerGif}
             alt=""
           />
-          <div
-            style={isLoading ? { display: "none" } : { display: "flex" }}
-            className={styles.cards}
-          >
+          <div className={styles.cards}>
             {filteredGames.length > 0 ? (
               filteredGames.map((game) => (
                 <Card
@@ -356,16 +349,8 @@ export default function CardsPage() {
                   bitmapUrl={game.bitmapUrl}
                 />
               ))
-            ) : nameFilter === "" &&
-              difficultyFilter.length === 0 &&
-              dateFilter === "" ? (
-              <p className={styles.filtrationMessage}>
-                Zatím neexistuje žádná úloha.
-              </p>
             ) : (
-              <p className={styles.filtrationMessage}>
-                Nenašli jsme žádné položky odpovídající vašemu filtru
-              </p>
+              <p className={styles.filtrationMessage}>{noItemsMessage}</p>
             )}
           </div>
         </div>

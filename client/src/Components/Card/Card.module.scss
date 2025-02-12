@@ -13,9 +13,10 @@
   z-index: 200;
   border: 1px solid var(--border-card);
   transition: 0.3s;
-}
-.card:hover {
-  transform: scale(1.01);
+
+  &:hover {
+    transform: scale(1.01);
+  }
 }
 
 .cardImage {
@@ -43,9 +44,10 @@
   cursor: pointer;
   transform: rotate(0deg);
   transition: 0.2s ease-in-out;
-}
-.cardUpdate:hover {
-  transform: rotate(45deg);
+
+  &:hover {
+    transform: rotate(45deg);
+  }
 }
 
 .cardTitle {
@@ -83,30 +85,34 @@
     padding-top: 2px;
   }
 }
+
 @media screen and (max-width: 1100px) {
   .card {
     width: 300px;
     aspect-ratio: unset;
   }
 }
+
 @media screen and (max-width: 800px) {
   .card {
     width: clamp(200px, 100%, 300px);
   }
 }
+
 @media screen and (max-width: 500px) {
   .card {
     width: 100%;
   }
+
   .cardImage {
     height: clamp(100px, 50vw, 250px);
   }
+
   .cardTitle {
     font-size: 25px;
   }
+
   .cardType {
     font-size: 17.5px;
   }
 }
-
-/*# sourceMappingURL=Card.module.css.map */
