@@ -34,10 +34,13 @@ export const LoginPage = () => {
     <body>
       <Header />
 
-      <div className={styles.loginPage}>
-        <h1>{isRegistered ? "Přihlásit se" : "Registrace"}</h1>
-        <form onSubmit={handleSubmit}>
+      <div className={styles.formContainer}>
+        <h1 className={styles.pageTitle}>
+          {isRegistered ? "Přihlásit se" : "Registrace"}
+        </h1>
+        <form className={styles.form} onSubmit={handleSubmit}>
           <input
+            className={styles.input}
             style={{ display: isRegistered ? "block" : "none" }}
             type="text"
             name="usernameOrEmail"
@@ -46,6 +49,7 @@ export const LoginPage = () => {
             onChange={handleChange}
           />
           <input
+            className={styles.input}
             style={{ display: isRegistered ? "none" : "block" }}
             type="text"
             name="username"
@@ -54,6 +58,7 @@ export const LoginPage = () => {
             onChange={handleChange}
           />
           <input
+            className={styles.input}
             style={{ display: isRegistered ? "none" : "block" }}
             type="email"
             name="email"
@@ -62,6 +67,7 @@ export const LoginPage = () => {
             onChange={handleChange}
           />
           <input
+            className={styles.input}
             type="password"
             name="password"
             placeholder="Heslo"
@@ -69,24 +75,26 @@ export const LoginPage = () => {
             onChange={handleChange}
           />
 
-          <button type="submit">
+          <button className={styles.submitBtn} type="submit">
             {isRegistered ? "Přihlásit se" : "Založit účet"}
           </button>
         </form>
         <p>
           {isRegistered ? "Účet nemáte?" : "Máte účet?"}{" "}
-          <button onClick={() => handleIsRegistered()}>
+          <button className={styles.link} onClick={() => handleIsRegistered()}>
             {isRegistered ? "Zaregistrujte se" : "Přihlásit se"}
           </button>
         </p>
 
-        <div>
-          <span></span>
+        <div className={styles.or}>
+          <span className={styles.line}></span>
           <p>nebo</p>
-          <span></span>
+          <span className={styles.line}></span>
         </div>
-        <Button text="" image={GoogleIcon} border />
-        <Button text="" image={FacebookIcon} border />
+        <div className={styles.socialBtns}>
+          <Button text="" image={GoogleIcon} border />
+          <Button text="" image={FacebookIcon} border />
+        </div>
       </div>
     </body>
   );

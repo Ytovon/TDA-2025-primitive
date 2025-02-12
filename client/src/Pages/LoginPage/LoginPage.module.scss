@@ -1,3 +1,72 @@
-.loginPage {
-  margin-top: 200px;
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: 400px;
+  background-color: white;
+  padding: 50px;
+  margin: 125px auto;
+  border-radius: 5px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pageTitle {
+  font-size: 4rem;
+}
+
+.input {
+  width: calc(100% - 30px);
+  padding: 10px 15px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #f1f1f1;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.submitBtn {
+  width: 100%;
+  background-color: #0070bb;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding-block: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.link {
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.or {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+
+.line {
+  width: 40%;
+  height: 1px;
+  background-color: black;
+}
+
+.socialBtns {
+  width: 100%;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
 }
