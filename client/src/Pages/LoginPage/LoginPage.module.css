@@ -3,10 +3,11 @@
   flex-direction: column;
   gap: 25px;
   width: 400px;
-  background-color: white;
+  background-color: var(--color-background-light);
   padding: 50px;
   margin: 125px auto;
   border-radius: 5px;
+  color: var(--color-text-primary);
 }
 
 .form {
@@ -17,6 +18,7 @@
 
 .pageTitle {
   font-size: 4rem;
+  color: var(--color-text-primary);
 }
 
 .input {
@@ -26,9 +28,13 @@
   border: none;
   border-radius: 5px;
   background-color: #f1f1f1;
+  color: var(--color-text-inverted);
 }
 .input:focus {
   outline: none;
+}
+.input::placeholder {
+  color: black;
 }
 
 .submitBtn {
@@ -43,6 +49,7 @@
 }
 
 .link {
+  color: var(--color-text-primary);
   cursor: pointer;
 }
 .link:hover {
@@ -54,12 +61,13 @@
   justify-content: space-between;
   width: 100%;
   align-items: center;
+  color: var(--color-text-primary);
 }
 
 .line {
   width: 40%;
   height: 1px;
-  background-color: black;
+  background-color: var(--color-line);
 }
 
 .socialBtns {
