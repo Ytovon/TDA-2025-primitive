@@ -35,7 +35,7 @@ export default function Header() {
     <header className={styles.header}>
       <div className={styles.headerContent}>
         <div className={styles.headerContainer}>
-          <Link to="/">
+          <Link to="/" onClick={() => setMenuIsOpen(false)}>
             <img
               className={styles.logo}
               src={darkMode ? lightModeLogo : darkModeLogo}
@@ -82,16 +82,32 @@ export default function Header() {
         style={{ display: menuIsOpen ? "flex" : "none" }}
         className={styles.mobileMenu}
       >
-        <Link to="/game" className={styles.navLink}>
+        <Link
+          to="/game"
+          onClick={() => setMenuIsOpen(false)}
+          className={styles.navLink}
+        >
           Hrajte online
         </Link>
-        <Link to="/games" className={styles.navLink}>
+        <Link
+          to="/games"
+          onClick={() => setMenuIsOpen(false)}
+          className={styles.navLink}
+        >
           Tréninkové úlohy
         </Link>
-        <Link to="/" className={styles.navLink}>
+        <Link
+          to="/"
+          onClick={() => setMenuIsOpen(false)}
+          className={styles.navLink}
+        >
           Leaderboard
         </Link>
-        <Link to="/login" className={styles.navLink}>
+        <Link
+          to="/login"
+          onClick={() => setMenuIsOpen(false)}
+          className={styles.navLink}
+        >
           Přihlásit se
         </Link>
       </div>
