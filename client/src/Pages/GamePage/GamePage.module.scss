@@ -84,18 +84,22 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
-.cell:nth-child(1) {
-  border-radius: 8px 0 0 0;
-}
-.cell:nth-child(15) {
-  border-radius: 0 8px 0 0;
-}
-.cell:nth-last-child(15) {
-  border-radius: 0 0 0 8px;
-}
-.cell:nth-last-child(1) {
-  border-radius: 0 0 8px 0;
+
+  &:nth-child(1) {
+    border-radius: 8px 0 0 0;
+  }
+
+  &:nth-child(15) {
+    border-radius: 0 8px 0 0;
+  }
+
+  &:nth-last-child(15) {
+    border-radius: 0 0 0 8px;
+  }
+
+  &:nth-last-child(1) {
+    border-radius: 0 0 8px 0;
+  }
 }
 
 .symbol {
@@ -119,9 +123,10 @@
   background-color: var(--color-background-primary);
   cursor: pointer;
   transition: 0.5s ease-in-out;
-}
-.resetGame:hover {
-  transform: rotate(270deg);
+
+  &:hover {
+    transform: rotate(270deg);
+  }
 }
 
 .darkModeBtn {
@@ -132,6 +137,7 @@
 }
 
 /* Card styles */
+
 .winnerCardWrapper {
   display: none;
   position: fixed;
@@ -140,11 +146,12 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.667);
-}
-.winnerCardWrapper .active {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+
+  .active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 .winnerCard {
@@ -191,6 +198,7 @@
     transform: translateY(0);
   }
 }
+
 .winnerCardBtns {
   display: flex;
   gap: 3%;
@@ -201,89 +209,107 @@
   border-radius: 5px;
   cursor: pointer;
   font-weight: 600;
-}
-.winnerCardBtn:nth-child(1) {
-  color: white;
-  letter-spacing: 0.5px;
-  background-color: var(--winnerColor);
-  filter: brightness(var(--global-brightness));
-}
-.winnerCardBtn:nth-child(2) {
-  color: var(--winnerColor);
-  text-decoration: none;
-  border: 2px solid var(--winnerColor);
-  filter: brightness(var(--global-brightness));
+
+  &:nth-child(1) {
+    color: white;
+    letter-spacing: 0.5px;
+    background-color: var(--winnerColor);
+    filter: brightness(var(--global-brightness));
+  }
+
+  &:nth-child(2) {
+    color: var(--winnerColor);
+    text-decoration: none;
+    border: 2px solid var(--winnerColor);
+    filter: brightness(var(--global-brightness));
+  }
 }
 
 /* ************************* */
+
 @media screen and (max-width: 1300px) {
   .game {
     gap: 0px;
   }
+
   .winnerCardSubtitle {
     margin-bottom: 10px;
   }
 }
+
 @media screen and (max-width: 1200px) {
   .game svg {
     display: none;
   }
+
   .title {
     font-size: 26px;
   }
+
   .gameState {
     margin-bottom: 10px;
   }
+
   .winnerCardSubtitle {
     margin-bottom: 20px;
   }
 }
+
 @media screen and (max-aspect-ratio: 1/1) {
   .gameGrid {
     grid-template-columns: repeat(15, clamp(20px, 5.6vw, 48px));
   }
+
   .cell {
     width: clamp(20px, 5.6vw, 48px);
   }
 }
+
 @media screen and (max-width: 500px) {
   .title {
     font-size: 23px;
   }
+
   .gameState {
     font-size: 22px;
   }
+
   .winnerCard {
     width: 270px;
     padding: 25px;
   }
+
   .winnerCardImg {
     width: 85px;
   }
+
   .winnerCardBtn {
     padding: 6px 25px;
   }
 }
+
 @media screen and (min-width: 500px) and (max-height: 500px) {
   .title {
     font-size: 20px;
   }
+
   .gameState {
     font-size: 18px;
     margin: 0 0 5px 0;
   }
+
   .gameWrapper {
     top: 45%;
   }
 }
+
 @media screen and (min-width: 800px) and (max-height: 600px) {
   .game {
     gap: 1vw;
   }
+
   .imgNextToGame {
     display: block;
     width: 150px;
   }
 }
-
-/*# sourceMappingURL=GamePage.module.css.map */

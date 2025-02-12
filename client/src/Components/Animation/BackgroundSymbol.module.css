@@ -6,8 +6,8 @@
 }
 
 .XBackground svg {
-  fill: var(--SymbolBackround);
-  stroke: var(--SymbolBackround);
+  fill: var(--color-symbol-background);
+  stroke: var(--color-symbol-background);
 }
 
 @media screen and (max-width: 1050px) {

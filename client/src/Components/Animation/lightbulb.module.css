@@ -10,7 +10,7 @@
 .oko2 {
   transform-origin: center;
   animation: blink 4s ease-in-out infinite;
-  fill: var(--primary1) !important;
+  fill: var(--color-background-light) !important;
   position: relative;
 }
 

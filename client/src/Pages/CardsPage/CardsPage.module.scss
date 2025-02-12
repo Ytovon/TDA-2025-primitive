@@ -14,15 +14,17 @@
   margin-block: 20vh 6vh;
   color: var(--color-text-primary);
   position: relative;
-}
-.cardsPageTitle h1 {
-  font-size: 3.5rem;
-}
-.cardsPageTitle p {
-  font-size: 1.75rem;
-  display: flex;
-  align-items: flex-end;
-  padding-bottom: 6.8px;
+
+  h1 {
+    font-size: 3.5rem;
+  }
+
+  p {
+    font-size: 1.75rem;
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 6.8px;
+  }
 }
 
 .filtration {
@@ -61,10 +63,11 @@
   cursor: pointer;
   position: absolute;
   right: 10px;
-}
-.filtrationMenuBtns img {
-  width: 25px;
-  padding: 4px 9px;
+
+  img {
+    width: 25px;
+    padding: 4px 9px;
+  }
 }
 
 .lineBtns {
@@ -77,12 +80,14 @@
   padding: 25px;
   width: 33%;
   position: relative;
-}
-.filtrationSection label {
-  color: var(--color-text-primary);
-}
-.filtrationSection:not(:first-child):not(:last-child) {
-  border-inline: 2px solid var(--color-border-filtration);
+
+  label {
+    color: var(--color-text-primary);
+  }
+
+  &:not(:first-child):not(:last-child) {
+    border-inline: 2px solid var(--color-border-filtration);
+  }
 }
 
 .filtrationSections {
@@ -119,17 +124,21 @@
   display: grid;
   grid-template-columns: 40% 1fr;
   grid-template-rows: auto auto;
-  grid-template-areas: "first second" "third fourth";
+  grid-template-areas:
+    "first second"
+    "third fourth";
   gap: 5px;
   font-size: 1.1rem;
-}
-.filtrationSectionDate input {
-  transform: scale(1.1);
-  margin-right: 5px;
-  cursor: pointer;
-}
-.filtrationSectionDate label {
-  cursor: pointer;
+
+  input {
+    transform: scale(1.1);
+    margin-right: 5px;
+    cursor: pointer;
+  }
+
+  label {
+    cursor: pointer;
+  }
 }
 
 .filtrationMessage {
@@ -166,33 +175,34 @@
   cursor: pointer;
   transition: 0.3s ease-in-out;
   opacity: 0.8;
-}
-.difficultyBtn :hover {
-  opacity: 1;
+
+  :hover {
+    opacity: 1;
+  }
 }
 
 .difficultyColor1 {
-  background-color: rgba(107, 196, 255, 0.3764705882);
+  background-color: #6bc4ff60;
   color: var(--secondary1);
 }
 
 .difficultyColor2 {
-  background-color: rgba(91, 139, 228, 0.3764705882);
+  background-color: #5b8be460;
   color: var(--secondary2);
 }
 
 .difficultyColor3 {
-  background-color: rgba(186, 108, 198, 0.3764705882);
+  background-color: #ba6cc660;
   color: var(--secondary3);
 }
 
 .difficultyColor4 {
-  background-color: rgba(219, 42, 101, 0.3137254902);
+  background-color: #db2a6550;
   color: var(--secondary4);
 }
 
 .difficultyColor5 {
-  background-color: rgba(227, 24, 55, 0.3137254902);
+  background-color: #e3183750;
   color: var(--secondary5);
 }
 
@@ -209,11 +219,11 @@
   content: "";
   flex: auto;
 } */
+
 .loadingSpinnerDark {
   width: 70px;
   margin: 20px auto;
 }
-
 .loadingSpinnerLight {
   filter: invert(1);
   width: 70px;
@@ -234,75 +244,91 @@
   cursor: pointer;
   transition: 0.3s ease-in-out;
   z-index: 1000;
-}
-.addGameBtn:hover {
-  transform: scale(1.1);
+
+  &:hover {
+    transform: scale(1.1);
+  }
 }
 
 @media screen and (max-width: 1100px) {
   .cardsPageWrapper {
     width: 700px;
   }
+
   .cardsPageTitle {
     flex-direction: column;
   }
+
   .filtrationSection {
     padding: 15px 15px;
   }
+
   .resetFiltrationSection {
     width: 1.2rem;
   }
+
   .cards {
     justify-content: space-between;
     column-gap: 3.25rem;
   }
 }
+
 @media screen and (max-width: 800px) {
   .cardsPageWrapper {
     width: clamp(300px, 80vw, 800px);
   }
+
   .cardsPageTitle {
     font-size: 1.6rem;
+
+    h1 {
+      font-size: 3rem;
+    }
   }
-  .cardsPageTitle h1 {
-    font-size: 3rem;
-  }
+
   .filtration {
     margin: 0 auto;
   }
+
   .filtrationSections {
     flex-direction: column;
   }
+
   .filtrationSection {
     width: 90%;
     padding: 13px 5% 27px 5%;
   }
+
   .filtrationSection:not(:first-child):not(:last-child) {
     border-inline: none;
     border-block: 1px solid var(--color-border-filtration);
   }
+
   .filtrationSectionName {
     width: 90%;
   }
+
   .cards {
     margin: 20px;
     justify-content: center;
   }
 }
+
 @media screen and (max-width: 500px) {
   .cardsPageWrapper {
     width: 80vw;
   }
+
   .filtration {
     width: 80vw;
     padding: 5px 0;
   }
+
   .resetFiltrationSection {
     width: 1.1rem;
   }
+
   .cards {
     margin: 0;
   }
 }
-
-/*# sourceMappingURL=CardsPage.module.css.map */

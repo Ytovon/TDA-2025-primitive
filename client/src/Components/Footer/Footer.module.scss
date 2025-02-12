@@ -27,19 +27,15 @@
 .block1 {
   background-color: #e31837;
 }
-
 .block2 {
   background-color: #ab2e58;
 }
-
 .block3 {
   background-color: #724479;
 }
-
 .block4 {
   background-color: #395a9a;
 }
-
 .block5 {
   background-color: #0070bb;
 }
@@ -77,27 +73,34 @@
   .footer {
     width: 700px;
   }
+
   .bigFooter {
     height: 35vh;
   }
 }
+
 @media screen and (max-width: 800px) {
   .footer {
     width: clamp(300px, 80vw, 800px);
   }
+
   .bigFooter {
     height: 30vh;
   }
+
   .mainText {
     font-size: 25px;
   }
+
   .teamName {
     font-size: 20px;
   }
+
   .footerLogo {
     width: 140px;
   }
 }
+
 @media screen and (max-width: 500px) {
   .footer {
     width: 100%;
@@ -105,15 +108,16 @@
   .footerBottom {
     padding: 0 15px;
   }
+
   .mainText {
     font-size: 22px;
   }
+
   .teamName {
     font-size: 18px;
   }
+
   .footerLogo {
     width: 130px;
   }
 }
-
-/*# sourceMappingURL=Footer.module.css.map */

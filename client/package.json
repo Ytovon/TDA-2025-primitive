@@ -14,15 +14,18 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0",
     "react-scripts": "^5.0.1",
+    "sass": "^1.58.0",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
   "proxy": "http://localhost:5000",
   "scripts": {
-    "start": "react-scripts start",
+    "start": "concurrently \"react-scripts start\" \"sass --watch src:src\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "sass-b": "sass src:src",
+    "sass-w": "sass --watch src:src"
   },
   "eslintConfig": {
     "extends": [
@@ -41,5 +44,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
   }
 }

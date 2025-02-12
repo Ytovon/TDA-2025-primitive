@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
-  darkModeButton,
   lightModeLogo,
   darkModeLogo,
-  lightModeButton,
   barsBlack,
   barsWhite,
 } from "../../assets/assets";
@@ -14,6 +12,7 @@ import { useDarkMode } from "../../DarkModeContext";
 export default function Header() {
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const [Registered, setRegistered] = useState(false);
 
   const toggleMenu = () => {
     setMenuIsOpen((prev) => !prev);
@@ -33,72 +32,69 @@ export default function Header() {
   }, [menuIsOpen]);
 
   return (
-    <div className={styles.headerBackground}>
-      <header className={styles.header}>
-        <Link to="/">
-          <img
-            className={styles.logo}
-            src={darkMode ? lightModeLogo : darkModeLogo}
-            alt="logo"
-          />
-        </Link>
+    <header className={styles.header}>
+      <div className={styles.headerContent}>
+        <div className={styles.headerContainer}>
+          <Link to="/">
+            <img
+              className={styles.logo}
+              src={darkMode ? lightModeLogo : darkModeLogo}
+              alt="logo"
+            />
+          </Link>
 
-        <nav className={styles.nav}>
-          <div className={styles.fullNav}>
-            <Link className={styles.navLink} to="/">
-              <p>O nás</p>
-            </Link>
-            <Link className={styles.navLink} to="/Games">
-              <p>Tréninkové úlohy</p>
-            </Link>
-            <button onClick={toggleDarkMode}>
-              <img
-                style={
-                  darkMode
-                    ? { width: "17px", padding: "7px" }
-                    : { width: "19px", padding: "6px" }
-                }
-                className={styles.darkModeBtn}
-                src={darkMode ? darkModeButton : lightModeButton}
-              />
-            </button>
-            <p className={styles.playBtnContainer}>
-              <Link className={styles.playBtn} to="/Game">
-                Chci hrát!
+          <div className={styles.links}>
+            <div className={styles.dropdown}>
+              <Link to="/game" className={styles.navLink}>
+                Chci hrát
               </Link>
-            </p>
+              <div className={styles.dropdownContent}>
+                <Link to="/game" className={styles.navLink}>
+                  Hrát online
+                </Link>
+                <Link to="/game" className={styles.navLink}>
+                  Hrát sólo
+                </Link>
+              </div>
+            </div>
+            <Link to="/games" className={styles.navLink}>
+              Tréninkové úlohy
+            </Link>
+            <p className={styles.navLink}>Leaderboard</p>
+          </div>
+
+          <div className={styles.links}>
+            <Link to="/login" className={styles.authLink}>
+              Přihlásit se
+            </Link>
           </div>
 
           <button onClick={toggleMenu}>
             <img
-              className={styles.openNav}
+              className={styles.openMobileMenu}
               src={darkMode ? barsBlack : barsWhite}
+              alt=""
             />
           </button>
-        </nav>
-      </header>
-      <div
-        className={styles.menu}
-        style={menuIsOpen ? { display: "flex" } : { display: "none" }}
-      >
-        <Link className={styles.navLink} to="/">
-          <p>O nás</p>
-        </Link>
-        <Link className={styles.navLink} to="/Games">
-          <p>Tréninkové úlohy</p>
-        </Link>
-        <button onClick={toggleDarkMode}>
-          <img
-            className={`${styles.darkModeBtn} ${styles.menuDarkModeBtn}`}
-            src={darkMode ? darkModeButton : lightModeButton}
-          />
-        </button>
-        <p className={styles.playBtnContainer}>
-          <Link className={styles.playBtn} to="/Game">
-            Chci hrát!
-          </Link>
-        </p>
+        </div>
       </div>
-    </div>
+      <div
+        style={{ display: menuIsOpen ? "flex" : "none" }}
+        className={styles.mobileMenu}
+      >
+        <Link to="/game" className={styles.navLink}>
+          Hrajte online
+        </Link>
+        <Link to="/games" className={styles.navLink}>
+          Tréninkové úlohy
+        </Link>
+        <Link to="/" className={styles.navLink}>
+          Leaderboard
+        </Link>
+        <Link to="/login" className={styles.navLink}>
+          Přihlásit se
+        </Link>
+      </div>
+    </header>
   );
 }
