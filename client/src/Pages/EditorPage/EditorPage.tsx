@@ -62,7 +62,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
     const uuid = new URL(window.location.href).pathname.split("/").pop();
     if (uuid) ApiClient.updateGame(uuid, setGame, setGrid);
   }, []);
-
+  
   useEffect(() => {
     setGame((prevGame) => ({
       ...prevGame,

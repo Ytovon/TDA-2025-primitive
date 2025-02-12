@@ -49,7 +49,7 @@ export default function CardsPage() {
 
   async function fetchAllGames() {
     try {
-      const response = await fetch("http://localhost:5000/api/v1/games");
+      const response = await fetch("https://2a459380.app.deploy.tourde.app/api/v1/games");
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);

@@ -1,14 +1,13 @@
-import { DataTypes, Model } from "sequelize";
-import { sequelize } from "./database.js"; // Adjust path as needed
-// Define the Game model using an interface
+import { DataTypes, Model } from 'sequelize';
+import { sequelize } from './database.js';
+// Define the Game model
 class Game extends Model {
     uuid;
     name;
     difficulty;
-    board; // Store the board as a JSON string
+    board;
     gameState;
-    bitmap; // Optional because it can be null
-    // timestamps
+    bitmap;
     createdAt;
     updatedAt;
 }
@@ -27,14 +26,14 @@ Game.init({
         allowNull: false,
     },
     board: {
-        type: DataTypes.JSON, // Store the board as a JSON string
+        type: DataTypes.JSON, // Store the board as a JSON array
         allowNull: false,
-        defaultValue: JSON.stringify(Array(15).fill(Array(15).fill(null))),
+        defaultValue: () => Array(15).fill(null).map(() => Array(15).fill(null)), // Ensures unique rows
     },
     gameState: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: "ongoing",
+        defaultValue: 'ongoing',
     },
     bitmap: {
         type: DataTypes.TEXT, // Store the bitmap as a string
@@ -50,8 +49,98 @@ Game.init({
     },
 }, {
     sequelize,
-    tableName: "Games",
-    timestamps: true, // Enable `createdAt`, `updatedAt`
+    tableName: 'Games',
+    timestamps: true, // `createdAt` and `updatedAt` are automatically handled
 });
-export { Game };
+class User extends Model {
+    get uuid() {
+        return this.getDataValue('uuid');
+    }
+    get username() {
+        return this.getDataValue('username');
+    }
+    get email() {
+        return this.getDataValue('email');
+    }
+    get password() {
+        return this.getDataValue('password');
+    }
+    get elo() {
+        return this.getDataValue('elo');
+    }
+    get wins() {
+        return this.getDataValue('wins');
+    }
+    get draws() {
+        return this.getDataValue('draws');
+    }
+    get losses() {
+        return this.getDataValue('losses');
+    }
+    get refreshToken() {
+        return this.getDataValue('refreshToken');
+    }
+    get createdAt() {
+        return this.getDataValue('createdAt');
+    }
+    get updatedAt() {
+        return this.getDataValue('updatedAt');
+    }
+}
+User.init({
+    uuid: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+    },
+    username: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: { isEmail: true },
+    },
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    elo: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 400,
+    },
+    wins: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+    },
+    draws: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+    },
+    losses: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+    },
+    refreshToken: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+}, {
+    sequelize,
+    tableName: "Users",
+    timestamps: true,
+    defaultScope: {
+        attributes: { exclude: ["password"] }, // Password is excluded by default
+    },
+    scopes: {
+        withPassword: { attributes: { include: ["password"] } }, // Explicitly include password when needed
+    },
+});
+export { Game, User };
 //# sourceMappingURL=models.js.map

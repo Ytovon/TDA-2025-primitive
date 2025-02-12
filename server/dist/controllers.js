@@ -16,8 +16,10 @@ const getGameById = async (req, res) => {
     const { uuid } = req.params;
     try {
         const game = await Game.findByPk(uuid);
-        if (!game)
-            return res.status(404).json({ message: "Game not found" });
+        if (!game) {
+            res.status(404).json({ message: "Game not found" });
+            return;
+        }
         res.json(game);
     }
     catch (error) {
@@ -29,19 +31,21 @@ const createGame = async (req, res) => {
     const { name, difficulty, board } = req.body;
     try {
         if (!name || !difficulty || !board) {
-            return res.status(400).json({
+            res.status(400).json({
                 status: "error",
                 message: "Missing required fields: name, difficulty, or board.",
             });
+            return;
         }
         const processedBoard = Array.isArray(board) ? board : JSON.parse(board);
         const result = getGameState(processedBoard);
         if (result.statusCode === 422) {
-            return res.status(422).json({
+            res.status(422).json({
                 status: "error",
                 message: result.error,
                 debugInfo: result.debugInfo,
             });
+            return;
         }
         // Ensure gameState is a string
         const gameState = result.gameState ?? "ongoing";
@@ -51,14 +55,12 @@ const createGame = async (req, res) => {
         const newGame = await Game.create({
             name,
             difficulty,
-            board: processedBoard,
-            gameState,
+            board: board || Array(15).fill(Array(15).fill("")),
+            gameState: result.gameState || gameState,
             bitmap, // Save the Base64-encoded bitmap
         });
         res.status(201).json({
-            status: "success",
-            message: "Game created successfully.",
-            game: newGame,
+            newGame,
         });
     }
     catch (error) {
@@ -71,18 +73,21 @@ const updateGame = async (req, res) => {
     const { name, difficulty, board } = req.body;
     try {
         const game = await Game.findByPk(uuid);
-        if (!game)
-            return res.status(404).json({ message: "Game not found" });
+        if (!game) {
+            res.status(404).json({ message: "Game not found" });
+            return;
+        }
         const processedBoard = board ? board : game.board;
         const result = board
             ? getGameState(processedBoard)
             : { gameState: game.gameState };
         if (result.statusCode === 422) {
-            return res.status(422).json({
+            res.status(422).json({
                 status: "error",
                 message: result.error,
                 debugInfo: result.debugInfo,
             });
+            return;
         }
         // Ensure gameState is a string
         const gameState = result.gameState ?? "unknown";
@@ -100,10 +105,15 @@ const updateGame = async (req, res) => {
             updatedAt: new Date(),
         });
         res.json({
-            status: "success",
-            message: "Game updated successfully.",
             game,
         });
+        res.status(201).json(game);
+        // // Create a response object and parse the board field back into an object if necessary
+        // res.json({
+        //   status: "success",
+        //   message: "Game updated successfully.",
+        //   game: game,
+        // });
     }
     catch (error) {
         res.status(500).json({ message: "Failed to update game", error });
@@ -114,8 +124,10 @@ const deleteGame = async (req, res) => {
     const { uuid } = req.params;
     try {
         const game = await Game.findByPk(uuid);
-        if (!game)
-            return res.status(404).json({ message: "Game not found" });
+        if (!game) {
+            res.status(404).json({ message: "Game not found" });
+            return;
+        }
         await game.destroy();
         res.status(204).send();
     }
