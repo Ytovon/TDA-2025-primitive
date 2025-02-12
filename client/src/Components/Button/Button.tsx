@@ -10,6 +10,7 @@ interface ButtonProps {
   onClick?: () => void;
   isDisabled?: boolean;
   isVisible?: boolean;
+  width?: string;
 }
 
 // Definice komponenty Button
@@ -22,6 +23,7 @@ export const Button: React.FC<ButtonProps> = ({
   onClick,
   isDisabled,
   isVisible = true,
+  width,
 }) => {
   const [buttonColor, setButtonColor] = useState<React.CSSProperties>({
     backgroundColor: "00000000",

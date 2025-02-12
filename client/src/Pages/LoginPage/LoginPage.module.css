@@ -1,19 +1,22 @@
 .formContainer {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 35px;
   width: 400px;
   background-color: var(--color-background-light);
   padding: 50px;
-  margin: 125px auto;
   border-radius: 5px;
   color: var(--color-text-primary);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 30%);
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .pageTitle {
@@ -28,7 +31,7 @@
   border: none;
   border-radius: 5px;
   background-color: #f1f1f1;
-  color: var(--color-text-inverted);
+  color: black;
 }
 .input:focus {
   outline: none;
