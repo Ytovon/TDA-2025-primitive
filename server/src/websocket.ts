@@ -24,10 +24,13 @@ interface Game {
 
 // Store active games and matchmaking queue
 const games: { [key: string]: Game } = {};
-const matchmakingQueue: WebSocket[] = [];
+const matchmakingQueue: { ws: WebSocket, user: UserStats }[] = [];
 
 // Secret key for verifying tokens
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "your-access-token-secret";
+
+// Define the maximum allowed ELO difference for matching players
+const MAX_ELO_DIFFERENCE = 100; // Players can be matched if their ELO difference is within this range
 
 function initializeWebSocket(server: any): void {
   const wss = new WebSocketServer({ server });
@@ -40,7 +43,7 @@ function initializeWebSocket(server: any): void {
       return;
     }
 
-    jwt.verify(token, ACCESS_TOKEN_SECRET, async (err, decoded) => {
+    jwt.verify(token, ACCESS_TOKEN_SECRET, async (err:any, decoded:any) => {
       if (err) {
         ws.close(4001, "Unauthorized: Invalid token");
         return;
@@ -66,7 +69,7 @@ function initializeWebSocket(server: any): void {
 
         console.log(`User ${(ws as any).user.username} connected with stats:`, (ws as any).user);
 
-        ws.on("message", (message) => handleMessage(ws, message));
+        ws.on("message", (message:any) => handleMessage(ws, message));
         ws.on("close", () => handleDisconnect(ws));
       } catch (err) {
         console.error("Error fetching user stats:", err);
@@ -128,22 +131,32 @@ async function handleMessage(ws: WebSocket, message: WebSocket.RawData): Promise
         break;
 
       case "matchmaking":
-        matchmakingQueue.push(ws);
+        matchmakingQueue.push({ ws, user: (ws as any).user });
 
         if (matchmakingQueue.length >= 2) {
-          const player1 = matchmakingQueue.shift()!;
-          const player2 = matchmakingQueue.shift()!;
+          matchmakingQueue.sort((a, b) => a.user.elo - b.user.elo);
 
-          const newGameId = generateGameId();
-          games[newGameId] = {
-            players: [player1, player2],
-            board: Array(15).fill(null).map(() => Array(15).fill(null)),
-            currentPlayer: "X",
-            lastActivity: Date.now(),
-          };
+          const player1 = matchmakingQueue[0];
+          const player2 = matchmakingQueue[1];
 
-          player1.send(JSON.stringify({ type: "matched", gameId: newGameId, player: "X" }));
-          player2.send(JSON.stringify({ type: "matched", gameId: newGameId, player: "O" }));
+          // Check if the ELO difference is within the allowed threshold
+          if (Math.abs(player1.user.elo - player2.user.elo) <= MAX_ELO_DIFFERENCE) {
+            matchmakingQueue.shift();
+            matchmakingQueue.shift();
+
+            const newGameId = generateGameId();
+            games[newGameId] = {
+              players: [player1.ws, player2.ws],
+              board: Array(15).fill(null).map(() => Array(15).fill(null)),
+              currentPlayer: "X",
+              lastActivity: Date.now(),
+            };
+
+            player1.ws.send(JSON.stringify({ type: "matched", gameId: newGameId, player: "X" }));
+            player2.ws.send(JSON.stringify({ type: "matched", gameId: newGameId, player: "O" }));
+          } else {
+            ws.send(JSON.stringify({ type: "waiting", message: "Waiting for an opponent with a closer ELO..." }));
+          }
         } else {
           ws.send(JSON.stringify({ type: "waiting", message: "Waiting for an opponent..." }));
         }
@@ -310,7 +323,7 @@ async function handleMessage(ws: WebSocket, message: WebSocket.RawData): Promise
 function handleDisconnect(ws: WebSocket): void {
   console.log("Client disconnected");
 
-  const index = matchmakingQueue.indexOf(ws);
+  const index = matchmakingQueue.findIndex((player) => player.ws === ws);
   if (index !== -1) {
     matchmakingQueue.splice(index, 1);
   }

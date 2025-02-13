@@ -76,7 +76,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
     };
     fetchGame();
   }, []);
-
+  
   useEffect(() => {
     setGame((prevGame) => ({
       ...prevGame,
