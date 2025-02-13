@@ -8,6 +8,7 @@ import {
   whitePlus,
   bluePlus,
 } from "../../assets/assets";
+import { Game } from "../../Model/GameModel";
 import styles from "./CardsPage.module.css";
 import { Card } from "../../Components/Card/Card";
 import Header from "../../Components/Header/Header";
@@ -16,20 +17,9 @@ import { useDarkMode } from "../../DarkModeContext";
 import { useEffect, useState } from "react";
 import { Footer } from "../../Components/Footer/Footer";
 import BackgroundSymbol from "../../Components/Animation/BackgroundSymbol";
+import { ApiClient } from "../../API/Api";
 
 export default function CardsPage() {
-  type Game = {
-    board: [];
-    createdAt: string;
-    difficulty: string;
-    gameState: string;
-    name: string;
-    updatedAt: string;
-    uuid: string;
-    bitmap?: string;
-    bitmapUrl?: string;
-  };
-
   const { darkMode } = useDarkMode();
   const [isFiltrationOpen, toggleIsFiltrationOpen] = useState(true);
   const [difficultyFilter, setDifficultyFilter] = useState<string[]>([]);
@@ -44,24 +34,21 @@ export default function CardsPage() {
   };
 
   useEffect(() => {
-    fetchAllGames();
-  }, []);
-
-  async function fetchAllGames() {
-    try {
-      const response = await fetch("https://2a459380.app.deploy.tourde.app/api/v1/games");
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+    const fetchGames = async () => {
+      try {
+        const result = await ApiClient.fetchAllGames();
+        if (result !== undefined) {
+          setGames(result);
+          updateAllBitmapUrls();
+        } else {
+          console.error("No games were fetched.");
+        }
+      } catch (error) {
+        console.error("Error fetching games:", error);
       }
-
-      const data = await response.json();
-      setGames(data);
-      updateAllBitmapUrls();
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }
+    };
+    fetchGames();
+  }, []);
 
   const updateAllBitmapUrls = () => {
     setGames((prevGames) =>

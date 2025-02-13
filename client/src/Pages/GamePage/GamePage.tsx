@@ -10,34 +10,26 @@ import {
   resetBtnWhite,
   winnerBlue,
   winnerRed,
-  modraZarovkaO,
-  darkModeButton,
-  lightModeButton,
 } from "../../assets/assets";
 import BlinkingEyesSVG from "../../Components/Animation/lightbulb";
 import { useDarkMode } from "../../DarkModeContext";
 import { Button } from "../../Components/Button/Button";
 import { useNavigate } from "react-router-dom";
 import { ApiClient } from "../../API/Api";
+import { Game } from "../../Model/GameModel";
 
 interface GamePageProps {
   uuid?: string;
 }
 
 export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
-  type Game = {
-    createdAt: string;
-    difficulty: string;
-    gameState: string;
-    name: string;
-    updatedAt: string;
-    uuid: string;
-  };
   const navigate = useNavigate();
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [player, setPlayer] = useState(true); // true = hráč X, false = hráč O
   const [winner, setWinner] = useState<string | null>(null);
   const [game, setGame] = useState<Game>({
+    board: [],
+    initialBoard: [],
     createdAt: "",
     difficulty: "",
     gameState: "",
@@ -53,18 +45,24 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
   );
 
   useEffect(() => {
-    // Odebere třídu "winnerRed" z HTML elementu při načtení stránky
-    document.documentElement.classList.remove("winnerRed");
+    const fetchGame = async () => {
+      // Odebere třídu "winnerRed" z HTML elementu při načtení stránky
+      document.documentElement.classList.remove("winnerRed");
 
-    const url = new URL(window.location.href);
-    const uuid: string | undefined = url.pathname.split("/").pop(); // Poslední část cesty
+      const url = new URL(window.location.href);
+      const uuid: string | undefined = url.pathname.split("/").pop(); // Poslední část cesty
 
-    ApiClient.fetchSpecificGame(
-      typeof uuid == "string" ? uuid : "",
-      setGame,
-      setInitialBoard,
-      setGrid
-    );
+      const fetchedGame: Game | undefined = await ApiClient.fetchSpecificGame(
+        typeof uuid == "string" ? uuid : ""
+      );
+
+      if (fetchedGame !== undefined) {
+        setGame(fetchedGame);
+        setGrid(fetchedGame.board);
+        setInitialBoard(fetchedGame.board);
+      }
+    };
+    fetchGame();
   }, []);
 
   useEffect(() => {
