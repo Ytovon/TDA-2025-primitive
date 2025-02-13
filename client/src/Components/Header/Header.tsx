@@ -52,7 +52,7 @@ export default function Header() {
 
           <div className={styles.links}>
             <div className={styles.dropdown}>
-              <Link to="/game" className={styles.navLink}>
+              <Link to="/game" className={`${styles.navLink} ${styles.link}`}>
                 <p>Chci hrát</p>
                 <img
                   className={styles.scrollableBtn}
@@ -66,18 +66,18 @@ export default function Header() {
                   src={darkMode ? triangleDropdownWhite : triangleDropdownBlack}
                   alt=""
                 />
-                <Link to="/game" className={styles.navLink}>
+                <Link to="/game" className={`${styles.navLink} ${styles.link}`}>
                   Hrát online
                 </Link>
-                <Link to="/game" className={styles.navLink}>
+                <Link to="/game" className={`${styles.navLink} ${styles.link}`}>
                   Hrát sólo
                 </Link>
               </div>
             </div>
-            <Link to="/games" className={styles.navLink}>
+            <Link to="/games" className={`${styles.navLink} ${styles.link}`}>
               Tréninkové úlohy
             </Link>
-            <Link to="/" className={styles.navLink}>
+            <Link to="/" className={`${styles.navLink} ${styles.link}`}>
               Leaderboard
             </Link>
           </div>
@@ -95,7 +95,7 @@ export default function Header() {
             className={styles.user}
           >
             <div className={styles.userContainer}>
-              <h3 className={styles.username}>Zanek-Baklazanek</h3>
+              <p className={styles.username}>Jmeno</p>
               <div className={styles.userStats}>
                 <div className={styles.userStat}>
                   <p>560</p>
@@ -118,13 +118,13 @@ export default function Header() {
                   src={darkMode ? triangleDropdownWhite : triangleDropdownBlack}
                   alt=""
                 />
-                <Link to="/" className={styles.navLink}>
+                <Link to="/" className={`${styles.navLink} ${styles.link}`}>
                   Přehled
                 </Link>
                 <p
                   style={{ cursor: "pointer" }}
                   onClick={() => setRegistered(false)}
-                  className={styles.navLink}
+                  className={`${styles.navLink} ${styles.link}`}
                 >
                   Odhlásit se
                 </p>
@@ -141,38 +141,41 @@ export default function Header() {
           </button>
         </div>
       </div>
-      <div
-        style={{ display: menuIsOpen ? "flex" : "none" }}
-        className={styles.mobileMenu}
-      >
-        <Link
-          to="/game"
-          onClick={() => setMenuIsOpen(false)}
-          className={styles.mobileMenuLink}
+      <div className={styles.mobileMenuWrapper}>
+        <div
+          className={`${styles.mobileMenu} ${menuIsOpen ? styles.open : ""}`}
         >
-          Hrajte online
-        </Link>
-        <Link
-          to="/games"
-          onClick={() => setMenuIsOpen(false)}
-          className={styles.mobileMenuLink}
-        >
-          Tréninkové úlohy
-        </Link>
-        <Link
-          to="/"
-          onClick={() => setMenuIsOpen(false)}
-          className={styles.mobileMenuLink}
-        >
-          Leaderboard
-        </Link>
-        <Link
-          to="/login"
-          onClick={() => setMenuIsOpen(false)}
-          className={styles.mobileMenuLink}
-        >
-          Přihlásit se
-        </Link>
+          <div className={styles.mobileMenuContent}>
+            <Link
+              to="/game"
+              onClick={() => setMenuIsOpen(false)}
+              className={`${styles.mobileMenuLink} ${styles.link}`}
+            >
+              Hrajte online
+            </Link>
+            <Link
+              to="/games"
+              onClick={() => setMenuIsOpen(false)}
+              className={`${styles.mobileMenuLink} ${styles.link}`}
+            >
+              Tréninkové úlohy
+            </Link>
+            <Link
+              to="/"
+              onClick={() => setMenuIsOpen(false)}
+              className={`${styles.mobileMenuLink} ${styles.link}`}
+            >
+              Leaderboard
+            </Link>
+            <Link
+              to="/login"
+              onClick={() => setMenuIsOpen(false)}
+              className={`${styles.mobileMenuLink} ${styles.link}`}
+            >
+              Přihlásit se
+            </Link>
+          </div>
+        </div>
       </div>
     </header>
   );

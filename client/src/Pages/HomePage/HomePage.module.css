@@ -5,7 +5,7 @@
 
 .section {
   color: var(--color-text-primary);
-  width: clamp(800px, 65vw, 1100px);
+  width: clamp(970px, 60vw, 1100px);
   margin: 0 auto;
 }
 

@@ -30,6 +30,10 @@
   width: 19vw;
 }
 
+.playerWrapper {
+  display: flex;
+}
+
 .titleWrapper {
   display: flex;
   gap: 20px;
