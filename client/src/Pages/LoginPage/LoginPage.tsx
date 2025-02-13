@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "./LoginPage.module.css";
 import Header from "../../Components/Header/Header";
 import { Button } from "../../Components/Button/Button";
 import { FacebookIcon, GoogleIcon } from "../../assets/assets";
+import { UserApiClient } from "../../API/UserApi";
+import { UserModel } from "../../Model/UserModel";
 
 export const LoginPage = () => {
   const [isRegistered, setIsRegistered] = useState(false);
-  const [formData, setFormData] = useState({
-    usernameOrEmail: "",
+  const [formData, setFormData] = useState<Partial<UserModel>>({
     username: "",
     email: "",
     password: "",
   });
+  const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -20,10 +22,35 @@ export const LoginPage = () => {
     });
   };
 
-  // Odeslání formuláře
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Odesláno:", formData);
+
+    // Kontrola UI chyb
+    if (
+      formData.username === "" ||
+      formData.password === "" ||
+      formData.email === ""
+    ) {
+      setError("Vyplňte všechny údaje");
+    } else {
+      const newUser = {
+        username: formData.username || "",
+        email: formData.email || "",
+        password: formData.password || "",
+      };
+
+      const response = await UserApiClient.registerUser(newUser);
+      // kontrola backend chyb
+      if (response.status === 409) {
+        setError("Uživatel s tímto jménem nebo emailem již existuje");
+      } else if (response.status === 500) {
+        setError("Chyba serveru");
+      } else if (response.status === 200) {
+        setError("Registrace úspěšná");
+      } else {
+        setError(response.message);
+      }
+    }
   };
 
   const handleIsRegistered = () => {
@@ -31,29 +58,26 @@ export const LoginPage = () => {
   };
 
   return (
-    <body>
+    <div>
       <Header />
 
       <div className={styles.formContainer}>
         <h1 className={styles.pageTitle}>
           {isRegistered ? "Přihlásit se" : "Registrace"}
         </h1>
+        <p className={styles.message} style={{ color: "red" }}>
+          {error}
+        </p>
         <form className={styles.form} onSubmit={handleSubmit}>
           <input
             className={styles.input}
-            style={{ display: isRegistered ? "block" : "none" }}
-            type="text"
-            name="usernameOrEmail"
-            placeholder="Uživatelské jméno nebo email"
-            value={formData.usernameOrEmail}
-            onChange={handleChange}
-          />
-          <input
-            className={styles.input}
-            style={{ display: isRegistered ? "none" : "block" }}
             type="text"
             name="username"
-            placeholder="Uživatelské jméno"
+            placeholder={
+              isRegistered
+                ? "Uživatelské jméno nebo email"
+                : "Uživatelské jméno"
+            }
             value={formData.username}
             onChange={handleChange}
           />
@@ -89,6 +113,12 @@ export const LoginPage = () => {
             </button>
           </p>
         </form>
+        <p>
+          {isRegistered ? "Účet nemáte?" : "Máte účet?"}{" "}
+          <button className={styles.link} onClick={handleIsRegistered}>
+            {isRegistered ? "Zaregistrujte se" : "Přihlásit se"}
+          </button>
+        </p>
 
         <div className={styles.or}>
           <span className={styles.line}></span>
@@ -100,6 +130,6 @@ export const LoginPage = () => {
           <Button text="" image={FacebookIcon} border />
         </div>
       </div>
-    </body>
+    </div>
   );
 };

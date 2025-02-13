@@ -1,5 +1,9 @@
+import { Game } from "../Model/GameModel";
+
 export class ApiClient {
-  static async createGame(game: any, grid: any): Promise<string | void> {
+  static url = "http://localhost:5000/api/v1/games/";
+
+  static async createGame(game: Game, grid: string[][]): Promise<void> {
     try {
       const newGame = {
         name: game.name,
@@ -10,7 +14,7 @@ export class ApiClient {
         updatedAt: new Date().toISOString(),
       };
 
-      const response = await fetch("http://localhost:5000/api/v1/games", {
+      const response = await fetch(this.url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newGame),
@@ -19,53 +23,55 @@ export class ApiClient {
       if (!response.ok)
         throw new Error(`HTTP error! Status: ${response.status}`);
       const data = await response.json();
-      return data.game.uuid;
+      console.log(data);
     } catch (error) {
       console.error("Error creating new game:", error);
     }
   }
 
-  static async fetchSpecificGame(
-    uuid: string,
-    setGame: (game: any) => void,
-    setInitialBoard: (board: any) => void,
-    setGrid: (grid: any) => void
-  ) {
+  static async fetchAllGames(): Promise<Game[] | undefined> {
     try {
-      // pokud je uuid prázdné, spustí se normální hra
-      if (uuid === "") {
-        return;
-      }
-
-      const response = await fetch(
-        `http://localhost:5000/api/v1/Games/${uuid}`
-      );
+      const response = await fetch(this.url);
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
       const data = await response.json();
+      return data as Game[];
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return undefined;
+    }
+  }
 
-      setGame({
-        createdAt: data.createdAt,
-        difficulty: data.difficulty,
-        gameState: data.gameState,
-        name: data.name,
-        updatedAt: data.updatedAt,
-        uuid: uuid,
-      });
+  static async fetchSpecificGame(uuid: string): Promise<Game | undefined> {
+    try {
+      // pokud je uuid prázdné, spustí se normální hra
+      if (uuid === "") {
+        return;
+      }
 
-      setInitialBoard(data.board);
-      setGrid(data.board);
+      const response = await fetch(`${this.url}${uuid}`);
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
       console.log(data.board);
+
+      return data as Game;
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   }
 
-  static async sendGameData(uuid: string, grid: any, game: any): Promise<any> {
+  static async updateGame(
+    uuid: string,
+    grid: string[][],
+    game: Game
+  ): Promise<any> {
     try {
       const editGameData = {
         board: grid,
@@ -73,14 +79,11 @@ export class ApiClient {
         name: game.name,
       };
 
-      const response = await fetch(
-        `http://localhost:5000/api/v1/Games/${uuid}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(editGameData),
-        }
-      );
+      const response = await fetch(`${this.url}${uuid}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editGameData),
+      });
 
       if (!response.ok)
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -88,57 +91,15 @@ export class ApiClient {
       const responseData = await response.json();
       return responseData;
     } catch (error) {
-      console.error("Error in sendGameData:", error);
-    }
-  }
-
-  static async updateGame(
-    uuid: string,
-    setGame: (game: any) => void,
-    setGrid: (grid: any) => void,
-    setHasSymbol?: (value: boolean) => void
-  ) {
-    try {
-      if (uuid === "") return;
-
-      const response = await fetch(
-        `http://localhost:5000/api/v1/Games/${uuid}`
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      setGame({
-        createdAt: data.createdAt,
-        difficulty: data.difficulty,
-        gameState: data.gameState,
-        name: data.name,
-        updatedAt: data.updatedAt,
-        uuid: uuid,
-        bitmap: data.bitmap,
-      });
-
-      if (setHasSymbol) {
-        setHasSymbol(true);
-      }
-
-      setGrid(data.board);
-    } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error in updateGame:", error);
     }
   }
 
   static async deleteGame(uuid: string): Promise<void> {
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/v1/Games/${uuid}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`${this.url}${uuid}`, {
+        method: "DELETE",
+      });
 
       if (!response.ok)
         throw new Error(`HTTP error! Status: ${response.status}`);
