@@ -15,7 +15,7 @@ import {
   symbolO,
   whitePlus,
 } from "../../assets/assets";
-import { ApiClient } from "../../API/Api";
+import { ApiClient } from "../../API/GameApi";
 import { Button } from "../../Components/Button/Button";
 import { useDarkMode } from "../../DarkModeContext";
 import { Link, useNavigate } from "react-router-dom";

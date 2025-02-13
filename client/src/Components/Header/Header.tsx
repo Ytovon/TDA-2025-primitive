@@ -19,7 +19,7 @@ import { useDarkMode } from "../../DarkModeContext";
 export default function Header() {
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
-  const [Registered, setRegistered] = useState(true);
+  const [Registered, setRegistered] = useState(false);
 
   const toggleMenu = () => {
     setMenuIsOpen((prev) => !prev);

@@ -5,9 +5,17 @@ import { Button } from "../../Components/Button/Button";
 import { FacebookIcon, GoogleIcon } from "../../assets/assets";
 import { UserApiClient } from "../../API/UserApi";
 import { UserModel } from "../../Model/UserModel";
+import {
+  getRefreshToken,
+  getAccessToken,
+  setAccessToken,
+  setRefreshToken,
+} from "../../API/tokenstorage"; // Your token storage functions
+import { useNavigate } from "react-router-dom";
 
 export const LoginPage = () => {
-  const [isRegistered, setIsRegistered] = useState(false);
+  const navigate = useNavigate();
+  const [isRegistered, setIsRegistered] = useState(true);
   const [formData, setFormData] = useState<Partial<UserModel>>({
     username: "",
     email: "",
@@ -26,29 +34,63 @@ export const LoginPage = () => {
     e.preventDefault();
 
     // Kontrola UI chyb
-    if (
-      formData.username === "" ||
-      formData.password === "" ||
-      formData.email === ""
-    ) {
-      setError("Vyplňte všechny údaje");
-    } else {
-      const newUser = {
-        username: formData.username || "",
-        email: formData.email || "",
-        password: formData.password || "",
-      };
-
-      const response = await UserApiClient.registerUser(newUser);
-      // kontrola backend chyb
-      if (response.status === 409) {
-        setError("Uživatel s tímto jménem nebo emailem již existuje");
-      } else if (response.status === 500) {
-        setError("Chyba serveru");
-      } else if (response.status === 200) {
-        setError("Registrace úspěšná");
+    if (!isRegistered) {
+      if (
+        formData.username === "" ||
+        formData.password === "" ||
+        formData.email === ""
+      ) {
+        setError("Vyplňte všechny údaje");
       } else {
-        setError(response.message);
+        const newUser = {
+          username: formData.username || "",
+          email: formData.email || "",
+          password: formData.password || "",
+        };
+
+        const response = await UserApiClient.registerUser(newUser);
+        // kontrola backend chyb
+        if (response.status === 409) {
+          setError("Uživatel s tímto jménem nebo emailem již existuje");
+        } else if (response.status === 500) {
+          setError("Chyba serveru");
+        } else if (response.status === 200) {
+          setError("Registrace úspěšná");
+        } else {
+          setError(response.message);
+        }
+      }
+    } else {
+      if (formData.username === "" || formData.password === "") {
+        setError("Vyplňte všechny údaje");
+      } else {
+        const user = {
+          username: formData.username || "",
+          password: formData.password || "",
+        };
+
+        const response: any = await UserApiClient.loginUser({
+          usernameOrEmail: user.username,
+          password: user.password,
+        });
+
+        // kontrola backend chyb
+        if (response.status === 404) {
+          setError("Uživatel neexistuje");
+        } else if (response.status === 500) {
+          setError("Heslo v db chybí");
+        } else if (response.status === 200) {
+          setError("Přihlášení úspěšné");
+        } else if (response.status === 401) {
+          setError("Špatné heslo");
+        }
+
+        setAccessToken(response.accessToken);
+        setRefreshToken(response.refreshToken);
+
+        if (getAccessToken() && getRefreshToken()) {
+          navigate("/");
+        }
       }
     }
   };
@@ -115,7 +157,11 @@ export const LoginPage = () => {
         </form>
         <p>
           {isRegistered ? "Účet nemáte?" : "Máte účet?"}{" "}
-          <button className={styles.link} onClick={handleIsRegistered}>
+          <button
+            className={styles.link}
+            type="submit"
+            onClick={handleIsRegistered}
+          >
             {isRegistered ? "Zaregistrujte se" : "Přihlásit se"}
           </button>
         </p>
