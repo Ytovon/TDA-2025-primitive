@@ -102,6 +102,16 @@ export const LoginPage = () => {
           <button className={styles.submitBtn} type="submit">
             {isRegistered ? "Přihlásit se" : "Založit účet"}
           </button>
+
+          <p>
+            {isRegistered ? "Účet nemáte?" : "Máte účet?"}{" "}
+            <button
+              className={styles.link}
+              onClick={() => handleIsRegistered()}
+            >
+              {isRegistered ? "Zaregistrujte se" : "Přihlásit se"}
+            </button>
+          </p>
         </form>
         <p>
           {isRegistered ? "Účet nemáte?" : "Máte účet?"}{" "}
