@@ -5,6 +5,13 @@ import {
   darkModeLogo,
   barsBlack,
   barsWhite,
+  chevronDownBlack,
+  chevronDownWhite,
+  triangleDropdownBlack,
+  triangleDropdownWhite,
+  eloStar,
+  numberOfUser,
+  userImg,
 } from "../../assets/assets";
 import styles from "./Header.module.css";
 import { useDarkMode } from "../../DarkModeContext";
@@ -12,7 +19,7 @@ import { useDarkMode } from "../../DarkModeContext";
 export default function Header() {
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
-  const [Registered, setRegistered] = useState(false);
+  const [Registered, setRegistered] = useState(true);
 
   const toggleMenu = () => {
     setMenuIsOpen((prev) => !prev);
@@ -35,7 +42,7 @@ export default function Header() {
     <header className={styles.header}>
       <div className={styles.headerContent}>
         <div className={styles.headerContainer}>
-          <Link to="/">
+          <Link to="/" onClick={() => setMenuIsOpen(false)}>
             <img
               className={styles.logo}
               src={darkMode ? lightModeLogo : darkModeLogo}
@@ -46,9 +53,19 @@ export default function Header() {
           <div className={styles.links}>
             <div className={styles.dropdown}>
               <Link to="/game" className={styles.navLink}>
-                Chci hrát
+                <p>Chci hrát</p>
+                <img
+                  className={styles.scrollableBtn}
+                  src={darkMode ? chevronDownBlack : chevronDownWhite}
+                  alt=""
+                />
               </Link>
               <div className={styles.dropdownContent}>
+                <img
+                  className={styles.triangleDropdown}
+                  src={darkMode ? triangleDropdownWhite : triangleDropdownBlack}
+                  alt=""
+                />
                 <Link to="/game" className={styles.navLink}>
                   Hrát online
                 </Link>
@@ -60,16 +77,62 @@ export default function Header() {
             <Link to="/games" className={styles.navLink}>
               Tréninkové úlohy
             </Link>
-            <p className={styles.navLink}>Leaderboard</p>
-          </div>
-
-          <div className={styles.links}>
-            <Link to="/login" className={styles.authLink}>
-              Přihlásit se
+            <Link to="/" className={styles.navLink}>
+              Leaderboard
             </Link>
           </div>
 
-          <button onClick={toggleMenu}>
+          <Link
+            style={{ display: Registered ? "none" : "block" }}
+            to="/login"
+            className={styles.authLink}
+          >
+            Přihlásit se
+          </Link>
+
+          <div
+            style={{ display: Registered ? "flex" : "none" }}
+            className={styles.user}
+          >
+            <div className={styles.userContainer}>
+              <h3 className={styles.username}>Zanek-Baklazanek</h3>
+              <div className={styles.userStats}>
+                <div className={styles.userStat}>
+                  <p>560</p>
+                  <img src={eloStar} alt="" />
+                </div>
+                <div className={styles.userStat}>
+                  <p>4</p>
+                  <img src={numberOfUser} alt="" />
+                </div>
+              </div>
+            </div>
+            <div className={styles.dropdown}>
+              <img className={styles.userImg} src={userImg} alt="user" />
+
+              <div
+                className={`${styles.dropdownContent} ${styles.dropdownContent2}`}
+              >
+                <img
+                  className={styles.triangleDropdown}
+                  src={darkMode ? triangleDropdownWhite : triangleDropdownBlack}
+                  alt=""
+                />
+                <Link to="/" className={styles.navLink}>
+                  Přehled
+                </Link>
+                <p
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setRegistered(false)}
+                  className={styles.navLink}
+                >
+                  Odhlásit se
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <button className={styles.openMobileMenuBtn} onClick={toggleMenu}>
             <img
               className={styles.openMobileMenu}
               src={darkMode ? barsBlack : barsWhite}
@@ -82,16 +145,32 @@ export default function Header() {
         style={{ display: menuIsOpen ? "flex" : "none" }}
         className={styles.mobileMenu}
       >
-        <Link to="/game" className={styles.navLink}>
+        <Link
+          to="/game"
+          onClick={() => setMenuIsOpen(false)}
+          className={styles.mobileMenuLink}
+        >
           Hrajte online
         </Link>
-        <Link to="/games" className={styles.navLink}>
+        <Link
+          to="/games"
+          onClick={() => setMenuIsOpen(false)}
+          className={styles.mobileMenuLink}
+        >
           Tréninkové úlohy
         </Link>
-        <Link to="/" className={styles.navLink}>
+        <Link
+          to="/"
+          onClick={() => setMenuIsOpen(false)}
+          className={styles.mobileMenuLink}
+        >
           Leaderboard
         </Link>
-        <Link to="/login" className={styles.navLink}>
+        <Link
+          to="/login"
+          onClick={() => setMenuIsOpen(false)}
+          className={styles.mobileMenuLink}
+        >
           Přihlásit se
         </Link>
       </div>

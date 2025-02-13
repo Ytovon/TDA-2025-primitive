@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "./EditorPage.module.css";
+import { Game } from "../../Model/GameModel";
 import {
   arrowBlack,
   arrowWhite,
@@ -18,22 +19,13 @@ import { ApiClient } from "../../API/Api";
 import { Button } from "../../Components/Button/Button";
 import { useDarkMode } from "../../DarkModeContext";
 import { Link, useNavigate } from "react-router-dom";
+import { validate } from "uuid";
 
 interface EditorPageProps {
   uuid?: string;
 }
 
 export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
-  type Game = {
-    createdAt: string;
-    difficulty: string;
-    gameState: string;
-    name: string;
-    updatedAt: string;
-    uuid: string;
-    bitmap: string;
-  };
-
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [player, setPlayer] = useState<boolean>(true);
   const [hasSymbol, setHasSymbol] = useState<boolean>(false);
@@ -47,7 +39,12 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
   const [grid, setGrid] = useState<string[][]>(
     Array.from({ length: 15 }, () => Array(15).fill(""))
   );
+  const [initialBoard, setInitialBoard] = useState<string[][]>(
+    Array.from({ length: 15 }, () => Array(15).fill(""))
+  );
   const [game, setGame] = useState<Game>({
+    board: [],
+    initialBoard: [],
     createdAt: "",
     difficulty: "",
     gameState: "",
@@ -59,8 +56,25 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const uuid = new URL(window.location.href).pathname.split("/").pop();
-    if (uuid) ApiClient.updateGame(uuid, setGame, setGrid);
+    const fetchGame = async () => {
+      const uuid: string | undefined = new URL(window.location.href).pathname
+        .split("/")
+        .pop();
+
+      // Pokud není prázdné a je validní, získá hru
+      if (validate(uuid) && uuid !== undefined) {
+        const result: Game | undefined = await ApiClient.fetchSpecificGame(
+          uuid
+        );
+
+        if (result !== undefined) {
+          setGame(result);
+          setGrid(result.board);
+          setInitialBoard(result.board);
+        }
+      }
+    };
+    fetchGame();
   }, []);
   
   useEffect(() => {
@@ -96,14 +110,6 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
       nejtěžší: "Nejtěžší",
     };
     return difficulties[difficulty.toLowerCase()] || "";
-  };
-
-  const handleCreateGame = async () => {
-    const newGameUuid = await ApiClient.createGame(game, grid);
-    if (newGameUuid) {
-      await ApiClient.updateGame(newGameUuid, setGame, setGrid, setHasSymbol);
-      navigate("/games");
-    }
   };
 
   const checkWinner = (grid: string[][]) => {
@@ -159,7 +165,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
     });
   };
 
-  const handleButtonClick = (method: string) => {
+  const handleButtonClick = async (method: string) => {
     const isValid = game.name !== "" && game.difficulty !== "";
     setNameInputStyle({ border: game.name === "" ? "1px solid red" : "none" });
     setDiffInputStyle({
@@ -167,10 +173,15 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
     });
 
     if (isValid) {
-      if (method === "create") handleCreateGame();
-      if (method === "send") {
-        ApiClient.sendGameData(game.uuid, grid, game);
+      try {
+        if (method === "create") {
+          await ApiClient.createGame(game, grid);
+        } else if (method === "send") {
+          await ApiClient.updateGame(game.uuid, grid, game);
+        }
         navigate("/games");
+      } catch (error) {
+        console.error("Error handling button click:", error);
       }
     }
   };

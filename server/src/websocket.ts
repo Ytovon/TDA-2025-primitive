@@ -43,7 +43,7 @@ function initializeWebSocket(server: any): void {
       return;
     }
 
-    jwt.verify(token, ACCESS_TOKEN_SECRET, async (err, decoded) => {
+    jwt.verify(token, ACCESS_TOKEN_SECRET, async (err:any, decoded:any) => {
       if (err) {
         ws.close(4001, "Unauthorized: Invalid token");
         return;
@@ -69,7 +69,7 @@ function initializeWebSocket(server: any): void {
 
         console.log(`User ${(ws as any).user.username} connected with stats:`, (ws as any).user);
 
-        ws.on("message", (message) => handleMessage(ws, message));
+        ws.on("message", (message:any) => handleMessage(ws, message));
         ws.on("close", () => handleDisconnect(ws));
       } catch (err) {
         console.error("Error fetching user stats:", err);

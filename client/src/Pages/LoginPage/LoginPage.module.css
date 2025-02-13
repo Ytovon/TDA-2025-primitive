@@ -1,5 +1,83 @@
-.loginPage {
-  margin-top: 200px;
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 35px;
+  width: 400px;
+  background-color: var(--color-background-light);
+  padding: 50px;
+  border-radius: 5px;
+  color: var(--color-text-primary);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 30%);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pageTitle {
+  font-size: 4rem;
+  color: var(--color-text-primary);
+}
+
+.input {
+  width: calc(100% - 30px);
+  padding: 10px 15px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 5px;
+  background-color: #f1f1f1;
+  color: var(--color-text-inverted);
+}
+.input:focus {
+  outline: none;
+}
+.input::placeholder {
+  color: black;
+}
+
+.submitBtn {
+  width: 100%;
+  background-color: #0070bb;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding-block: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.link {
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+.link:hover {
+  text-decoration: underline;
+}
+
+.or {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  color: var(--color-text-primary);
+}
+
+.line {
+  width: 40%;
+  height: 1px;
+  background-color: var(--color-line);
+}
+
+.socialBtns {
+  width: 100%;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
 }
 
 /*# sourceMappingURL=LoginPage.module.css.map */

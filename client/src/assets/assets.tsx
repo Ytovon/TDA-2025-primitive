@@ -63,6 +63,11 @@ import lightModeLogo from "./images/Think-different-Academy_LOGO_oficialni_1.png
 import darkModeLogo from "./images/Think-different-Academy_LOGO_oficialni_1_dark-mode.png";
 import barsWhite from "./images/bars-staggered-solid-white.svg";
 import barsBlack from "./images/bars-staggered-solid-black.svg";
+import triangleDropdownBlack from "./images/triangleDropdownBlack.svg";
+import triangleDropdownWhite from "./images/triangleDropdownWhite.svg";
+import numberOfUser from "./images/numberOfUser.svg";
+import eloStar from "./images/eloStar.svg";
+import userImg from "./images/user.svg";
 
 /* Footer */
 
@@ -119,4 +124,9 @@ export {
   NotFoundPageImg,
   GoogleIcon,
   FacebookIcon,
+  triangleDropdownBlack,
+  triangleDropdownWhite,
+  eloStar,
+  numberOfUser,
+  userImg,
 };
