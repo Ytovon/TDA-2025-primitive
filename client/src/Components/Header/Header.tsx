@@ -77,7 +77,10 @@ export default function Header() {
             <Link to="/games" className={`${styles.navLink} ${styles.link}`}>
               Tréninkové úlohy
             </Link>
-            <Link to="/" className={`${styles.navLink} ${styles.link}`}>
+            <Link
+              to="/leaderboard"
+              className={`${styles.navLink} ${styles.link}`}
+            >
               Leaderboard
             </Link>
           </div>
@@ -118,7 +121,10 @@ export default function Header() {
                   src={darkMode ? triangleDropdownWhite : triangleDropdownBlack}
                   alt=""
                 />
-                <Link to="/" className={`${styles.navLink} ${styles.link}`}>
+                <Link
+                  to="/userPage/user1"
+                  className={`${styles.navLink} ${styles.link}`}
+                >
                   Přehled
                 </Link>
                 <p
@@ -161,7 +167,7 @@ export default function Header() {
               Tréninkové úlohy
             </Link>
             <Link
-              to="/"
+              to="/leaderboard"
               onClick={() => setMenuIsOpen(false)}
               className={`${styles.mobileMenuLink} ${styles.link}`}
             >
@@ -170,7 +176,7 @@ export default function Header() {
             <Link
               to="/login"
               onClick={() => setMenuIsOpen(false)}
-              className={`${styles.mobileMenuLink} ${styles.link}`}
+              className={`${styles.mobileMenuLink} `}
             >
               Přihlásit se
             </Link>

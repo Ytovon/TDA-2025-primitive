@@ -219,7 +219,7 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
           <div className={styles.game}>
             <div
               className={styles.playerWrapper}
-              style={{ filter: player ? "brightness(1)" : "brightness(0.75)" }}
+              style={{ opacity: player ? 1 : 0.4 }}
             >
               <BlinkingEyesSVG isRedPlayer={true} OnMove={player} />
             </div>
@@ -245,7 +245,7 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
             </div>
             <div
               className={styles.playerWrapper}
-              style={{ filter: player ? "brightness(0.75)" : "brightness(1)" }}
+              style={{ opacity: player ? 0.4 : 1 }}
             >
               <BlinkingEyesSVG isRedPlayer={false} OnMove={!player} />
             </div>

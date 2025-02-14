@@ -62,7 +62,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
     const uuid = new URL(window.location.href).pathname.split("/").pop();
     if (uuid) ApiClient.updateGame(uuid, setGame, setGrid);
   }, []);
-  
+
   useEffect(() => {
     setGame((prevGame) => ({
       ...prevGame,
@@ -182,20 +182,12 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
 
   return (
     <div className={styles.body}>
-      <div className={styles.editorPageMenu}>
-        <Link to="/Games">
-          <img
-            className={styles.arrow}
-            src={darkMode ? arrowBlack : arrowWhite}
-          />
-        </Link>
-        <button onClick={toggleDarkMode}>
-          <img
-            className={styles.darkModeBtn}
-            src={darkMode ? darkModeButton : lightModeButton}
-          />
-        </button>
-      </div>
+      <Link to="/Games">
+        <img
+          className={styles.arrow}
+          src={darkMode ? arrowBlack : arrowWhite}
+        />
+      </Link>
 
       {isThereWinner && (
         <div className={styles.errorWin}>

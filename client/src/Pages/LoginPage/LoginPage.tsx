@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "./LoginPage.module.css";
 import Header from "../../Components/Header/Header";
 import { Button } from "../../Components/Button/Button";
 import { FacebookIcon, GoogleIcon } from "../../assets/assets";
 
 export const LoginPage = () => {
-  const [isRegistered, setIsRegistered] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(true);
   const [formData, setFormData] = useState({
     usernameOrEmail: "",
     username: "",
