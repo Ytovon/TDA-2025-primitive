@@ -60,6 +60,15 @@ export class UserApiClient {
     }
   }
 
+  static async verifyToken(token: string): Promise<boolean> {
+    try {
+      return await userApiInstance.post(`/verify-token`, { token });
+    } catch (error: any) {
+      console.error("Error verifying token:", error);
+      return false;
+    }
+  }
+
   // Logout user
   static async logoutUser(): Promise<string | void> {
     try {

@@ -9,12 +9,12 @@ import {
 
 // Create Axios instances for users and games
 export const userApiInstance = axios.create({
-  baseURL: "https://localhost:5000/api/users/",
+  baseURL: "http://localhost:5000/api/users/",
   timeout: 10000,
 });
 
 export const gameApiInstance = axios.create({
-  baseURL: "https://localhost:5000/api/v1/games/",
+  baseURL: "http://localhost:5000/api/v1/games/",
   timeout: 10000,
 });
 
@@ -41,7 +41,7 @@ const refreshAccessToken = async () => {
     if (!refreshToken) throw new Error("No refresh token available");
 
     const response = await axios.post(
-      "https://localhost:5000/api/users/refresh-token",
+      "http://localhost:5000/api/users/refresh-token",
       { refresh_token: refreshToken }
     );
 
@@ -80,5 +80,11 @@ const responseInterceptor = async (error: any) => {
 };
 
 // Attach interceptor to both Axios instances
-userApiInstance.interceptors.response.use((res) => res, responseInterceptor);
-gameApiInstance.interceptors.response.use((res) => res, responseInterceptor);
+userApiInstance.interceptors.response.use(
+  (res: any) => res,
+  responseInterceptor
+);
+gameApiInstance.interceptors.response.use(
+  (res: any) => res,
+  responseInterceptor
+);

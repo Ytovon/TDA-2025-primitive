@@ -85,10 +85,12 @@ export const LoginPage = () => {
           setError("Špatné heslo");
         }
 
-        setAccessToken(response.accessToken);
-        setRefreshToken(response.refreshToken);
-
-        if (getAccessToken() && getRefreshToken()) {
+        if (
+          response.accessToken !== undefined &&
+          response.refreshToken !== undefined
+        ) {
+          setAccessToken(response.accessToken);
+          setRefreshToken(response.refreshToken);
           navigate("/");
         }
       }
@@ -156,14 +158,11 @@ export const LoginPage = () => {
           </p>
         </form>
         <p>
-          {isRegistered ? "Účet nemáte?" : "Máte účet?"}{" "}
           <button
             className={styles.link}
             type="submit"
             onClick={handleIsRegistered}
-          >
-            {isRegistered ? "Zaregistrujte se" : "Přihlásit se"}
-          </button>
+          ></button>
         </p>
 
         <div className={styles.or}>
