@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { UserApiClient } from "../../API/UserApi";
 import {
   lightModeLogo,
   darkModeLogo,
@@ -15,15 +16,68 @@ import {
 } from "../../assets/assets";
 import styles from "./Header.module.css";
 import { useDarkMode } from "../../DarkModeContext";
+import {
+  getAccessToken,
+  clearTokens,
+  getRefreshToken,
+} from "../../API/tokenstorage"; // Your token storage functions
+import { User, UserModel } from "../../Model/UserModel";
 
 export default function Header() {
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [Registered, setRegistered] = useState(false);
+  const [user, setUser] = useState<User>(new User("", "", "", 0, 0, 0, 0));
 
   const toggleMenu = () => {
     setMenuIsOpen((prev) => !prev);
   };
+
+  // Check if the user is registered on startup
+  useEffect(() => {
+    const verifyUserToken = async () => {
+      const token = getAccessToken();
+      if (token && token !== "") {
+        let isValid: any = await UserApiClient.verifyToken(token);
+        if (!isValid) {
+          // Try to refresh the token if the current token is not valid
+          const refreshToken = getRefreshToken();
+          if (refreshToken) {
+            const newAccessToken = await UserApiClient.refreshToken(
+              refreshToken
+            );
+            if (newAccessToken) {
+              isValid = await UserApiClient.verifyToken(newAccessToken);
+            }
+          }
+        }
+        const valid = isValid.data.valid;
+        const uuid = isValid.data.uuid;
+
+        setRegistered(valid);
+
+        if (valid && uuid) {
+          localStorage.setItem("uuid", uuid);
+        }
+      }
+    };
+
+    const fetchSpecificUserData = async () => {
+      // wait here for half a second
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      const uuid = localStorage.getItem("uuid");
+      if (uuid) {
+        const userData: UserModel | string = await UserApiClient.getUserByUUID(
+          uuid
+        );
+        setUser(userData as User);
+      }
+    };
+
+    verifyUserToken();
+    fetchSpecificUserData();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -95,14 +149,14 @@ export default function Header() {
             className={styles.user}
           >
             <div className={styles.userContainer}>
-              <h3 className={styles.username}>Zanek-Baklazanek</h3>
+              <h3 className={styles.username}>{user.username}</h3>
               <div className={styles.userStats}>
                 <div className={styles.userStat}>
-                  <p>560</p>
+                  <p>{user.elo}</p>
                   <img src={eloStar} alt="" />
                 </div>
                 <div className={styles.userStat}>
-                  <p>4</p>
+                  <p>{user.wins}</p>
                   <img src={numberOfUser} alt="" />
                 </div>
               </div>
@@ -123,7 +177,10 @@ export default function Header() {
                 </Link>
                 <p
                   style={{ cursor: "pointer" }}
-                  onClick={() => setRegistered(false)}
+                  onClick={() => {
+                    setRegistered(false);
+                    clearTokens();
+                  }}
                   className={styles.navLink}
                 >
                   Odhlásit se

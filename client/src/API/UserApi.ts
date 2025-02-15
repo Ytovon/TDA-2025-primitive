@@ -62,7 +62,7 @@ export class UserApiClient {
 
   static async verifyToken(token: string): Promise<boolean> {
     try {
-      return await userApiInstance.post(`/verify-token`, { token });
+      return await userApiInstance.post(`/verifytoken`, { token });
     } catch (error: any) {
       console.error("Error verifying token:", error);
       return false;
@@ -86,6 +86,16 @@ export class UserApiClient {
       return "Logged out successfully";
     } catch (error: any) {
       console.error("Error logging out user:", error);
+      return error.response?.data?.message || error.message;
+    }
+  }
+  // Get user by UUID
+  static async getUserByUUID(uuid: string): Promise<UserModel | string> {
+    try {
+      const response = await userApiInstance.get(`/${uuid}`);
+      return response.data;
+    } catch (error: any) {
+      console.error("Error fetching user by UUID:", error);
       return error.response?.data?.message || error.message;
     }
   }
