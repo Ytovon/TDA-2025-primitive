@@ -1,6 +1,7 @@
-import React, { useContext, createContext, useState } from "react";
+import React, { useContext, createContext, useState, useEffect } from "react";
+import InterceptorSetup from "./interceptorSetup"; // Import the new component
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { DarkModeProvider } from "./DarkModeContext";
@@ -15,42 +16,23 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <HomePage />,
-    errorElement: <NotFoundPage />,
-  },
-  {
-    path: "/Games",
-    element: <CardsPage />,
-  },
-  {
-    path: "/Game",
-    element: <GamePage />,
-  },
-  {
-    path: "/Game/:uuid",
-    element: <GamePage />,
-  },
-  {
-    path: "/EditorPage",
-    element: <EditorPage />,
-  },
-  {
-    path: "/EditorPage/:uuid",
-    element: <EditorPage />,
-  },
-  {
-    path: "/login",
-    element: <LoginPage />,
-  },
-]);
-
 root.render(
   <React.StrictMode>
     <DarkModeProvider>
-      <RouterProvider router={router} />
+      <Router>
+        <InterceptorSetup />{" "}
+        {/* Add the InterceptorSetup component inside Router */}
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/Games" element={<CardsPage />} />
+          <Route path="/Game" element={<GamePage />} />
+          <Route path="/Game/:uuid" element={<GamePage />} />
+          <Route path="/EditorPage" element={<EditorPage />} />
+          <Route path="/EditorPage/:uuid" element={<EditorPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Router>
     </DarkModeProvider>
   </React.StrictMode>
 );

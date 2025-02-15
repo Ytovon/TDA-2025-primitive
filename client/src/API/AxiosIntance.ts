@@ -35,7 +35,7 @@ if (token) {
 }
 
 // Refresh token function
-const refreshAccessToken = async () => {
+const refreshAccessToken = async (navigate: any) => {
   try {
     const refreshToken = getRefreshToken();
     if (!refreshToken) throw new Error("No refresh token available");
@@ -57,34 +57,38 @@ const refreshAccessToken = async () => {
   } catch (error) {
     console.error("Error refreshing access token:", error);
     clearTokens(); // Clear invalid tokens
-    window.location.href = "/login"; // Redirect to login
+    navigate("/login");
     return null;
   }
 };
 
 // Response interceptor for handling 401 errors (token expiration)
-const responseInterceptor = async (error: any) => {
+const responseInterceptor = (navigate: any) => async (error: any) => {
   const originalRequest = error.config;
 
-  if (error.response?.status === 401 && !originalRequest._retry) {
+  if (
+    (error.response?.status === 401 || error.response?.status === 4001) &&
+    !originalRequest._retry
+  ) {
     originalRequest._retry = true; // Avoid infinite loops
 
-    const newToken = await refreshAccessToken();
+    const newToken = await refreshAccessToken(navigate);
     if (newToken) {
       originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
       return axios(originalRequest); // Retry request with new token
     }
   }
-
   return Promise.reject(error);
 };
 
-// Attach interceptor to both Axios instances
-userApiInstance.interceptors.response.use(
-  (res: any) => res,
-  responseInterceptor
-);
-gameApiInstance.interceptors.response.use(
-  (res: any) => res,
-  responseInterceptor
-);
+// Function to setup interceptors
+export const setupInterceptors = (navigate: any) => {
+  userApiInstance.interceptors.response.use(
+    (res: any) => res,
+    responseInterceptor(navigate)
+  );
+  gameApiInstance.interceptors.response.use(
+    (res: any) => res,
+    responseInterceptor(navigate)
+  );
+};
