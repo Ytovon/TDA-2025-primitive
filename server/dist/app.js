@@ -17,7 +17,7 @@ const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS || "http://localhost:3000";
 app.use(cors({
     origin: ALLOWED_ORIGINS.split(","),
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type"]
+    allowedHeaders: ["Content-Type", "Authorization"],
 }));
 // Middleware
 app.use(express.json()); // Parse JSON request bodies
@@ -60,7 +60,9 @@ app.get("*", (req, res) => {
 // Global error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ message: "Internal Server Error", error: err.message });
+    res
+        .status(500)
+        .json({ message: "Internal Server Error", error: err.message });
 });
 export { gameRoutes };
 //# sourceMappingURL=app.js.map

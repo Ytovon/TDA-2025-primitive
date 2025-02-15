@@ -37,7 +37,7 @@ export default function Header() {
   useEffect(() => {
     const verifyUserToken = async () => {
       const token = getAccessToken();
-      if (token && token !== "") {
+      if (token && token !== "" && token !== undefined) {
         let isValid: any = await UserApiClient.verifyToken(token);
         if (!isValid) {
           // Try to refresh the token if the current token is not valid
@@ -51,13 +51,17 @@ export default function Header() {
             }
           }
         }
-        const valid = isValid.data.valid;
-        const uuid = isValid.data.uuid;
+        if (isValid && isValid.data) {
+          const valid = isValid.data.valid;
+          const uuid = isValid.data.uuid;
 
-        setRegistered(valid);
+          setRegistered(isValid);
 
-        if (valid && uuid) {
-          localStorage.setItem("uuid", uuid);
+          if (valid && uuid) {
+            localStorage.setItem("uuid", uuid);
+          }
+        } else {
+          setRegistered(false);
         }
       }
     };

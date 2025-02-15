@@ -152,6 +152,7 @@ export const LoginPage = () => {
             <button
               className={styles.link}
               onClick={() => handleIsRegistered()}
+              type="submit"
             >
               {isRegistered ? "Zaregistrujte se" : "Přihlásit se"}
             </button>
