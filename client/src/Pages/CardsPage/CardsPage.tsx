@@ -17,7 +17,7 @@ import { useDarkMode } from "../../DarkModeContext";
 import { useEffect, useState } from "react";
 import { Footer } from "../../Components/Footer/Footer";
 import BackgroundSymbol from "../../Components/Animation/BackgroundSymbol";
-import { ApiClient } from "../../API/Api";
+import { ApiClient } from "../../API/GameApi";
 
 export default function CardsPage() {
   const { darkMode } = useDarkMode();
