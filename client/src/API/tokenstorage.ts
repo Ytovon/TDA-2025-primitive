@@ -9,8 +9,12 @@ export const setAccessToken = (token: string) =>
 export const setRefreshToken = (token: string) =>
   localStorage.setItem("refresh_token", token);
 
+export const setUUID = (uuid: string) => localStorage.setItem("uuid", uuid);
+
 // Clear both tokens (for logout or token expiration)
 export const clearTokens = () => {
   localStorage.removeItem("refresh_token");
   localStorage.removeItem("access_token");
 };
+
+export const clearUUID = () => localStorage.removeItem("uuid");

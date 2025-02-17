@@ -17,6 +17,7 @@ import { Button } from "../../Components/Button/Button";
 import { useNavigate } from "react-router-dom";
 import { ApiClient } from "../../API/GameApi";
 import { Game } from "../../Model/GameModel";
+import { useWebSocket } from "../../Context/WebSocketContext";
 
 interface GamePageProps {
   uuid?: string;
@@ -24,6 +25,7 @@ interface GamePageProps {
 
 export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
   const navigate = useNavigate();
+
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [player, setPlayer] = useState(true); // true = hráč X, false = hráč O
   const [winner, setWinner] = useState<string | null>(null);
@@ -37,6 +39,8 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
     updatedAt: "",
     uuid,
   });
+  const { isConnected, status, sendMessage } = useWebSocket();
+
   const [grid, setGrid] = useState<string[][]>(
     Array.from({ length: 15 }, () => Array(15).fill(""))
   );
@@ -134,7 +138,6 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
 
   let typeStyle: React.CSSProperties = {};
 
-  //TODO !!!
   if (game.difficulty.toLowerCase() === "začátečník") {
     typeStyle = { color: "#0070BB" };
   } else if (game.difficulty.toLowerCase() === "jednoduchá") {
