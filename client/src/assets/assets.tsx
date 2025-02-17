@@ -41,6 +41,10 @@ import winnerRed from "./images/vyherniZarovkaCervena.svg";
 import cervenaZarovkaX from "./images/cervenaZarovkaX.svg";
 import modraZarovkaO from "./images/modraZarovkaO.svg";
 
+/* ProfilePage */
+
+import profilePageRedImg from "./images/ProfilePageRedImg.svg";
+
 /* EditorPage */
 
 import blueBulb from "./images/modraZarovka.svg";
@@ -129,4 +133,5 @@ export {
   eloStar,
   numberOfUser,
   userImg,
+  profilePageRedImg,
 };

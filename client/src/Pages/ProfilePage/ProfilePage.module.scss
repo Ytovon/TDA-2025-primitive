@@ -1,0 +1,24 @@
+.profilePageContainer {
+  margin-top: 100px;
+  display: flex;
+  width: 1000px;
+  height: auto;
+}
+
+.profileMenu {
+  background-color: var(--secondary1);
+  display: flex;
+  width: 60%;
+}
+
+.profileMenuImg {
+  width: 100px;
+  height: 100px;
+}
+
+.statsMenu {
+  background-color: var(--secondary5);
+  display: flex;
+  width: 40%;
+  height: 100px;
+}
