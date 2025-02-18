@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 import { Request, Response } from "express";
 import { User } from "./models.js"; // Import the User model
+import { promisify } from "util";
 
 // Secret keys (Replace with environment variables in production)
 const ACCESS_TOKEN_SECRET =
@@ -111,7 +112,8 @@ const login = async (req: Request, res: Response): Promise<Response> => {
   }
 };
 
-// Endpoint to refresh the access token
+const verifyTokenInRefreshToken = promisify(jwt.verify);
+
 const refreshToken = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { token } = req.body;
@@ -125,31 +127,23 @@ const refreshToken = async (req: Request, res: Response): Promise<Response> => {
       return res.status(403).json({ message: "Invalid refresh token." });
     }
 
-    // Verify refresh token
-    jwt.verify(
-      token,
-      REFRESH_TOKEN_SECRET,
-      (err: jwt.VerifyErrors | null, decoded: any) => {
-        if (err) {
-          return res
-            .status(403)
-            .json({ message: "Invalid or expired refresh token." });
-        }
+    // Verify refresh token using async/await
+    try {
+      await verifyTokenInRefreshToken(token);
 
-        // Generate new access token
-        const newAccessToken = jwt.sign(
-          { uuid: user.uuid, username: user.username },
-          ACCESS_TOKEN_SECRET,
-          { expiresIn: "15m" }
-        );
+      // Generate new access token
+      const newAccessToken = jwt.sign(
+        { uuid: user.uuid, username: user.username },
+        ACCESS_TOKEN_SECRET,
+        { expiresIn: "15m" }
+      );
 
-        res.json({ accessToken: newAccessToken });
-      }
-    );
-
-    return res
-      .status(200)
-      .json({ message: "Access token refreshed successfully!" });
+      return res.json({ accessToken: newAccessToken });
+    } catch (err) {
+      return res
+        .status(403)
+        .json({ message: "Invalid or expired refresh token." });
+    }
   } catch (err) {
     console.error("Error refreshing token:", err);
     return res.status(500).json({ message: "Internal server error." });

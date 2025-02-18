@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { hasWon, calculateElo, isDraw } from "./MPLogic.js";
 import BitmapGenerator from "./bitmapGenerator.js";
 import { User } from "./models.js";
+import { parse } from "url";
 // Store active games and matchmaking queue
 const games = {};
 const matchmakingQueue = [];
@@ -55,13 +56,16 @@ function initializeWebSocket(server) {
     // Clean up abandoned games every hour
     setInterval(cleanupAbandonedGames, 3600000); // 1 hour
 }
-// Extract JWT from query string or headers
 function extractToken(req) {
     try {
+        // 1. Zkusit token z hlavičky
         const authHeader = req.headers["authorization"];
-        if (!authHeader || !authHeader.startsWith("Bearer "))
-            return null;
-        return authHeader.split(" ")[1];
+        if (authHeader && authHeader.startsWith("Bearer ")) {
+            return authHeader.split(" ")[1];
+        }
+        // 2. Zkusit token z query stringu (pro WebSockety)
+        const urlParts = parse(req.url ?? "", true); // Rozparsovat URL
+        return urlParts.query.token ?? null;
     }
     catch (err) {
         console.error("Error extracting token:", err);

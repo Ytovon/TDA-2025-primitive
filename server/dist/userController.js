@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 import { User } from "./models.js"; // Import the User model
+import { promisify } from "util";
 // Secret keys (Replace with environment variables in production)
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "your-access-token-secret";
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || "your-refresh-token-secret";
@@ -84,7 +85,7 @@ const login = async (req, res) => {
         return res.status(500).json({ message: "Internal server error." });
     }
 };
-// Endpoint to refresh the access token
+const verifyTokenInRefreshToken = promisify(jwt.verify);
 const refreshToken = async (req, res) => {
     try {
         const { token } = req.body;
@@ -96,20 +97,18 @@ const refreshToken = async (req, res) => {
         if (!user) {
             return res.status(403).json({ message: "Invalid refresh token." });
         }
-        // Verify refresh token
-        jwt.verify(token, REFRESH_TOKEN_SECRET, (err, decoded) => {
-            if (err) {
-                return res
-                    .status(403)
-                    .json({ message: "Invalid or expired refresh token." });
-            }
+        // Verify refresh token using async/await
+        try {
+            await verifyTokenInRefreshToken(token);
             // Generate new access token
             const newAccessToken = jwt.sign({ uuid: user.uuid, username: user.username }, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
-            res.json({ accessToken: newAccessToken });
-        });
-        return res
-            .status(200)
-            .json({ message: "Access token refreshed successfully!" });
+            return res.json({ accessToken: newAccessToken });
+        }
+        catch (err) {
+            return res
+                .status(403)
+                .json({ message: "Invalid or expired refresh token." });
+        }
     }
     catch (err) {
         console.error("Error refreshing token:", err);
