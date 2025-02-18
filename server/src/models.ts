@@ -78,12 +78,15 @@ interface UserAttributes {
   uuid: string;
   username: string;
   email: string;
-  password: string;
+  password?: string;
+  googleId?: string;
   elo: number;
   wins: number;
   draws: number;
   losses: number;
   refreshToken?: string;
+  resetPasswordToken?: string;  // <-- Add this
+  resetPasswordExpires?: Date;  // <-- Add this
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -101,8 +104,11 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   get email(): string {
     return this.getDataValue('email');
   }
-  get password(): string {
+  get password(): string | undefined {
     return this.getDataValue('password');
+  }
+  get googleId(): string | undefined {
+    return this.getDataValue('googleId');
   }
   get elo(): number {
     return this.getDataValue('elo');
@@ -146,7 +152,12 @@ User.init(
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
+    },
+    googleId: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      unique: true,
     },
     elo: {
       type: DataTypes.FLOAT,
@@ -172,18 +183,25 @@ User.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    resetPasswordToken: {  // <-- Add this field
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    resetPasswordExpires: {  // <-- Add this field
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     sequelize,
     tableName: "Users",
     timestamps: true,
     defaultScope: {
-      attributes: { exclude: ["password"] }, // Password is excluded by default
+      attributes: { exclude: ["password"] },
     },
     scopes: {
-      withPassword: { attributes: { include: ["password"] } }, // Explicitly include password when needed
+      withPassword: { attributes: { include: ["password"] } },
     },
   }
 );
-
-export { Game, User };
+export { Game, User, UserCreationAttributes };
