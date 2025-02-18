@@ -158,14 +158,14 @@ export default function Header() {
             className={styles.user}
           >
             <div className={styles.userContainer}>
-              <p className={styles.username}>Jmeno</p>
+              <p className={styles.username}>{user.username}</p>
               <div className={styles.userStats}>
                 <div className={styles.userStat}>
-                  <p>560</p>
+                  <p>{user.elo}</p>
                   <img src={eloStar} alt="" />
                 </div>
                 <div className={styles.userStat}>
-                  <p>4</p>
+                  <p>0</p>
                   <img src={numberOfUser} alt="" />
                 </div>
               </div>
@@ -181,21 +181,23 @@ export default function Header() {
                   src={darkMode ? triangleDropdownWhite : triangleDropdownBlack}
                   alt=""
                 />
-                <Link
-                  to="/userPage/user1"
-                  className={`${styles.navLink} ${styles.link}`}
-                  Přehled
-                </Link>
-                <p
-                  style={{ cursor: "pointer" }}
-                  
-                  className={`${styles.navLink} ${styles.link}`}
-                  onClick={() => {
-                    setRegistered(false);
-                    clearTokens();
-                  }}
-                >
-                  Odhlásit se
+                <p>
+                  <Link
+                    to="/userPage/user1"
+                    className={`${styles.navLink} ${styles.link}`}
+                  >
+                    Přehled
+                  </Link>
+                  <p
+                    style={{ cursor: "pointer" }}
+                    className={`${styles.navLink} ${styles.link}`}
+                    onClick={() => {
+                      setRegistered(false);
+                      clearTokens();
+                    }}
+                  >
+                    Odhlásit se
+                  </p>
                 </p>
               </div>
             </div>

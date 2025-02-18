@@ -191,8 +191,6 @@ header {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  height: auto;
-  font-weight: 500;
 }
 
 .userStats {
@@ -212,23 +210,7 @@ header {
 .userStat:nth-child(2) {
   color: #0070bb;
 }
-
-.userImg {
-  width: 45px;
-  height: 45px;
-  cursor: pointer;
-  padding-block: 25px;
-  border-radius: 100%;
-  object-fit: cover;
-}
-
-.dropdownContent2 {
-  top: calc(var(--header-height) + 14px);
-  left: 30px;
-  font-size: 1.1875rem;
-  font-weight: 500;
-}
-.dropdownContent .triangleDropdown {
+.userStat .triangleDropdown {
   position: absolute;
   top: -8px;
   z-index: 1;
@@ -282,6 +264,22 @@ header {
 .dropdownContent2 {
   top: calc(var(--header-height) + 19px);
   left: 96px;
+  font-size: 1.1875rem;
+  font-weight: 500;
+}
+
+.userImg {
+  width: 45px;
+  height: 45px;
+  cursor: pointer;
+  padding-block: 25px;
+  border-radius: 100%;
+  object-fit: cover;
+}
+
+.dropdownContent2 {
+  top: calc(var(--header-height) + 14px);
+  left: 30px;
   font-size: 1.1875rem;
   font-weight: 500;
 }
