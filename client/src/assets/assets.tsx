@@ -47,6 +47,8 @@ import lightbulbBlue from "./images/lightbulbBlue.svg";
 import profilePageRedImg from "./images/ProfilePageRedImg.svg";
 import statsGames from "./images/statsGames.svg";
 import statsTrophy from "./images/statsTrophy.svg";
+import settingFullWhite from "./images/settingFullWhite.svg";
+import historyRotateBlack from "./images/clock-rotate-left-solid.svg";
 
 /* EditorPage */
 
@@ -140,4 +142,6 @@ export {
   profilePageRedImg,
   statsGames,
   statsTrophy,
+  settingFullWhite,
+  historyRotateBlack,
 };

@@ -1,13 +1,18 @@
 .container {
   width: clamp(970px, 60vw, 1100px);
-  height: auto;
   margin: 100px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.userInfoContainer {
   display: flex;
   justify-content: space-between;
 }
 
 .userInfo {
-  width: 60%;
+  width: 65%;
   border-radius: 20px;
   background-color: white;
 }
@@ -16,7 +21,7 @@
   height: 110px;
   position: relative;
   display: grid;
-  grid-template-columns: 25%;
+  grid-template-columns: 22%;
   grid-template-rows: 75%;
   grid-template-areas:
     "logo name setting"
@@ -28,6 +33,7 @@
   background-color: var(--secondary1);
   border-radius: 20px 0 0 0;
   padding: 20px 0 0 20px;
+  z-index: 10;
 }
 
 .userImg {
@@ -50,6 +56,8 @@
 .joinDate {
   grid-area: joinDate;
   align-content: end;
+  padding-left: 2px;
+  color: var(--color-text-primary);
 }
 
 .setting {
@@ -82,19 +90,22 @@
 
 .noteTitle {
   font-size: 1.3rem;
+  color: var(--color-text-primary);
 }
 
 .note {
   width: 80%;
-  height: 90px;
+  height: 100px;
   padding: 0 10px;
   margin-top: 5px;
   border: none;
   background-color: var(--color-background-primary);
+  color: var(--color-text-primary);
+  font-size: 15px;
 }
 
 .statsContainer {
-  width: 35%;
+  width: 30%;
   background-color: white;
   border-radius: 20px;
 }
@@ -121,15 +132,113 @@
 .stats {
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  gap: 15px;
+  padding: 25px;
 }
 
 .stat {
   display: flex;
   gap: 7px;
-  font-size: 18px;
+  font-size: 20px;
+  columns: var(--color-text-primary);
 }
 
 .statImg {
+  width: 24px;
+}
+
+.redBold {
+  font-weight: 600;
+  color: var(--secondary5);
+}
+
+.gameHistory {
+  min-height: 250px;
+  padding: 30px;
+  border-radius: 20px;
+  background-color: white;
+}
+
+.gameHistoryTitle {
+  display: flex;
+  gap: 10px;
+}
+
+.gameHistoryImg {
   width: 20px;
+}
+
+.gameHistoryTable {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+
+  tr {
+    height: 32px;
+    text-align: center;
+
+    &:nth-child(1) {
+      background-color: var(--color-background-secondary);
+    }
+  }
+}
+
+@media screen and (max-width: 1100px) {
+  .container {
+    width: 700px;
+  }
+
+  .userInfoContainer {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .userInfoContainer,
+  .container {
+    gap: 30px;
+  }
+
+  .userInfo {
+    width: 100%;
+  }
+
+  .statsContainer {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .container {
+    width: clamp(300px, 80vw, 800px);
+  }
+
+  .username,
+  .joinDate {
+    padding-left: 15px;
+    text-align: left;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .username,
+  .joinDate {
+    padding-left: 25px;
+  }
+
+  .userImgContainer {
+    padding: 25px 0 0 10px;
+  }
+
+  .userImg {
+    width: 30px;
+    padding: 18px;
+  }
+
+  .username {
+    font-size: 2rem;
+  }
+
+  .settingBtn {
+    width: 20px;
+  }
 }
