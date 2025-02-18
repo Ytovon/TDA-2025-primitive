@@ -1,63 +1,86 @@
 import React, { useState } from "react";
 import styles from "./ProfilePage.module.css";
 import Header from "../../Components/Header/Header";
-import { profilePageRedImg, settingsButton } from "../../assets/assets";
+import {
+  lightbulbBlue,
+  modraZarovkaO,
+  profilePageRedImg,
+  settingsButton,
+  statsGames,
+  statsTrophy,
+  zarovkaFigma,
+} from "../../assets/assets";
 
 export const ProfilePage = () => {
   return (
-    <div className={styles.body}>
+    <div className={styles.ProfilePage}>
       <Header />
 
-      <div className={styles.profilePageContainer}>
-        <div className={styles.profile}>
-          <div className={styles.profileMenu}>
-            <img src="" alt="" />
-            <h3 className={styles.profileTitle}>Jmeno</h3>
-            <div className={styles.profileSettings}>
-              <p>upravit</p>
+      <div className={styles.container}>
+        <div className={styles.userInfo}>
+          <div className={styles.userInfoHeader}>
+            <div className={styles.userImgContainer}>
               <img
-                className={styles.profileMenuImg}
+                className={styles.userImg}
+                src={lightbulbBlue}
+                alt="profile Picture"
+              />
+            </div>
+            <h1 className={styles.username}>Username</h1>
+            <p className={styles.joinDate}>
+              Členem od <b>16. 02. 2025</b>
+            </p>
+            <div className={styles.setting}>
+              <p>Upravit</p>
+              <img
+                className={styles.settingBtn}
                 src={settingsButton}
-                alt="settings"
+                alt="setting"
               />
             </div>
           </div>
-          <div>
-            <h5>Poznámka</h5>
-            <input type="text" />
-          </div>
-        </div>
-        <div className={styles.stats}>
-          <div className={styles.statsMenu}>
-            <h2 className={styles.statsTitle}>420</h2>
-            <img
-              className={styles.statsImg}
-              src={profilePageRedImg}
-              alt="trophy"
+
+          <div className={styles.noteContainer}>
+            <h3 className={styles.noteTitle}>Poznámka</h3>
+            <input
+              value={"Jsem average borec co nemá život."}
+              className={styles.note}
+              type="text"
+              disabled
             />
           </div>
-          <div>
-            <div>
-              <img src="" alt="" />
-              <p>Hry</p>
-              <p>16</p>
+        </div>
+        <div className={styles.statsContainer}>
+          <div className={styles.statsHeader}>
+            <h1 className={styles.statsTitle}>420</h1>
+            <img className={styles.statsImg} src={profilePageRedImg} />
+          </div>
+
+          <div className={styles.stats}>
+            <div className={styles.stat}>
+              <img className={styles.statImg} src={statsGames} />
+              <p>
+                Hry: <span>16</span>
+              </p>
             </div>
-            <div>
-              <img src="" alt="" />
-              <p>Výhry:</p>
-              <p>2</p>
+            <div className={styles.stat}>
+              <img className={styles.statImg} src={statsTrophy} />
+              <p>
+                Výhry: <span>2</span>
+              </p>
             </div>
-            <div>
-              <img src="" alt="" />
-              <p>Prohry:</p>
-              <p>14</p>
+            <div className={styles.stat}>
+              <img className={styles.statImg} src={statsTrophy} />
+              <p>
+                Prohry: <span>14</span>
+              </p>
             </div>
-            <div>
-              <p>WR:</p>
-              <p>14%</p>
+            <div className={styles.stat}>
+              <p>
+                WR: <span>14%</span>
+              </p>
             </div>
           </div>
-          <img src="" alt="" />
         </div>
       </div>
     </div>

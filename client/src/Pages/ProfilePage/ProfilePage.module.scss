@@ -1,24 +1,135 @@
-.profilePageContainer {
-  margin-top: 100px;
-  display: flex;
-  width: 1000px;
+.container {
+  width: clamp(970px, 60vw, 1100px);
   height: auto;
+  margin: 100px auto;
+  display: flex;
+  justify-content: space-between;
 }
 
-.profileMenu {
-  background-color: var(--secondary1);
-  display: flex;
+.userInfo {
   width: 60%;
+  border-radius: 20px;
+  background-color: white;
 }
 
-.profileMenuImg {
-  width: 100px;
-  height: 100px;
+.userInfoHeader {
+  height: 110px;
+  position: relative;
+  display: grid;
+  grid-template-columns: 25%;
+  grid-template-rows: 75%;
+  grid-template-areas:
+    "logo name setting"
+    "logoBackground joinDate idk";
 }
 
-.statsMenu {
-  background-color: var(--secondary5);
+.userImgContainer {
+  grid-area: logo logoBackground;
+  background-color: var(--secondary1);
+  border-radius: 20px 0 0 0;
+  padding: 20px 0 0 20px;
+}
+
+.userImg {
+  width: 35px;
+  padding: 22px;
+  background-color: #91bedc;
+  border: 4px solid white;
+  border-radius: 15px;
+}
+
+.username {
+  grid-area: name;
+  background-color: var(--secondary1);
+  color: white;
+  align-content: end;
+  padding-bottom: 7px;
+  font-size: 2.4rem;
+}
+
+.joinDate {
+  grid-area: joinDate;
+  align-content: end;
+}
+
+.setting {
+  grid-area: setting;
   display: flex;
-  width: 40%;
-  height: 100px;
+  justify-content: right;
+  align-items: end;
+  gap: 5px;
+  padding: 0 20px 12px 0;
+  font-weight: 500;
+  color: white;
+  background-color: var(--secondary1);
+  border-radius: 0 20px 0 0;
+}
+
+.settingBtn {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+
+  &:hover {
+    transform: rotate(45deg);
+  }
+}
+
+.noteContainer {
+  padding: 40px 21px 50px;
+}
+
+.noteTitle {
+  font-size: 1.3rem;
+}
+
+.note {
+  width: 80%;
+  height: 90px;
+  padding: 0 10px;
+  margin-top: 5px;
+  border: none;
+  background-color: var(--color-background-primary);
+}
+
+.statsContainer {
+  width: 35%;
+  background-color: white;
+  border-radius: 20px;
+}
+
+.statsHeader {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  background-color: var(--secondary5);
+  height: calc(110px * 0.75);
+  border-radius: 20px 20px 0 0;
+}
+
+.statsTitle {
+  color: white;
+  font-size: 3rem;
+  align-content: center;
+}
+
+.statsImg {
+  width: 40px;
+}
+
+.stats {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.stat {
+  display: flex;
+  gap: 7px;
+  font-size: 18px;
+}
+
+.statImg {
+  width: 20px;
 }

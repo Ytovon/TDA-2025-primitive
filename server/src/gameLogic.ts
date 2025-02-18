@@ -60,7 +60,9 @@ const getGameState = (board: string[][]): GameStateResponse => {
   }
 
   // Check for midgame scenarios: Four blocked by wall or opponent's symbol
-  const fourBlocked = hasBlockedFour(board, currentPlayer) || hasOpponentBlockedFour(board, currentPlayer);
+  const fourBlocked =
+    hasBlockedFour(board, currentPlayer) ||
+    hasOpponentBlockedFour(board, currentPlayer);
   debugInfo.fourBlocked = fourBlocked;
 
   // Classify based on the number of rounds
@@ -124,7 +126,9 @@ const hasBlockedFour = (board: string[][], player: string): boolean => {
       if (board[row][col] === player) {
         for (const { row: dRow, col: dCol } of directions) {
           if (checkBlockedFourCondition(board, player, row, col, dRow, dCol)) {
-            console.log(`Blocked four detected for ${player} at (${row}, ${col})`);
+            console.log(
+              `Blocked four detected for ${player} at (${row}, ${col})`
+            );
             return true;
           }
         }

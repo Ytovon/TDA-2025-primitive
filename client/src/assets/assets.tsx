@@ -43,7 +43,10 @@ import modraZarovkaO from "./images/modraZarovkaO.svg";
 
 /* ProfilePage */
 
+import lightbulbBlue from "./images/lightbulbBlue.svg";
 import profilePageRedImg from "./images/ProfilePageRedImg.svg";
+import statsGames from "./images/statsGames.svg";
+import statsTrophy from "./images/statsTrophy.svg";
 
 /* EditorPage */
 
@@ -133,5 +136,8 @@ export {
   eloStar,
   numberOfUser,
   userImg,
+  lightbulbBlue,
   profilePageRedImg,
+  statsGames,
+  statsTrophy,
 };
