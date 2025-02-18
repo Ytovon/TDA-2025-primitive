@@ -1,61 +1,20 @@
 import express from "express";
-import { register, login, refreshToken, logout, getAllUsers, getUserByUUID, updateUserByUUID, deleteUserByUUID, verifyToken, } from "./userController.js";
+import { register, login, refreshToken, logout, getAllUsers, getUserByUUID, updateUserByUUID, deleteUserByUUID, googleLogin, googleCallback, forgotPassword } // <-- Import forgotPassword function
+ from "./userController.js";
 const router = express.Router();
 // Public routes (no authentication required)
-router.post("/register", (req, res) => {
-    register(req, res).catch((err) => {
-        console.error("Error in register route:", err);
-        res.status(500).json({ message: "Internal server error." });
-    });
-});
-router.post("/login", (req, res) => {
-    login(req, res).catch((err) => {
-        console.error("Error in login route:", err);
-        res.status(500).json({ message: "Internal server error." });
-    });
-});
-router.post("/refresh-token", (req, res) => {
-    refreshToken(req, res).catch((err) => {
-        console.error("Error in refreshToken route:", err);
-        res.status(500).json({ message: "Internal server error." });
-    });
-});
-router.post("/logout", (req, res) => {
-    logout(req, res).catch((err) => {
-        console.error("Error in logout route:", err);
-        res.status(500).json({ message: "Internal server error." });
-    });
-});
-router.post("/verify-token", (req, res) => {
-    verifyToken(req, res).catch((err) => {
-        console.error("Error in verifyToken route:", err);
-        res.status(500).json({ message: "Internal server error." });
-    });
-});
+router.post("/register", register);
+router.post("/login", login);
+router.post("/refresh-token", refreshToken);
+router.post("/logout", logout);
+router.post("/forgot-password", forgotPassword); // <-- Add forgot-password route
+// Google OAuth routes
+router.get("/auth/google", googleLogin);
+router.get("/auth/google/callback", googleCallback);
 // Protected routes (authentication required)
-router.get("/", (req, res) => {
-    getAllUsers(req, res).catch((err) => {
-        console.error("Error in getAllUsers route:", err);
-        res.status(500).json({ message: "Internal server error." });
-    });
-});
-router.get("/:uuid", (req, res) => {
-    getUserByUUID(req, res).catch((err) => {
-        console.error("Error in getUserByUUID route:", err);
-        res.status(500).json({ message: "Internal server error." });
-    });
-});
-router.put("/:uuid", (req, res) => {
-    updateUserByUUID(req, res).catch((err) => {
-        console.error("Error in updateUserByUUID route:", err);
-        res.status(500).json({ message: "Internal server error." });
-    });
-});
-router.delete("/:uuid", (req, res) => {
-    deleteUserByUUID(req, res).catch((err) => {
-        console.error("Error in deleteUserByUUID route:", err);
-        res.status(500).json({ message: "Internal server error." });
-    });
-});
+router.get("/users", getAllUsers);
+router.get("/users/:uuid", getUserByUUID);
+router.put("/users/:uuid", updateUserByUUID);
+router.delete("/users/:uuid", deleteUserByUUID);
 export default router;
 //# sourceMappingURL=userRoutes.js.map
