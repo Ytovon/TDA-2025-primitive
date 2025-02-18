@@ -12,6 +12,7 @@ export const LoginPage = () => {
   const navigate = useNavigate();
   const [isRegistered, setIsRegistered] = useState(true);
   const [formData, setFormData] = useState<Partial<UserModel>>({
+
     username: "",
     email: "",
     password: "",
@@ -155,12 +156,12 @@ export const LoginPage = () => {
             <button
               className={styles.link}
               onClick={() => handleIsRegistered()}
-              type="submit"
             >
               {isRegistered ? "Zaregistrujte se" : "Přihlásit se"}
             </button>
           </p>
         </form>
+
         <p>
           <button
             className={styles.link}

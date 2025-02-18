@@ -2,15 +2,13 @@
   display: flex;
   flex-direction: column;
   gap: 35px;
-  width: 400px;
+  width: 380px;
   background-color: var(--color-background-light);
-  padding: 50px;
+  padding: 40px 50px;
   border-radius: 5px;
   color: var(--color-text-primary);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, 30%);
+  margin: 0 auto;
+  margin-block: 100px 20px;
 }
 
 .form {
@@ -48,9 +46,17 @@
   color: white;
   font-size: 1.1rem;
   font-weight: 500;
-  padding-block: 8px;
+  padding-block: 6px;
   border-radius: 5px;
   cursor: pointer;
+  border: 3px solid #00000000;
+  transition: 0.3s ease;
+
+  &:hover {
+    color: #005a8d;
+    background-color: #00000000;
+    border: 3px solid #0070bb;
+  }
 }
 
 .link {

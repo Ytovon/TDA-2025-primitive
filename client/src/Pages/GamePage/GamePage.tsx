@@ -218,7 +218,12 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
           <h2 className={styles.gameState}>{game.gameState}</h2>
 
           <div className={styles.game}>
-            <BlinkingEyesSVG isRedPlayer={true} OnMove={player} />
+            <div
+              className={styles.playerWrapper}
+              style={{ opacity: player ? 1 : 0.4 }}
+            >
+              <BlinkingEyesSVG isRedPlayer={true} OnMove={player} />
+            </div>
 
             <div className={styles.gameGrid}>
               {Array.isArray(grid) &&
@@ -239,7 +244,12 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
                   ))
                 )}
             </div>
-            <BlinkingEyesSVG isRedPlayer={false} OnMove={!player} />
+            <div
+              className={styles.playerWrapper}
+              style={{ opacity: player ? 0.4 : 1 }}
+            >
+              <BlinkingEyesSVG isRedPlayer={false} OnMove={!player} />
+            </div>
           </div>
         </div>
       </div>

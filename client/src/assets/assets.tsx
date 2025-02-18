@@ -67,7 +67,7 @@ import triangleDropdownBlack from "./images/triangleDropdownBlack.svg";
 import triangleDropdownWhite from "./images/triangleDropdownWhite.svg";
 import numberOfUser from "./images/numberOfUser.svg";
 import eloStar from "./images/eloStar.svg";
-import userImg from "./images/user.svg";
+import userImg from "./images/userImageTemplate.jpg";
 
 /* Footer */
 

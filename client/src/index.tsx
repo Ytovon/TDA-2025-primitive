@@ -12,6 +12,8 @@ import NotFoundPage from "./Pages/NotFoundPage/NotFoundPage";
 import HomePage from "./Pages/HomePage/HomePage";
 import { EditorPage } from "./Pages/EditorPage/EditorPage";
 import { LoginPage } from "./Pages/LoginPage/LoginPage";
+import { UserPage } from "./Pages/UserPage/UserPage";
+import { Leaderboard } from "./Pages/LeaderboardPage/Leaderboard";
 import { LoadingPage } from "./Pages/LoadingPage/LoadingPage";
 import { useNavigate } from "react-router-dom";
 
