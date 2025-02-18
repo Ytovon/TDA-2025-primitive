@@ -8,7 +8,9 @@
     "strict": true,
     "noEmit": false, // This ensures TypeScript outputs JavaScript
     "esModuleInterop": true, // Allows default-like import compatibility
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

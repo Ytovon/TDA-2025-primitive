@@ -5,12 +5,7 @@ import { Button } from "../../Components/Button/Button";
 import { FacebookIcon, GoogleIcon } from "../../assets/assets";
 import { UserApiClient } from "../../API/UserApi";
 import { UserModel } from "../../Model/UserModel";
-import {
-  getRefreshToken,
-  getAccessToken,
-  setAccessToken,
-  setRefreshToken,
-} from "../../API/tokenstorage"; // Your token storage functions
+import { setAccessToken, setRefreshToken } from "../../API/tokenstorage"; // Your token storage functions
 import { useNavigate } from "react-router-dom";
 
 export const LoginPage = () => {
@@ -30,70 +25,78 @@ export const LoginPage = () => {
     });
   };
 
+  const register = async () => {
+    if (
+      formData.username === "" ||
+      formData.password === "" ||
+      formData.email === ""
+    ) {
+      setError("Vyplňte všechny údaje");
+    } else {
+      const newUser = {
+        username: formData.username || "",
+        email: formData.email || "",
+        password: formData.password || "",
+      };
+
+      const response = await UserApiClient.registerUser(newUser);
+      // kontrola backend chyb
+      if (response.status === 409) {
+        setError("Uživatel s tímto jménem nebo emailem již existuje");
+      } else if (response.status === 500) {
+        setError("Chyba serveru");
+      } else if (response.status === 200) {
+        setError("Registrace úspěšná");
+      } else {
+        setError(response.message);
+      }
+    }
+  };
+
+  const login = async () => {
+    if (formData.username === "" || formData.password === "") {
+      setError("Vyplňte všechny údaje");
+    } else {
+      const user = {
+        username: formData.username || "",
+        password: formData.password || "",
+      };
+
+      const response: any = await UserApiClient.loginUser({
+        usernameOrEmail: user.username,
+        password: user.password,
+      });
+
+      // kontrola backend chyb
+      if (response.status === 404) {
+        setError("Uživatel neexistuje");
+      } else if (response.status === 500) {
+        setError("Heslo v db chybí");
+      } else if (response.status === 200) {
+        setError("Přihlášení úspěšné");
+      } else if (response.status === 401) {
+        setError("Špatné heslo");
+      }
+
+      if (
+        response.accessToken !== undefined &&
+        response.refreshToken !== undefined
+      ) {
+        setAccessToken(response.accessToken);
+        setRefreshToken(response.refreshToken);
+        navigate("/");
+      }
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Kontrola UI chyb
     if (!isRegistered) {
-      if (
-        formData.username === "" ||
-        formData.password === "" ||
-        formData.email === ""
-      ) {
-        setError("Vyplňte všechny údaje");
-      } else {
-        const newUser = {
-          username: formData.username || "",
-          email: formData.email || "",
-          password: formData.password || "",
-        };
-
-        const response = await UserApiClient.registerUser(newUser);
-        // kontrola backend chyb
-        if (response.status === 409) {
-          setError("Uživatel s tímto jménem nebo emailem již existuje");
-        } else if (response.status === 500) {
-          setError("Chyba serveru");
-        } else if (response.status === 200) {
-          setError("Registrace úspěšná");
-        } else {
-          setError(response.message);
-        }
-      }
+      await register();
+      await login();
     } else {
-      if (formData.username === "" || formData.password === "") {
-        setError("Vyplňte všechny údaje");
-      } else {
-        const user = {
-          username: formData.username || "",
-          password: formData.password || "",
-        };
-
-        const response: any = await UserApiClient.loginUser({
-          usernameOrEmail: user.username,
-          password: user.password,
-        });
-
-        // kontrola backend chyb
-        if (response.status === 404) {
-          setError("Uživatel neexistuje");
-        } else if (response.status === 500) {
-          setError("Heslo v db chybí");
-        } else if (response.status === 200) {
-          setError("Přihlášení úspěšné");
-        } else if (response.status === 401) {
-          setError("Špatné heslo");
-        }
-
-        if (
-          response.accessToken !== undefined &&
-          response.refreshToken !== undefined
-        ) {
-          setAccessToken(response.accessToken);
-          setRefreshToken(response.refreshToken);
-          navigate("/");
-        }
-      }
+      await login();
     }
   };
 

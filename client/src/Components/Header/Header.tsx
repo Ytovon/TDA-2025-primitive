@@ -20,6 +20,8 @@ import {
   getAccessToken,
   clearTokens,
   getRefreshToken,
+  setUUID,
+  clearUUID,
 } from "../../API/tokenstorage"; // Your token storage functions
 import { User, UserModel } from "../../Model/UserModel";
 
@@ -58,7 +60,7 @@ export default function Header() {
           setRegistered(isValid);
 
           if (valid && uuid) {
-            localStorage.setItem("uuid", uuid);
+            setUUID(uuid);
           }
         } else {
           setRegistered(false);
@@ -124,7 +126,7 @@ export default function Header() {
                   src={darkMode ? triangleDropdownWhite : triangleDropdownBlack}
                   alt=""
                 />
-                <Link to="/game" className={styles.navLink}>
+                <Link to="/loading" className={styles.navLink}>
                   Hrát online
                 </Link>
                 <Link to="/game" className={styles.navLink}>

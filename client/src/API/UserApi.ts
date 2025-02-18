@@ -1,5 +1,12 @@
 import { userApiInstance } from "../API/AxiosIntance"; // Import your shared Axios instance
 import { UserModel } from "../Model/UserModel.js";
+import {
+  getRefreshToken,
+  setAccessToken,
+  setRefreshToken,
+  clearTokens,
+  clearUUID,
+} from "../API/tokenstorage"; // Your token storage functions
 
 export class UserApiClient {
   // Register new user
@@ -33,8 +40,8 @@ export class UserApiClient {
       const { user, accessToken, refreshToken } = response.data;
 
       // Store the tokens (You can adjust this based on your storage logic)
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
+      setRefreshToken(refreshToken);
+      setAccessToken(accessToken);
 
       return { user, accessToken, refreshToken };
     } catch (error: any) {
@@ -44,14 +51,16 @@ export class UserApiClient {
   }
 
   // Refresh access token
-  static async refreshToken(refreshToken: string): Promise<string | void> {
+  static async refreshToken(refreshToken: string): Promise<string> {
     try {
       const response = await userApiInstance.post(`/refresh-token`, {
         token: refreshToken,
       });
 
       const newAccessToken = response.data.accessToken;
-      localStorage.setItem("accessToken", newAccessToken);
+      if (newAccessToken) {
+        setAccessToken(newAccessToken);
+      }
 
       return newAccessToken;
     } catch (error: any) {
@@ -70,9 +79,9 @@ export class UserApiClient {
   }
 
   // Logout user
-  static async logoutUser(): Promise<string | void> {
+  static async logoutUser(): Promise<string> {
     try {
-      const refreshToken = localStorage.getItem("refreshToken");
+      const refreshToken = getRefreshToken();
 
       if (refreshToken) {
         await userApiInstance.post(`/logout`, {
@@ -80,8 +89,9 @@ export class UserApiClient {
         });
       }
 
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
+      // Clear tokens from storage
+      clearTokens();
+      clearUUID();
 
       return "Logged out successfully";
     } catch (error: any) {
