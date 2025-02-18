@@ -1,4 +1,5 @@
 import express, { Request, Response } from "express";
+
 import { 
   register, 
   login, 
@@ -11,7 +12,7 @@ import {
   googleLogin, 
   googleCallback,
   forgotPassword // <-- Import forgotPassword function
-} from "./userController.js";
+from "./userController.js";
 
 const router = express.Router();
 
