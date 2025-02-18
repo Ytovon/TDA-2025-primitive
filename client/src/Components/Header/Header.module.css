@@ -136,6 +136,11 @@ header {
   color: white;
 }
 
+.mobileMenuLink {
+  color: var(--color-text-primary);
+  text-decoration: none;
+}
+
 .dropdown {
   display: inline-block;
   height: 95px;
@@ -186,6 +191,8 @@ header {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  height: auto;
+  font-weight: 500;
 }
 
 .userStats {
@@ -218,6 +225,63 @@ header {
 .dropdownContent2 {
   top: calc(var(--header-height) + 14px);
   left: 30px;
+  font-size: 1.1875rem;
+  font-weight: 500;
+}
+.dropdownContent .triangleDropdown {
+  position: absolute;
+  top: -8px;
+  z-index: 1;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.user {
+  display: flex;
+  gap: 10px;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+}
+
+.username {
+  user-select: text;
+}
+
+.userContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.userStats {
+  display: flex;
+  gap: 10px;
+  justify-content: right;
+}
+
+.userStat {
+  display: flex;
+  gap: 5px;
+  font-weight: 600;
+}
+.userStat:nth-child(1) {
+  color: #e31837;
+}
+.userStat:nth-child(2) {
+  color: #0070bb;
+}
+
+.userImg {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  padding-block: 25px;
+}
+
+.dropdownContent2 {
+  top: calc(var(--header-height) + 19px);
+  left: 96px;
   font-size: 1.1875rem;
   font-weight: 500;
 }

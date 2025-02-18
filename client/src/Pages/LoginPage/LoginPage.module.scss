@@ -29,7 +29,7 @@
   border: none;
   border-radius: 5px;
   background-color: #f1f1f1;
-  color: black;
+  color: var(--color-text-inverted);
 
   &:focus {
     outline: none;

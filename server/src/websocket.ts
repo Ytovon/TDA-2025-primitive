@@ -1,9 +1,11 @@
 import WebSocket, { WebSocketServer } from "ws";
+import http from "http";
 import jwt from "jsonwebtoken";
 import { Request } from "express";
 import { hasWon, calculateElo, isDraw } from "./MPLogic.js";
 import BitmapGenerator from "./bitmapGenerator.js";
 import { User } from "./models.js";
+import { parse } from "url";
 
 interface UserStats {
   uuid: string;
@@ -24,10 +26,14 @@ interface Game {
 
 // Store active games and matchmaking queue
 const games: { [key: string]: Game } = {};
-const matchmakingQueue: WebSocket[] = [];
+const matchmakingQueue: { ws: WebSocket; user: UserStats }[] = [];
 
 // Secret key for verifying tokens
-const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "your-access-token-secret";
+const ACCESS_TOKEN_SECRET =
+  process.env.ACCESS_TOKEN_SECRET || "your-access-token-secret";
+
+// Define the maximum allowed ELO difference for matching players
+const MAX_ELO_DIFFERENCE = 100; // Players can be matched if their ELO difference is within this range
 
 function initializeWebSocket(server: any): void {
   const wss = new WebSocketServer({ server });
@@ -40,7 +46,7 @@ function initializeWebSocket(server: any): void {
       return;
     }
 
-    jwt.verify(token, ACCESS_TOKEN_SECRET, async (err, decoded) => {
+    jwt.verify(token, ACCESS_TOKEN_SECRET, async (err: any, decoded: any) => {
       if (err) {
         ws.close(4001, "Unauthorized: Invalid token");
         return;
@@ -48,7 +54,9 @@ function initializeWebSocket(server: any): void {
 
       // Fetch the user's stats from the database
       try {
-        const user = await User.findOne({ where: { uuid: (decoded as any).uuid } });
+        const user = await User.findOne({
+          where: { uuid: (decoded as any).uuid },
+        });
         if (!user) {
           ws.close(4001, "Unauthorized: User not found");
           return;
@@ -64,9 +72,12 @@ function initializeWebSocket(server: any): void {
           losses: user.losses ?? 0,
         };
 
-        console.log(`User ${(ws as any).user.username} connected with stats:`, (ws as any).user);
+        console.log(
+          `User ${(ws as any).user.username} connected with stats:`,
+          (ws as any).user
+        );
 
-        ws.on("message", (message) => handleMessage(ws, message));
+        ws.on("message", (message: any) => handleMessage(ws, message));
         ws.on("close", () => handleDisconnect(ws));
       } catch (err) {
         console.error("Error fetching user stats:", err);
@@ -81,14 +92,17 @@ function initializeWebSocket(server: any): void {
   setInterval(cleanupAbandonedGames, 3600000); // 1 hour
 }
 
-// Extract JWT from query string or headers
-function extractToken(req: Request): string | null {
+function extractToken(req: http.IncomingMessage): string | null {
   try {
-    const urlParams = new URLSearchParams(req.url.split("?")[1]);
-    const tokenFromQuery = urlParams.get("token");
-    const authHeader = req.headers.authorization;
-    const tokenFromHeader = authHeader && authHeader.split(" ")[1];
-    return tokenFromQuery || tokenFromHeader || null;
+    // 1. Zkusit token z hlavičky
+    const authHeader = req.headers["authorization"];
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      return authHeader.split(" ")[1];
+    }
+
+    // 2. Zkusit token z query stringu (pro WebSockety)
+    const urlParts = parse(req.url ?? "", true); // Rozparsovat URL
+    return (urlParts.query.token as string) ?? null;
   } catch (err) {
     console.error("Error extracting token:", err);
     return null;
@@ -96,7 +110,10 @@ function extractToken(req: Request): string | null {
 }
 
 // Handle messages
-async function handleMessage(ws: WebSocket, message: WebSocket.RawData): Promise<void> {
+async function handleMessage(
+  ws: WebSocket,
+  message: WebSocket.RawData
+): Promise<void> {
   try {
     const data = JSON.parse(message.toString());
     const { type, gameId, move } = data;
@@ -106,7 +123,9 @@ async function handleMessage(ws: WebSocket, message: WebSocket.RawData): Promise
         const newGameId = generateGameId();
         games[newGameId] = {
           players: [ws],
-          board: Array(15).fill(null).map(() => Array(15).fill(null)),
+          board: Array(15)
+            .fill(null)
+            .map(() => Array(15).fill(null)),
           currentPlayer: "X",
           gameState: "waiting",
           lastActivity: Date.now(),
@@ -123,29 +142,67 @@ async function handleMessage(ws: WebSocket, message: WebSocket.RawData): Promise
           game.players[0].send(JSON.stringify({ type: "start", player: "X" }));
           game.players[1].send(JSON.stringify({ type: "start", player: "O" }));
         } else {
-          ws.send(JSON.stringify({ type: "error", message: "Game not found or full" }));
+          ws.send(
+            JSON.stringify({ type: "error", message: "Game not found or full" })
+          );
         }
         break;
 
       case "matchmaking":
-        matchmakingQueue.push(ws);
+        matchmakingQueue.push({ ws, user: (ws as any).user });
 
         if (matchmakingQueue.length >= 2) {
-          const player1 = matchmakingQueue.shift()!;
-          const player2 = matchmakingQueue.shift()!;
+          matchmakingQueue.sort((a, b) => a.user.elo - b.user.elo);
 
-          const newGameId = generateGameId();
-          games[newGameId] = {
-            players: [player1, player2],
-            board: Array(15).fill(null).map(() => Array(15).fill(null)),
-            currentPlayer: "X",
-            lastActivity: Date.now(),
-          };
+          const player1 = matchmakingQueue[0];
+          const player2 = matchmakingQueue[1];
 
-          player1.send(JSON.stringify({ type: "matched", gameId: newGameId, player: "X" }));
-          player2.send(JSON.stringify({ type: "matched", gameId: newGameId, player: "O" }));
+          // Check if the ELO difference is within the allowed threshold
+          if (
+            Math.abs(player1.user.elo - player2.user.elo) <= MAX_ELO_DIFFERENCE
+          ) {
+            matchmakingQueue.shift();
+            matchmakingQueue.shift();
+
+            const newGameId = generateGameId();
+            games[newGameId] = {
+              players: [player1.ws, player2.ws],
+              board: Array(15)
+                .fill(null)
+                .map(() => Array(15).fill(null)),
+              currentPlayer: "X",
+              lastActivity: Date.now(),
+            };
+
+            player1.ws.send(
+              JSON.stringify({
+                type: "matched",
+                gameId: newGameId,
+                player: "X",
+              })
+            );
+            player2.ws.send(
+              JSON.stringify({
+                type: "matched",
+                gameId: newGameId,
+                player: "O",
+              })
+            );
+          } else {
+            ws.send(
+              JSON.stringify({
+                type: "waiting",
+                message: "Waiting for an opponent with a closer ELO...",
+              })
+            );
+          }
         } else {
-          ws.send(JSON.stringify({ type: "waiting", message: "Waiting for an opponent..." }));
+          ws.send(
+            JSON.stringify({
+              type: "waiting",
+              message: "Waiting for an opponent...",
+            })
+          );
         }
         break;
 
@@ -156,7 +213,12 @@ async function handleMessage(ws: WebSocket, message: WebSocket.RawData): Promise
 
           // Check if the cell is already occupied
           if (newBoard[move.row][move.col] !== null) {
-            ws.send(JSON.stringify({ type: "error", message: "Cell already occupied" }));
+            ws.send(
+              JSON.stringify({
+                type: "error",
+                message: "Cell already occupied",
+              })
+            );
             return;
           }
 
@@ -166,14 +228,17 @@ async function handleMessage(ws: WebSocket, message: WebSocket.RawData): Promise
 
           // Ensure it's the player's turn
           if (playerSymbol !== gameToUpdate.currentPlayer) {
-            ws.send(JSON.stringify({ type: "error", message: "Not your turn" }));
+            ws.send(
+              JSON.stringify({ type: "error", message: "Not your turn" })
+            );
             return;
           }
 
           // Update the board and switch turns
           newBoard[move.row][move.col] = playerSymbol;
           gameToUpdate.board = newBoard;
-          gameToUpdate.currentPlayer = gameToUpdate.currentPlayer === "X" ? "O" : "X";
+          gameToUpdate.currentPlayer =
+            gameToUpdate.currentPlayer === "X" ? "O" : "X";
           gameToUpdate.lastActivity = Date.now();
 
           // Check if the current player has won
@@ -191,16 +256,28 @@ async function handleMessage(ws: WebSocket, message: WebSocket.RawData): Promise
 
             // Calculate new Elo ratings
             const { newRA, newRB } = calculateElo(
-              { elo: (winnerWs as any).user.elo, wins: (winnerWs as any).user.wins, draws: (winnerWs as any).user.draws, losses: (winnerWs as any).user.losses },
-              { elo: (loserWs as any).user.elo, wins: (loserWs as any).user.wins, draws: (loserWs as any).user.draws, losses: (loserWs as any).user.losses },
+              {
+                elo: (winnerWs as any).user.elo,
+                wins: (winnerWs as any).user.wins,
+                draws: (winnerWs as any).user.draws,
+                losses: (winnerWs as any).user.losses,
+              },
+              {
+                elo: (loserWs as any).user.elo,
+                wins: (loserWs as any).user.wins,
+                draws: (loserWs as any).user.draws,
+                losses: (loserWs as any).user.losses,
+              },
               "win"
             );
 
             // Update winner and loser stats
             (winnerWs as any).user.elo = newRA;
-            (winnerWs as any).user.wins = ((winnerWs as any).user.wins || 0) + 1;
+            (winnerWs as any).user.wins =
+              ((winnerWs as any).user.wins || 0) + 1;
             (loserWs as any).user.elo = newRB;
-            (loserWs as any).user.losses = ((loserWs as any).user.losses || 0) + 1;
+            (loserWs as any).user.losses =
+              ((loserWs as any).user.losses || 0) + 1;
 
             // Log updated stats
             console.log("Winner stats after update:", {
@@ -214,17 +291,31 @@ async function handleMessage(ws: WebSocket, message: WebSocket.RawData): Promise
 
             // Save updated stats to the database
             await User.update(
-              { elo: (winnerWs as any).user.elo, wins: (winnerWs as any).user.wins },
+              {
+                elo: (winnerWs as any).user.elo,
+                wins: (winnerWs as any).user.wins,
+              },
               { where: { uuid: (winnerWs as any).user.uuid } }
             ).then(() => {
-              console.log(`Updated winner stats: elo=${(winnerWs as any).user.elo}, wins=${(winnerWs as any).user.wins}`);
+              console.log(
+                `Updated winner stats: elo=${
+                  (winnerWs as any).user.elo
+                }, wins=${(winnerWs as any).user.wins}`
+              );
             });
 
             await User.update(
-              { elo: (loserWs as any).user.elo, losses: (loserWs as any).user.losses },
+              {
+                elo: (loserWs as any).user.elo,
+                losses: (loserWs as any).user.losses,
+              },
               { where: { uuid: (loserWs as any).user.uuid } }
             ).then(() => {
-              console.log(`Updated loser stats: elo=${(loserWs as any).user.elo}, losses=${(loserWs as any).user.losses}`);
+              console.log(
+                `Updated loser stats: elo=${
+                  (loserWs as any).user.elo
+                }, losses=${(loserWs as any).user.losses}`
+              );
             });
 
             // Notify players of the end of the game
@@ -245,24 +336,42 @@ async function handleMessage(ws: WebSocket, message: WebSocket.RawData): Promise
           // Check if the game is a draw
           if (isDraw(newBoard)) {
             const { newRA, newRB } = calculateElo(
-              { elo: (gameToUpdate.players[0] as any).user.elo, wins: (gameToUpdate.players[0] as any).user.wins, draws: (gameToUpdate.players[0] as any).user.draws, losses: (gameToUpdate.players[0] as any).user.losses },
-              { elo: (gameToUpdate.players[1] as any).user.elo, wins: (gameToUpdate.players[1] as any).user.wins, draws: (gameToUpdate.players[1] as any).user.draws, losses: (gameToUpdate.players[1] as any).user.losses },
+              {
+                elo: (gameToUpdate.players[0] as any).user.elo,
+                wins: (gameToUpdate.players[0] as any).user.wins,
+                draws: (gameToUpdate.players[0] as any).user.draws,
+                losses: (gameToUpdate.players[0] as any).user.losses,
+              },
+              {
+                elo: (gameToUpdate.players[1] as any).user.elo,
+                wins: (gameToUpdate.players[1] as any).user.wins,
+                draws: (gameToUpdate.players[1] as any).user.draws,
+                losses: (gameToUpdate.players[1] as any).user.losses,
+              },
               "draw"
             );
 
             // Update both players' stats
             (gameToUpdate.players[0] as any).user.elo = newRA;
-            (gameToUpdate.players[0] as any).user.draws = ((gameToUpdate.players[0] as any).user.draws || 0) + 1;
+            (gameToUpdate.players[0] as any).user.draws =
+              ((gameToUpdate.players[0] as any).user.draws || 0) + 1;
             (gameToUpdate.players[1] as any).user.elo = newRB;
-            (gameToUpdate.players[1] as any).user.draws = ((gameToUpdate.players[1] as any).user.draws || 0) + 1;
+            (gameToUpdate.players[1] as any).user.draws =
+              ((gameToUpdate.players[1] as any).user.draws || 0) + 1;
 
             // Save updated stats to the database
             await User.update(
-              { elo: (gameToUpdate.players[0] as any).user.elo, draws: (gameToUpdate.players[0] as any).user.draws },
+              {
+                elo: (gameToUpdate.players[0] as any).user.elo,
+                draws: (gameToUpdate.players[0] as any).user.draws,
+              },
               { where: { uuid: (gameToUpdate.players[0] as any).user.uuid } }
             );
             await User.update(
-              { elo: (gameToUpdate.players[1] as any).user.elo, draws: (gameToUpdate.players[1] as any).user.draws },
+              {
+                elo: (gameToUpdate.players[1] as any).user.elo,
+                draws: (gameToUpdate.players[1] as any).user.draws,
+              },
               { where: { uuid: (gameToUpdate.players[1] as any).user.uuid } }
             );
 
@@ -298,11 +407,15 @@ async function handleMessage(ws: WebSocket, message: WebSocket.RawData): Promise
 
       default:
         console.log("Unknown message type:", type);
-        ws.send(JSON.stringify({ type: "error", message: "Unknown message type" }));
+        ws.send(
+          JSON.stringify({ type: "error", message: "Unknown message type" })
+        );
     }
   } catch (err) {
     console.error("Error handling message:", err);
-    ws.send(JSON.stringify({ type: "error", message: "Invalid message format" }));
+    ws.send(
+      JSON.stringify({ type: "error", message: "Invalid message format" })
+    );
   }
 }
 
@@ -310,7 +423,7 @@ async function handleMessage(ws: WebSocket, message: WebSocket.RawData): Promise
 function handleDisconnect(ws: WebSocket): void {
   console.log("Client disconnected");
 
-  const index = matchmakingQueue.indexOf(ws);
+  const index = matchmakingQueue.findIndex((player) => player.ws === ws);
   if (index !== -1) {
     matchmakingQueue.splice(index, 1);
   }
@@ -338,7 +451,8 @@ function cleanupAbandonedGames(): void {
   const now = Date.now();
   Object.keys(games).forEach((gameId) => {
     const game = games[gameId];
-    if (game.lastActivity && now - game.lastActivity > 3600000) { // 1 hour
+    if (game.lastActivity && now - game.lastActivity > 3600000) {
+      // 1 hour
       console.log(`Cleaning up abandoned game: ${gameId}`);
       game.players.forEach((playerWs) => {
         if (playerWs.readyState === WebSocket.OPEN) {

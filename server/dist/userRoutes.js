@@ -1,30 +1,21 @@
 import express from "express";
-import { register, login, refreshToken, logout } from "./userController.js";
+import { register, login, refreshToken, logout, getAllUsers, getUserByUUID, googleLogin, googleCallback, forgotPassword, verifyToken, // <-- Import forgotPassword function
+ } from "./userController.js";
 const router = express.Router();
 // Public routes (no authentication required)
-router.post("/register", (req, res) => {
-    register(req, res).catch(err => {
-        console.error("Error in register route:", err);
-        res.status(500).json({ message: "Internal server error." });
-    });
-});
-router.post("/login", (req, res) => {
-    login(req, res).catch(err => {
-        console.error("Error in login route:", err);
-        res.status(500).json({ message: "Internal server error." });
-    });
-});
-router.post("/refresh-token", (req, res) => {
-    refreshToken(req, res).catch(err => {
-        console.error("Error in refreshToken route:", err);
-        res.status(500).json({ message: "Internal server error." });
-    });
-});
-router.post("/logout", (req, res) => {
-    logout(req, res).catch(err => {
-        console.error("Error in logout route:", err);
-        res.status(500).json({ message: "Internal server error." });
-    });
-});
-export default router;
+router.post("/register", register);
+router.post("/verify-token", verifyToken);
+router.post("/login", login);
+router.post("/refresh-token", refreshToken);
+router.post("/logout", logout);
+router.post("/forgot-password", forgotPassword); // <-- Add forgot-password route
+// Google OAuth routes
+router.get("/auth/google", googleLogin);
+router.get("/auth/google/callback", googleCallback);
+// Protected routes (authentication required)
+router.get("", getAllUsers);
+router.get("/:uuid", getUserByUUID);
+// router.put("/users/:uuid", updateUserByUUID);
+// router.delete("/users/:uuid", deleteUserByUUID);
+export { router };
 //# sourceMappingURL=userRoutes.js.map

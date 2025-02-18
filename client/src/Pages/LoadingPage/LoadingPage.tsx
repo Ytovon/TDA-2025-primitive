@@ -1,0 +1,65 @@
+import React, { useState, useEffect } from "react";
+import styles from "./LoadingPage.module.css";
+import Header from "../../Components/Header/Header";
+import { Button } from "../../Components/Button/Button";
+import { useNavigate } from "react-router-dom";
+import BlinkingEyesSVG from "../../Components/Animation/lightbulb";
+// import { useWebSocket } from "../../Hooks/useWebSocket";
+import { UserApiClient } from "../../API/UserApi";
+import {
+  getRefreshToken,
+  getAccessToken,
+  setAccessToken,
+  clearTokens,
+  clearUUID,
+} from "../../API/tokenstorage"; // Your token storage functions
+import { useWebSocket } from "../../Context/WebSocketContext";
+const accessToken: string | null = getAccessToken();
+
+export const LoadingPage = () => {
+  const navigate = useNavigate();
+  const { isConnected, status, sendMessage } = useWebSocket();
+
+  useEffect(() => {
+    const verifyAccess = async () => {
+      try {
+        const refreshToken = getRefreshToken() ?? "";
+        const accessTokenToCheck = accessToken ?? "";
+
+        const isValid: any = await UserApiClient.verifyToken(
+          accessTokenToCheck
+        );
+
+        if (!isValid) {
+          await UserApiClient.refreshToken(refreshToken);
+
+          const newAccessToken = getAccessToken();
+
+          // refresh was unsuccessful - clear tokens and navigate to login
+          if (newAccessToken === null && newAccessToken === undefined) {
+            clearTokens();
+            clearUUID();
+            navigate("/login");
+          }
+        }
+      } catch (error) {
+        console.error("Access verification failed:", error);
+      }
+    };
+
+    verifyAccess();
+
+    return () => {};
+  }, [navigate]);
+
+  return (
+    <div>
+      <Header />
+
+      <div className={styles.container}>
+        <p style={{ color: "white" }}>{status}</p>
+        <BlinkingEyesSVG isRedPlayer={true} OnMove={true} />
+      </div>
+    </div>
+  );
+};
