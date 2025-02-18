@@ -1,7 +1,9 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import crypto from "crypto"; // Import crypto
 import { Op } from "sequelize";
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express"; // Import NextFunction
+import passport from "./passportConfig.js"; // Import the passport configuration
 import { User } from "./models.js"; // Import the User model
 import { promisify } from "util";
 
@@ -12,8 +14,44 @@ const REFRESH_TOKEN_SECRET =
   process.env.REFRESH_TOKEN_SECRET || "your-refresh-token-secret";
 const SALT_ROUNDS = 10;
 
-// Register a new user
-const register = async (req: Request, res: Response): Promise<Response> => {
+// Forgot Password
+const forgotPassword = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      res.status(400).json({ message: "Email is required." });
+      return;
+
+    }
+
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      res.status(404).json({ message: "User not found." });
+      return;
+    }
+
+    // Generate a reset token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = await bcrypt.hash(resetToken, SALT_ROUNDS);
+
+    // Store token in the database with expiration time
+    await user.update({ resetPasswordToken: hashedToken, resetPasswordExpires: new Date(Date.now() + 15 * 60 * 1000) });
+
+    // Generate the reset URL
+    const resetURL = `https://yourfrontend.com/reset-password?token=${resetToken}&email=${email}`;
+
+    res.status(200).json({ resetURL });
+    return;
+    
+  } catch (err) {
+    console.error("Error in forgot password:", err);
+    res.status(500).json({ message: "Internal server error." });
+    return;
+  }
+};
+
+// Register a new user  
+const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { username, email, password } = req.body;
 
@@ -47,15 +85,16 @@ const register = async (req: Request, res: Response): Promise<Response> => {
       losses: 0,
     });
 
-    return res.status(201).json({ message: "User registered successfully!" });
+    res.status(201).json({ message: "User registered successfully!" });
   } catch (err) {
     console.error("Error during user registration:", err);
-    return res.status(500).json({ message: "Internal server error." });
+    res.status(500).json({ message: "Internal server error." });
   }
 };
 
+
 // Login user (supports username OR email)
-const login = async (req: Request, res: Response): Promise<Response> => {
+const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { usernameOrEmail, password } = req.body;
 
@@ -73,7 +112,8 @@ const login = async (req: Request, res: Response): Promise<Response> => {
     });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found." });
+      res.status(404).json({ message: "User not found." });
+      return;
     }
 
     // Check if password is valid
@@ -85,7 +125,8 @@ const login = async (req: Request, res: Response): Promise<Response> => {
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid password." });
+      res.status(401).json({ message: "Invalid password." });
+      return;
     }
 
     // Generate JWT tokens
@@ -108,7 +149,7 @@ const login = async (req: Request, res: Response): Promise<Response> => {
       .json({ message: "Login successful!", accessToken, refreshToken });
   } catch (err) {
     console.error("Error during login:", err);
-    return res.status(500).json({ message: "Internal server error." });
+    res.status(500).json({ message: "Internal server error." });
   }
 };
 
@@ -118,7 +159,8 @@ const refreshToken = async (req: Request, res: Response): Promise<Response> => {
   try {
     const { token } = req.body;
     if (!token) {
-      return res.status(401).json({ message: "Refresh token is required." });
+      res.status(401).json({ message: "Refresh token is required." });
+      return;
     }
 
     // Find user by refresh token
@@ -146,42 +188,44 @@ const refreshToken = async (req: Request, res: Response): Promise<Response> => {
     }
   } catch (err) {
     console.error("Error refreshing token:", err);
-    return res.status(500).json({ message: "Internal server error." });
+    res.status(500).json({ message: "Internal server error." });
   }
 };
 
 // Logout (invalidate refresh token)
-const logout = async (req: Request, res: Response): Promise<Response> => {
+const logout = async (req: Request, res: Response): Promise<void> => {
   try {
     const { token } = req.body;
     if (!token) {
-      return res.status(400).json({ message: "Refresh token is required." });
+      res.status(400).json({ message: "Refresh token is required." });
+      return;
     }
 
     // Find user by refresh token
     const user = await User.findOne({ where: { refreshToken: token } });
     if (!user) {
-      return res.status(404).json({ message: "User not found." });
+      res.status(404).json({ message: "User not found." });
+      return;
     }
 
     // Remove refresh token from database
     await user.update({ refreshToken: undefined });
 
-    return res.status(200).json({ message: "Logged out successfully." });
+    res.status(200).json({ message: "Logged out successfully." });
   } catch (err) {
     console.error("Error during logout:", err);
-    return res.status(500).json({ message: "Internal server error." });
+    res.status(500).json({ message: "Internal server error." });
   }
 };
 
 // Retrieve all users
-const getAllUsers = async (req: Request, res: Response): Promise<Response> => {
+const getAllUsers = async (req: Request, res: Response): Promise<void> => {
   try {
     const users = await User.findAll();
-    return res.status(200).json(users);
+    res.status(200).json(users);
   } catch (err) {
     console.error("Error retrieving users:", err);
-    return res.status(500).json({ message: "Internal server error." });
+    res.status(500).json({ message: "Internal server error." });
   }
 };
 const verifyToken = async (
@@ -224,12 +268,13 @@ const getUserByUUID = async (
     const { uuid } = req.params;
     const user = await User.findByPk(uuid);
     if (!user) {
-      return res.status(404).json({ message: "User not found." });
+      res.status(404).json({ message: "User not found." });
+      return;
     }
-    return res.status(200).json(user);
+    res.status(200).json(user);
   } catch (err) {
     console.error("Error retrieving user:", err);
-    return res.status(500).json({ message: "Internal server error." });
+    res.status(500).json({ message: "Internal server error." });
   }
 };
 
@@ -244,7 +289,8 @@ const updateUserByUUID = async (
 
     const user = await User.findByPk(uuid);
     if (!user) {
-      return res.status(404).json({ message: "User not found." });
+      res.status(404).json({ message: "User not found." });
+      return;
     }
 
     const updatedUser = await user.update({
@@ -259,10 +305,10 @@ const updateUserByUUID = async (
       losses,
     });
 
-    return res.status(200).json(updatedUser);
+    res.status(200).json(updatedUser);
   } catch (err) {
     console.error("Error updating user:", err);
-    return res.status(500).json({ message: "Internal server error." });
+    res.status(500).json({ message: "Internal server error." });
   }
 };
 
@@ -275,25 +321,47 @@ const deleteUserByUUID = async (
     const { uuid } = req.params;
     const user = await User.findByPk(uuid);
     if (!user) {
-      return res.status(404).json({ message: "User not found." });
+      res.status(404).json({ message: "User not found." });
+      return;
     }
 
     await user.destroy();
-    return res.status(204).send();
+    res.status(204).send();
   } catch (err) {
     console.error("Error deleting user:", err);
-    return res.status(500).json({ message: "Internal server error." });
+    res.status(500).json({ message: "Internal server error." });
   }
 };
 
-export {
-  register,
-  login,
-  refreshToken,
-  logout,
-  getAllUsers,
-  getUserByUUID,
-  updateUserByUUID,
-  deleteUserByUUID,
-  verifyToken,
+// Google OAuth login route
+const googleLogin = (req: Request, res: Response, next: NextFunction) => {
+  passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
 };
+
+// Google OAuth callback route
+const googleCallback = (req: Request, res: Response, next: NextFunction) => {
+  passport.authenticate("google", (err: any, user: any) => {
+    if (err || !user) {
+      res.status(400).json({ message: "Authentication failed." });
+      return;
+    }
+    // Generate JWT tokens
+    const accessToken = jwt.sign(
+      { uuid: user.uuid, username: user.username },
+      ACCESS_TOKEN_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    const refreshToken = jwt.sign(
+      { uuid: user.uuid, username: user.username },
+      REFRESH_TOKEN_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    user.update({ refreshToken });
+
+    res.status(200).json({ message: "Login successful!", accessToken, refreshToken });
+  })(req, res, next);
+};
+
+export { register, login, refreshToken, logout, getAllUsers, getUserByUUID, updateUserByUUID, deleteUserByUUID, googleLogin, googleCallback, forgotPassword };
