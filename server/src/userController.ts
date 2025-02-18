@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from "crypto"; // Import crypto
 import { Op } from "sequelize";
-import { Request, Response, NextFunction } from "express"; // Import NextFunction
+import { Request, Response } from "express"; // Import Response
 import passport from "./passportConfig.js"; // Import the passport configuration
 import { User } from "./models.js"; // Import the User model
 import { promisify } from "util";
@@ -21,7 +21,6 @@ const forgotPassword = async (req: Request, res: Response): Promise<void> => {
     if (!email) {
       res.status(400).json({ message: "Email is required." });
       return;
-
     }
 
     const user = await User.findOne({ where: { email } });
@@ -35,30 +34,31 @@ const forgotPassword = async (req: Request, res: Response): Promise<void> => {
     const hashedToken = await bcrypt.hash(resetToken, SALT_ROUNDS);
 
     // Store token in the database with expiration time
-    await user.update({ resetPasswordToken: hashedToken, resetPasswordExpires: new Date(Date.now() + 15 * 60 * 1000) });
+    await user.update({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: new Date(Date.now() + 15 * 60 * 1000),
+    });
 
     // Generate the reset URL
     const resetURL = `https://yourfrontend.com/reset-password?token=${resetToken}&email=${email}`;
 
     res.status(200).json({ resetURL });
-    return;
-    
   } catch (err) {
     console.error("Error in forgot password:", err);
     res.status(500).json({ message: "Internal server error." });
-    return;
   }
 };
 
-// Register a new user  
+// Register a new user
 const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
-      return res
+      res
         .status(400)
         .json({ message: "Username, email, and password are required." });
+      return;
     }
 
     // Check if the username or email is already taken
@@ -69,13 +69,12 @@ const register = async (req: Request, res: Response): Promise<void> => {
     });
 
     if (existingUser) {
-      return res
-        .status(409)
-        .json({ message: "Username or email is already taken." });
+      res.status(409).json({ message: "Username or email is already taken." });
+      return;
     }
 
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-    const newUser = await User.create({
+    await User.create({
       username,
       email,
       password: hashedPassword,
@@ -92,16 +91,16 @@ const register = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-
 // Login user (supports username OR email)
 const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { usernameOrEmail, password } = req.body;
 
     if (!usernameOrEmail || !password) {
-      return res
+      res
         .status(400)
         .json({ message: "Username or email and password are required." });
+      return;
     }
 
     // Find user and explicitly include the password field
@@ -118,9 +117,10 @@ const login = async (req: Request, res: Response): Promise<void> => {
 
     // Check if password is valid
     if (!user.password) {
-      return res
+      res
         .status(500)
         .json({ message: "User password is missing in database." });
+      return;
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -144,7 +144,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
 
     await user.update({ refreshToken });
 
-    return res
+    res
       .status(200)
       .json({ message: "Login successful!", accessToken, refreshToken });
   } catch (err) {
@@ -155,7 +155,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
 
 const verifyTokenInRefreshToken = promisify(jwt.verify);
 
-const refreshToken = async (req: Request, res: Response): Promise<Response> => {
+const refreshToken = async (req: Request, res: Response): Promise<void> => {
   try {
     const { token } = req.body;
     if (!token) {
@@ -166,7 +166,8 @@ const refreshToken = async (req: Request, res: Response): Promise<Response> => {
     // Find user by refresh token
     const user = await User.findOne({ where: { refreshToken: token } });
     if (!user) {
-      return res.status(403).json({ message: "Invalid refresh token." });
+      res.status(403).json({ message: "Invalid refresh token." });
+      return;
     }
 
     // Verify refresh token using async/await
@@ -180,11 +181,9 @@ const refreshToken = async (req: Request, res: Response): Promise<Response> => {
         { expiresIn: "15m" }
       );
 
-      return res.json({ accessToken: newAccessToken });
+      res.json({ accessToken: newAccessToken });
     } catch (err) {
-      return res
-        .status(403)
-        .json({ message: "Invalid or expired refresh token." });
+      res.status(403).json({ message: "Invalid or expired refresh token." });
     }
   } catch (err) {
     console.error("Error refreshing token:", err);
@@ -228,15 +227,14 @@ const getAllUsers = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ message: "Internal server error." });
   }
 };
-const verifyToken = async (
-  req: Request,
-  res: Response
-): Promise<Response | undefined> => {
+
+const verifyToken = async (req: Request, res: Response): Promise<void> => {
   try {
     const { token } = req.body;
     if (!token) {
       console.log("Token is required.");
-      return res.status(400).json({ message: "Token is required." });
+      res.status(400).json({ message: "Token is required." });
+      return;
     }
 
     // Verify token
@@ -246,27 +244,26 @@ const verifyToken = async (
       (err: jwt.VerifyErrors | null, decoded: any) => {
         if (err) {
           console.log("Token is invalid.");
-          return res.status(200).json({ valid: false });
+          res.status(200).json({ valid: false });
+          return;
         }
 
         console.log("Token is valid.");
-        return res.status(200).json({ valid: true, uuid: decoded.uuid });
+        res.status(200).json({ valid: true, uuid: decoded.uuid });
       }
     );
   } catch (err) {
     console.error("Error verifying token:", err);
-    return res.status(500).json({ message: "Internal server error." });
+    res.status(500).json({ message: "Internal server error." });
   }
 };
 
 // Retrieve user by UUID
-const getUserByUUID = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
+const getUserByUUID = async (req: Request, res: Response): Promise<void> => {
   try {
     const { uuid } = req.params;
     const user = await User.findByPk(uuid);
+
     if (!user) {
       res.status(404).json({ message: "User not found." });
       return;
@@ -279,10 +276,7 @@ const getUserByUUID = async (
 };
 
 // Update user by UUID
-const updateUserByUUID = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
+const updateUserByUUID = async (req: Request, res: Response): Promise<void> => {
   try {
     const { uuid } = req.params;
     const { username, email, password, elo, wins, draws, losses } = req.body;
@@ -293,7 +287,7 @@ const updateUserByUUID = async (
       return;
     }
 
-    const updatedUser = await user.update({
+    await user.update({
       username,
       email,
       password: password
@@ -305,7 +299,7 @@ const updateUserByUUID = async (
       losses,
     });
 
-    res.status(200).json(updatedUser);
+    res.status(200).json(user);
   } catch (err) {
     console.error("Error updating user:", err);
     res.status(500).json({ message: "Internal server error." });
@@ -313,10 +307,7 @@ const updateUserByUUID = async (
 };
 
 // Delete user by UUID
-const deleteUserByUUID = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
+const deleteUserByUUID = async (req: Request, res: Response): Promise<void> => {
   try {
     const { uuid } = req.params;
     const user = await User.findByPk(uuid);
@@ -332,14 +323,13 @@ const deleteUserByUUID = async (
     res.status(500).json({ message: "Internal server error." });
   }
 };
-
 // Google OAuth login route
-const googleLogin = (req: Request, res: Response, next: NextFunction) => {
-  passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
+const googleLogin = (req: Request, res: Response) => {
+  passport.authenticate("google", { scope: ["profile", "email"] })(req, res);
 };
 
 // Google OAuth callback route
-const googleCallback = (req: Request, res: Response, next: NextFunction) => {
+const googleCallback = (req: Request, res: Response) => {
   passport.authenticate("google", (err: any, user: any) => {
     if (err || !user) {
       res.status(400).json({ message: "Authentication failed." });
@@ -360,8 +350,23 @@ const googleCallback = (req: Request, res: Response, next: NextFunction) => {
 
     user.update({ refreshToken });
 
-    res.status(200).json({ message: "Login successful!", accessToken, refreshToken });
-  })(req, res, next);
+    res
+      .status(200)
+      .json({ message: "Login successful!", accessToken, refreshToken });
+  })(req, res);
 };
 
-export { register, login, refreshToken, logout, getAllUsers, getUserByUUID, updateUserByUUID, deleteUserByUUID, googleLogin, googleCallback, forgotPassword };
+export {
+  register,
+  login,
+  refreshToken,
+  logout,
+  getAllUsers,
+  getUserByUUID,
+  updateUserByUUID,
+  deleteUserByUUID,
+  verifyToken,
+  googleLogin,
+  googleCallback,
+  forgotPassword,
+};

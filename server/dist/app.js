@@ -5,7 +5,7 @@ import cors from "cors";
 import http from "http";
 import initializeWebSocket from "./websocket.js"; // Import WebSocket initialization
 import { router as gameRoutes } from "./routes.js";
-import userRoutes from "./userRoutes.js";
+import { router as userRoutes } from "./userRoutes.js";
 import { sequelize } from "./database.js";
 const app = express();
 const server = http.createServer(app); // Create an HTTP server
@@ -54,9 +54,9 @@ const dirname = path.dirname(filename);
 // Serve static files from React app build directory
 app.use(express.static(path.join(dirname, "../../client/build")));
 // Serve the React app on all other routes
-app.get("*", (req, res) => {
-    res.sendFile(path.resolve(dirname, "../..", "client", "build", "index.html"));
-});
+// app.get("*", (req: Request, res: Response) => {
+//   res.sendFile(path.resolve(dirname, "../..", "client", "build", "index.html"));
+// });
 // Global error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);

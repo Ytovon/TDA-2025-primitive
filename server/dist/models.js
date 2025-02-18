@@ -65,6 +65,9 @@ class User extends Model {
     get password() {
         return this.getDataValue('password');
     }
+    get googleId() {
+        return this.getDataValue('googleId');
+    }
     get elo() {
         return this.getDataValue('elo');
     }
@@ -105,7 +108,12 @@ User.init({
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
+    },
+    googleId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        unique: true,
     },
     elo: {
         type: DataTypes.FLOAT,
@@ -131,15 +139,23 @@ User.init({
         type: DataTypes.STRING,
         allowNull: true,
     },
+    resetPasswordToken: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    resetPasswordExpires: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    },
 }, {
     sequelize,
     tableName: "Users",
     timestamps: true,
     defaultScope: {
-        attributes: { exclude: ["password"] }, // Password is excluded by default
+        attributes: { exclude: ["password"] },
     },
     scopes: {
-        withPassword: { attributes: { include: ["password"] } }, // Explicitly include password when needed
+        withPassword: { attributes: { include: ["password"] } },
     },
 });
 export { Game, User };

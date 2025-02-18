@@ -26,26 +26,28 @@ const forgotPassword = async (req, res) => {
         const resetToken = crypto.randomBytes(32).toString("hex");
         const hashedToken = await bcrypt.hash(resetToken, SALT_ROUNDS);
         // Store token in the database with expiration time
-        await user.update({ resetPasswordToken: hashedToken, resetPasswordExpires: new Date(Date.now() + 15 * 60 * 1000) });
+        await user.update({
+            resetPasswordToken: hashedToken,
+            resetPasswordExpires: new Date(Date.now() + 15 * 60 * 1000),
+        });
         // Generate the reset URL
         const resetURL = `https://yourfrontend.com/reset-password?token=${resetToken}&email=${email}`;
         res.status(200).json({ resetURL });
-        return;
     }
     catch (err) {
         console.error("Error in forgot password:", err);
         res.status(500).json({ message: "Internal server error." });
-        return;
     }
 };
-// Register a new user  
+// Register a new user
 const register = async (req, res) => {
     try {
         const { username, email, password } = req.body;
         if (!username || !email || !password) {
-            return res
+            res
                 .status(400)
                 .json({ message: "Username, email, and password are required." });
+            return;
         }
         // Check if the username or email is already taken
         const existingUser = await User.findOne({
@@ -54,12 +56,11 @@ const register = async (req, res) => {
             },
         });
         if (existingUser) {
-            return res
-                .status(409)
-                .json({ message: "Username or email is already taken." });
+            res.status(409).json({ message: "Username or email is already taken." });
+            return;
         }
         const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-        const newUser = await User.create({
+        await User.create({
             username,
             email,
             password: hashedPassword,
@@ -80,9 +81,10 @@ const login = async (req, res) => {
     try {
         const { usernameOrEmail, password } = req.body;
         if (!usernameOrEmail || !password) {
-            return res
+            res
                 .status(400)
                 .json({ message: "Username or email and password are required." });
+            return;
         }
         // Find user and explicitly include the password field
         const user = await User.scope("withPassword").findOne({
@@ -96,9 +98,10 @@ const login = async (req, res) => {
         }
         // Check if password is valid
         if (!user.password) {
-            return res
+            res
                 .status(500)
                 .json({ message: "User password is missing in database." });
+            return;
         }
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
@@ -109,7 +112,7 @@ const login = async (req, res) => {
         const accessToken = jwt.sign({ uuid: user.uuid, username: user.username }, ACCESS_TOKEN_SECRET, { expiresIn: "1h" });
         const refreshToken = jwt.sign({ uuid: user.uuid, username: user.username }, REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
         await user.update({ refreshToken });
-        return res
+        res
             .status(200)
             .json({ message: "Login successful!", accessToken, refreshToken });
     }
@@ -129,19 +132,18 @@ const refreshToken = async (req, res) => {
         // Find user by refresh token
         const user = await User.findOne({ where: { refreshToken: token } });
         if (!user) {
-            return res.status(403).json({ message: "Invalid refresh token." });
+            res.status(403).json({ message: "Invalid refresh token." });
+            return;
         }
         // Verify refresh token using async/await
         try {
             await verifyTokenInRefreshToken(token);
             // Generate new access token
             const newAccessToken = jwt.sign({ uuid: user.uuid, username: user.username }, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
-            return res.json({ accessToken: newAccessToken });
+            res.json({ accessToken: newAccessToken });
         }
         catch (err) {
-            return res
-                .status(403)
-                .json({ message: "Invalid or expired refresh token." });
+            res.status(403).json({ message: "Invalid or expired refresh token." });
         }
     }
     catch (err) {
@@ -188,21 +190,23 @@ const verifyToken = async (req, res) => {
         const { token } = req.body;
         if (!token) {
             console.log("Token is required.");
-            return res.status(400).json({ message: "Token is required." });
+            res.status(400).json({ message: "Token is required." });
+            return;
         }
         // Verify token
         jwt.verify(token, ACCESS_TOKEN_SECRET, (err, decoded) => {
             if (err) {
                 console.log("Token is invalid.");
-                return res.status(200).json({ valid: false });
+                res.status(200).json({ valid: false });
+                return;
             }
             console.log("Token is valid.");
-            return res.status(200).json({ valid: true, uuid: decoded.uuid });
+            res.status(200).json({ valid: true, uuid: decoded.uuid });
         });
     }
     catch (err) {
         console.error("Error verifying token:", err);
-        return res.status(500).json({ message: "Internal server error." });
+        res.status(500).json({ message: "Internal server error." });
     }
 };
 // Retrieve user by UUID
@@ -231,7 +235,7 @@ const updateUserByUUID = async (req, res) => {
             res.status(404).json({ message: "User not found." });
             return;
         }
-        const updatedUser = await user.update({
+        await user.update({
             username,
             email,
             password: password
@@ -242,7 +246,7 @@ const updateUserByUUID = async (req, res) => {
             draws,
             losses,
         });
-        res.status(200).json(updatedUser);
+        res.status(200).json(user);
     }
     catch (err) {
         console.error("Error updating user:", err);
@@ -267,11 +271,11 @@ const deleteUserByUUID = async (req, res) => {
     }
 };
 // Google OAuth login route
-const googleLogin = (req, res, next) => {
-    passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
+const googleLogin = (req, res) => {
+    passport.authenticate("google", { scope: ["profile", "email"] })(req, res);
 };
 // Google OAuth callback route
-const googleCallback = (req, res, next) => {
+const googleCallback = (req, res) => {
     passport.authenticate("google", (err, user) => {
         if (err || !user) {
             res.status(400).json({ message: "Authentication failed." });
@@ -281,8 +285,10 @@ const googleCallback = (req, res, next) => {
         const accessToken = jwt.sign({ uuid: user.uuid, username: user.username }, ACCESS_TOKEN_SECRET, { expiresIn: "1h" });
         const refreshToken = jwt.sign({ uuid: user.uuid, username: user.username }, REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
         user.update({ refreshToken });
-        res.status(200).json({ message: "Login successful!", accessToken, refreshToken });
-    })(req, res, next);
+        res
+            .status(200)
+            .json({ message: "Login successful!", accessToken, refreshToken });
+    })(req, res);
 };
-export { register, login, refreshToken, logout, getAllUsers, getUserByUUID, updateUserByUUID, deleteUserByUUID, googleLogin, googleCallback, forgotPassword };
+export { register, login, refreshToken, logout, getAllUsers, getUserByUUID, updateUserByUUID, deleteUserByUUID, verifyToken, googleLogin, googleCallback, forgotPassword, };
 //# sourceMappingURL=userController.js.map
