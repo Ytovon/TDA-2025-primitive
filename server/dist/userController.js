@@ -4,6 +4,7 @@ import crypto from "crypto"; // Import crypto
 import { Op } from "sequelize";
 import { User } from "./models.js"; // Import the User model
 import { promisify } from "util";
+import passport from "passport";
 // Secret keys (Replace with environment variables in production)
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "your-access-token-secret";
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || "your-refresh-token-secret";

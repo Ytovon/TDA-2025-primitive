@@ -6,6 +6,7 @@ import { hasWon, calculateElo, isDraw } from "./MPLogic.js";
 import BitmapGenerator from "./bitmapGenerator.js";
 import { User } from "./models.js";
 import { parse } from "url";
+import { GameClock } from "./gameClock.js";
 
 interface UserStats {
   uuid: string;
@@ -27,6 +28,7 @@ interface Game {
 // Store active games and matchmaking queue
 const games: { [key: string]: Game } = {};
 const matchmakingQueue: { ws: WebSocket; user: UserStats }[] = [];
+const gameClocks: { [key: string]: GameClock } = {};
 
 // Secret key for verifying tokens
 const ACCESS_TOKEN_SECRET =
@@ -206,204 +208,316 @@ async function handleMessage(
         }
         break;
 
-      case "move":
-        const gameToUpdate = games[gameId];
-        if (gameToUpdate && gameToUpdate.players.includes(ws)) {
-          const newBoard = JSON.parse(JSON.stringify(gameToUpdate.board));
-
-          // Check if the cell is already occupied
-          if (newBoard[move.row][move.col] !== null) {
+        case "move":
+          const gameToUpdate = games[gameId];
+          if (gameToUpdate && gameToUpdate.players.includes(ws)) {
+            const newBoard = JSON.parse(JSON.stringify(gameToUpdate.board));
+        
+            // Check if the cell is already occupied
+            if (newBoard[move.row][move.col] !== null) {
+              ws.send(
+                JSON.stringify({
+                  type: "error",
+                  message: "Cell already occupied",
+                })
+              );
+              return;
+            }
+        
+            // Determine the player symbol (X or O)
+            const playerIndex = gameToUpdate.players.indexOf(ws); // 0 for X, 1 for O
+            const playerSymbol = playerIndex === 0 ? "X" : "O";
+        
+            // Ensure it's the player's turn
+            if (playerSymbol !== gameToUpdate.currentPlayer) {
+              ws.send(
+                JSON.stringify({ type: "error", message: "Not your turn" })
+              );
+              return;
+            }
+        
+            // Stop the clock for the player who just moved
+            if (!gameClocks[gameId]) {
+              gameClocks[gameId] = new GameClock(8 * 60 * 35, async (player) => {
+                const winner = player === "X" ? "O" : "X";
+                const loser = player;
+        
+                // Find the winner and loser in the players array
+                const winnerWs = gameToUpdate.players[player === "X" ? 0 : 1];
+              const loserWs = gameToUpdate.players[player === "X" ? 1 : 0];
+        
+                // Log player stats before calculation
+                console.log("Winner stats before update:", (winnerWs as any).user);
+                console.log("Loser stats before update:", (loserWs as any).user);
+        
+                // Calculate new Elo ratings
+                const { newRA, newRB } = calculateElo(
+                  {
+                    elo: (winnerWs as any).user.elo,
+                    wins: (winnerWs as any).user.wins,
+                    draws: (winnerWs as any).user.draws,
+                    losses: (winnerWs as any).user.losses,
+                  },
+                  {
+                    elo: (loserWs as any).user.elo,
+                    wins: (loserWs as any).user.wins,
+                    draws: (loserWs as any).user.draws,
+                    losses: (loserWs as any).user.losses,
+                  },
+                  "win"
+                );
+        
+                // Update winner and loser stats
+                (winnerWs as any).user.elo = newRA;
+                (winnerWs as any).user.wins =
+                  ((winnerWs as any).user.wins || 0) + 1;
+                (loserWs as any).user.elo = newRB;
+                (loserWs as any).user.losses =
+                  ((loserWs as any).user.losses || 0) + 1;
+        
+                // Log updated stats
+                console.log("Winner stats after update:", {
+                  elo: (winnerWs as any).user.elo,
+                  wins: (winnerWs as any).user.wins,
+                });
+                console.log("Loser stats after update:", {
+                  elo: (loserWs as any).user.elo,
+                  losses: (loserWs as any).user.losses,
+                });
+        
+                // Save updated stats to the database
+                await User.update(
+                  {
+                    elo: (winnerWs as any).user.elo,
+                    wins: (winnerWs as any).user.wins,
+                  },
+                  { where: { uuid: (winnerWs as any).user.uuid } }
+                ).then(() => {
+                  console.log(
+                    `Updated winner stats: elo=${
+                      (winnerWs as any).user.elo
+                    }, wins=${(winnerWs as any).user.wins}`
+                  );
+                });
+        
+                await User.update(
+                  {
+                    elo: (loserWs as any).user.elo,
+                    losses: (loserWs as any).user.losses,
+                  },
+                  { where: { uuid: (loserWs as any).user.uuid } }
+                ).then(() => {
+                  console.log(
+                    `Updated loser stats: elo=${
+                      (loserWs as any).user.elo
+                    }, losses=${(loserWs as any).user.losses}`
+                  );
+                });
+        
+                // Notify players of the end of the game
+                gameToUpdate.players.forEach((playerWs) => {
+                  playerWs.send(
+                    JSON.stringify({
+                      type: "end",
+                      winner,
+                      board: gameToUpdate.board,
+                      bitmap: BitmapGenerator.generateBitmap(gameToUpdate.board),
+                    })
+                  );
+                });
+                delete games[gameId]; // Remove the game from the active games list
+                delete gameClocks[gameId]; // Remove the game clock
+              });
+            }
+            gameClocks[gameId].stopClock();
+        
+            // Update the board and switch turns
+            newBoard[move.row][move.col] = playerSymbol;
+            gameToUpdate.board = newBoard;
+            gameToUpdate.currentPlayer = gameToUpdate.currentPlayer === "X" ? "O" : "X";
+            gameToUpdate.lastActivity = Date.now();
+        
+            // Get remaining time for the player who just moved
+            const remainingTime = gameClocks[gameId].getTime(playerSymbol);
+        
+            // Start the clock for the next player
+            gameClocks[gameId].startTurn(gameToUpdate.currentPlayer as 'X' | 'O');
+        
+            // Send updated move response with time left
             ws.send(
               JSON.stringify({
-                type: "error",
-                message: "Cell already occupied",
+                type: "move",
+                gameId,
+                move,
+                timeLeft: remainingTime,
               })
             );
-            return;
-          }
-
-          // Determine the player symbol (X or O)
-          const playerIndex = gameToUpdate.players.indexOf(ws); // 0 for X, 1 for O
-          const playerSymbol = playerIndex === 0 ? "X" : "O";
-
-          // Ensure it's the player's turn
-          if (playerSymbol !== gameToUpdate.currentPlayer) {
-            ws.send(
-              JSON.stringify({ type: "error", message: "Not your turn" })
-            );
-            return;
-          }
-
-          // Update the board and switch turns
-          newBoard[move.row][move.col] = playerSymbol;
-          gameToUpdate.board = newBoard;
-          gameToUpdate.currentPlayer =
-            gameToUpdate.currentPlayer === "X" ? "O" : "X";
-          gameToUpdate.lastActivity = Date.now();
-
-          // Check if the current player has won
-          if (hasWon(newBoard, playerSymbol)) {
-            const winner = playerSymbol;
-            const loser = playerSymbol === "X" ? "O" : "X";
-
-            // Find the winner and loser in the players array
-            const winnerWs = gameToUpdate.players[playerIndex];
-            const loserWs = gameToUpdate.players[1 - playerIndex];
-
-            // Log player stats before calculation
-            console.log("Winner stats before update:", (winnerWs as any).user);
-            console.log("Loser stats before update:", (loserWs as any).user);
-
-            // Calculate new Elo ratings
-            const { newRA, newRB } = calculateElo(
-              {
+        
+            // Check if the current player has won
+            if (hasWon(newBoard, playerSymbol)) {
+              const winner = playerSymbol;
+              const loser = playerSymbol === "X" ? "O" : "X";
+        
+              // Find the winner and loser in the players array
+              const winnerWs = gameToUpdate.players[playerIndex];
+              const loserWs = gameToUpdate.players[1 - playerIndex];
+        
+              // Log player stats before calculation
+              console.log("Winner stats before update:", (winnerWs as any).user);
+              console.log("Loser stats before update:", (loserWs as any).user);
+        
+              // Calculate new Elo ratings
+              const { newRA, newRB } = calculateElo(
+                {
+                  elo: (winnerWs as any).user.elo,
+                  wins: (winnerWs as any).user.wins,
+                  draws: (winnerWs as any).user.draws,
+                  losses: (winnerWs as any).user.losses,
+                },
+                {
+                  elo: (loserWs as any).user.elo,
+                  wins: (loserWs as any).user.wins,
+                  draws: (loserWs as any).user.draws,
+                  losses: (loserWs as any).user.losses,
+                },
+                "win"
+              );
+        
+              // Update winner and loser stats
+              (winnerWs as any).user.elo = newRA;
+              (winnerWs as any).user.wins =
+                ((winnerWs as any).user.wins || 0) + 1;
+              (loserWs as any).user.elo = newRB;
+              (loserWs as any).user.losses =
+                ((loserWs as any).user.losses || 0) + 1;
+        
+              // Log updated stats
+              console.log("Winner stats after update:", {
                 elo: (winnerWs as any).user.elo,
                 wins: (winnerWs as any).user.wins,
-                draws: (winnerWs as any).user.draws,
-                losses: (winnerWs as any).user.losses,
-              },
-              {
-                elo: (loserWs as any).user.elo,
-                wins: (loserWs as any).user.wins,
-                draws: (loserWs as any).user.draws,
-                losses: (loserWs as any).user.losses,
-              },
-              "win"
-            );
-
-            // Update winner and loser stats
-            (winnerWs as any).user.elo = newRA;
-            (winnerWs as any).user.wins =
-              ((winnerWs as any).user.wins || 0) + 1;
-            (loserWs as any).user.elo = newRB;
-            (loserWs as any).user.losses =
-              ((loserWs as any).user.losses || 0) + 1;
-
-            // Log updated stats
-            console.log("Winner stats after update:", {
-              elo: (winnerWs as any).user.elo,
-              wins: (winnerWs as any).user.wins,
-            });
-            console.log("Loser stats after update:", {
-              elo: (loserWs as any).user.elo,
-              losses: (loserWs as any).user.losses,
-            });
-
-            // Save updated stats to the database
-            await User.update(
-              {
-                elo: (winnerWs as any).user.elo,
-                wins: (winnerWs as any).user.wins,
-              },
-              { where: { uuid: (winnerWs as any).user.uuid } }
-            ).then(() => {
-              console.log(
-                `Updated winner stats: elo=${
-                  (winnerWs as any).user.elo
-                }, wins=${(winnerWs as any).user.wins}`
-              );
-            });
-
-            await User.update(
-              {
+              });
+              console.log("Loser stats after update:", {
                 elo: (loserWs as any).user.elo,
                 losses: (loserWs as any).user.losses,
-              },
-              { where: { uuid: (loserWs as any).user.uuid } }
-            ).then(() => {
-              console.log(
-                `Updated loser stats: elo=${
-                  (loserWs as any).user.elo
-                }, losses=${(loserWs as any).user.losses}`
+              });
+        
+              // Save updated stats to the database
+              await User.update(
+                {
+                  elo: (winnerWs as any).user.elo,
+                  wins: (winnerWs as any).user.wins,
+                },
+                { where: { uuid: (winnerWs as any).user.uuid } }
+              ).then(() => {
+                console.log(
+                  `Updated winner stats: elo=${
+                    (winnerWs as any).user.elo
+                  }, wins=${(winnerWs as any).user.wins}`
+                );
+              });
+        
+              await User.update(
+                {
+                  elo: (loserWs as any).user.elo,
+                  losses: (loserWs as any).user.losses,
+                },
+                { where: { uuid: (loserWs as any).user.uuid } }
+              ).then(() => {
+                console.log(
+                  `Updated loser stats: elo=${
+                    (loserWs as any).user.elo
+                  }, losses=${(loserWs as any).user.losses}`
+                );
+              });
+        
+              // Notify players of the end of the game
+              gameToUpdate.players.forEach((playerWs) => {
+                playerWs.send(
+                  JSON.stringify({
+                    type: "end",
+                    winner,
+                    board: newBoard,
+                    bitmap: BitmapGenerator.generateBitmap(newBoard),
+                  })
+                );
+              });
+              delete games[gameId]; // Remove the game from the active games list
+              delete gameClocks[gameId]; // Remove the game clock
+              return;
+            }
+        
+            // Check if the game is a draw
+            if (isDraw(newBoard)) {
+              const { newRA, newRB } = calculateElo(
+                {
+                  elo: (gameToUpdate.players[0] as any).user.elo,
+                  wins: (gameToUpdate.players[0] as any).user.wins,
+                  draws: (gameToUpdate.players[0] as any).user.draws,
+                  losses: (gameToUpdate.players[0] as any).user.losses,
+                },
+                {
+                  elo: (gameToUpdate.players[1] as any).user.elo,
+                  wins: (gameToUpdate.players[1] as any).user.wins,
+                  draws: (gameToUpdate.players[1] as any).user.draws,
+                  losses: (gameToUpdate.players[1] as any).user.losses,
+                },
+                "draw"
               );
-            });
-
-            // Notify players of the end of the game
+        
+              // Update both players' stats
+              (gameToUpdate.players[0] as any).user.elo = newRA;
+              (gameToUpdate.players[0] as any).user.draws =
+                ((gameToUpdate.players[0] as any).user.draws || 0) + 1;
+              (gameToUpdate.players[1] as any).user.elo = newRB;
+              (gameToUpdate.players[1] as any).user.draws =
+                ((gameToUpdate.players[1] as any).user.draws || 0) + 1;
+        
+              // Save updated stats to the database
+              await User.update(
+                {
+                  elo: (gameToUpdate.players[0] as any).user.elo,
+                  draws: (gameToUpdate.players[0] as any).user.draws,
+                },
+                { where: { uuid: (gameToUpdate.players[0] as any).user.uuid } }
+              );
+              await User.update(
+                {
+                  elo: (gameToUpdate.players[1] as any).user.elo,
+                  draws: (gameToUpdate.players[1] as any).user.draws,
+                },
+                { where: { uuid: (gameToUpdate.players[1] as any).user.uuid } }
+              );
+        
+              // Notify players of the draw
+              gameToUpdate.players.forEach((playerWs) => {
+                playerWs.send(
+                  JSON.stringify({
+                    type: "end",
+                    winner: null, // No winner in a draw
+                    board: newBoard,
+                    bitmap: BitmapGenerator.generateBitmap(newBoard),
+                  })
+                );
+              });
+              delete games[gameId]; // Remove the game from the active games list
+              delete gameClocks[gameId]; // Remove the game clock
+              return;
+            }
+        
+            // If no one has won and the game is not a draw, send the updated board to both players
+            const bitmap = BitmapGenerator.generateBitmap(newBoard);
             gameToUpdate.players.forEach((playerWs) => {
               playerWs.send(
                 JSON.stringify({
-                  type: "end",
-                  winner,
+                  type: "update",
                   board: newBoard,
-                  bitmap: BitmapGenerator.generateBitmap(newBoard),
+                  currentPlayer: gameToUpdate.currentPlayer,
+                  bitmap: bitmap,
                 })
               );
             });
-            delete games[gameId]; // Remove the game from the active games list
-            return;
           }
-
-          // Check if the game is a draw
-          if (isDraw(newBoard)) {
-            const { newRA, newRB } = calculateElo(
-              {
-                elo: (gameToUpdate.players[0] as any).user.elo,
-                wins: (gameToUpdate.players[0] as any).user.wins,
-                draws: (gameToUpdate.players[0] as any).user.draws,
-                losses: (gameToUpdate.players[0] as any).user.losses,
-              },
-              {
-                elo: (gameToUpdate.players[1] as any).user.elo,
-                wins: (gameToUpdate.players[1] as any).user.wins,
-                draws: (gameToUpdate.players[1] as any).user.draws,
-                losses: (gameToUpdate.players[1] as any).user.losses,
-              },
-              "draw"
-            );
-
-            // Update both players' stats
-            (gameToUpdate.players[0] as any).user.elo = newRA;
-            (gameToUpdate.players[0] as any).user.draws =
-              ((gameToUpdate.players[0] as any).user.draws || 0) + 1;
-            (gameToUpdate.players[1] as any).user.elo = newRB;
-            (gameToUpdate.players[1] as any).user.draws =
-              ((gameToUpdate.players[1] as any).user.draws || 0) + 1;
-
-            // Save updated stats to the database
-            await User.update(
-              {
-                elo: (gameToUpdate.players[0] as any).user.elo,
-                draws: (gameToUpdate.players[0] as any).user.draws,
-              },
-              { where: { uuid: (gameToUpdate.players[0] as any).user.uuid } }
-            );
-            await User.update(
-              {
-                elo: (gameToUpdate.players[1] as any).user.elo,
-                draws: (gameToUpdate.players[1] as any).user.draws,
-              },
-              { where: { uuid: (gameToUpdate.players[1] as any).user.uuid } }
-            );
-
-            // Notify players of the draw
-            gameToUpdate.players.forEach((playerWs) => {
-              playerWs.send(
-                JSON.stringify({
-                  type: "end",
-                  winner: null, // No winner in a draw
-                  board: newBoard,
-                  bitmap: BitmapGenerator.generateBitmap(newBoard),
-                })
-              );
-            });
-            delete games[gameId]; // Remove the game from the active games list
-            return;
-          }
-
-          // If no one has won and the game is not a draw, send the updated board to both players
-          const bitmap = BitmapGenerator.generateBitmap(newBoard);
-          gameToUpdate.players.forEach((playerWs) => {
-            playerWs.send(
-              JSON.stringify({
-                type: "update",
-                board: newBoard,
-                currentPlayer: gameToUpdate.currentPlayer,
-                bitmap: bitmap,
-              })
-            );
-          });
-        }
-        break;
+          break;
 
       default:
         console.log("Unknown message type:", type);
@@ -437,6 +551,7 @@ function handleDisconnect(ws: WebSocket): void {
         }
       });
       delete games[gameId];
+      delete gameClocks[gameId]; // Remove the game clock
     }
   });
 }
@@ -460,6 +575,7 @@ function cleanupAbandonedGames(): void {
         }
       });
       delete games[gameId];
+      delete gameClocks[gameId]; // Remove the game clock
     }
   });
 }
