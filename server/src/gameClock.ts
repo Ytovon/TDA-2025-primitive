@@ -5,7 +5,7 @@ export class GameClock {
     private interval: NodeJS.Timeout | null = null;
     private onTimeOut: (player: string) => void;
  
-    constructor(private startingTime: number = 8 * 60 * 35, onTimeOut: (player: string) => void) {
+    constructor(private startingTime: number = 8 * 60 * 1000, onTimeOut: (player: string) => void) {
       this.playerTimes = {
         X: startingTime,
         O: startingTime,
