@@ -49,6 +49,8 @@ import statsGames from "./images/statsGames.svg";
 import statsTrophy from "./images/statsTrophy.svg";
 import settingFullWhite from "./images/settingFullWhite.svg";
 import historyRotateBlack from "./images/clock-rotate-left-solid.svg";
+import userInfoErb from "./images/userInfoErb.svg";
+import userInfoBrush from "./images/userInfoBrush.svg";
 
 /* EditorPage */
 
@@ -144,4 +146,6 @@ export {
   statsTrophy,
   settingFullWhite,
   historyRotateBlack,
+  userInfoBrush,
+  userInfoErb,
 };
