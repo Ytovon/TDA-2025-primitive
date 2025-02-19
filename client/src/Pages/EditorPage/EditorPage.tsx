@@ -34,7 +34,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
     bitmap: string;
   };
 
-  const { darkMode, toggleDarkMode } = useDarkMode();
+  const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
   const [player, setPlayer] = useState<boolean>(true);
   const [hasSymbol, setHasSymbol] = useState<boolean>(false);
   const [nameInputStyle, setNameInputStyle] = useState({});

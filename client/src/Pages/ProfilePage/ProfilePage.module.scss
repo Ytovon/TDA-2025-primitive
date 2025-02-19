@@ -185,20 +185,22 @@
 }
 
 .edit {
+  width: 580px;
+  height: 325px;
   display: flex;
   position: absolute;
   left: 50%;
   top: 25%;
   transform: translate(-50%, -50%);
   background-color: white;
-  border: 2px solid black;
+  border-radius: 20px;
 }
 
 .editLeft {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 25px 40px;
+  padding: 30px 25px 30px 40px;
 }
 
 .editTitle {
@@ -209,14 +211,15 @@
 .editSelects {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   margin-right: 30px;
 }
 
 .editSelect {
+  width: max-content;
   display: flex;
-  gap: 5px;
-  padding: 8px 15px;
+  gap: 7px;
+  padding: 9px 15px;
   background-color: #f1f1f1;
   cursor: pointer;
   border-radius: 10px;
@@ -227,12 +230,71 @@
 }
 
 .editRight {
-  padding: 25px 40px;
+  width: 100%;
+  padding: 40px;
   background-color: #f1f1f1;
+  border-radius: 0 20px 20px 0;
 }
 
-.userImg {
-  width: 35px;
+.editRightTitle {
+  margin-bottom: 15px;
+}
+
+.changeColorPreview {
+  display: flex;
+  gap: 10px;
+}
+
+.userImgEdit {
+  width: 27px;
+  aspect-ratio: 1/1;
+  padding: 9px;
+  border-radius: 11px;
+}
+
+.changeColorContainer {
+  display: flex;
+  gap: 6px;
+}
+
+.changeColor {
+  width: 20px;
+  height: 20px;
+  border: 2px solid white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+.changeDarkmodeContainer {
+  display: flex;
+  gap: 15px;
+}
+
+.changeDarkMode {
+  width: 70px;
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  border-radius: 5px;
+  font-weight: 500;
+  font-size: 1.05rem;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.changeDarkmodeImg {
+  width: 15px;
+  align-self: center;
 }
 
 @media screen and (max-width: 1100px) {

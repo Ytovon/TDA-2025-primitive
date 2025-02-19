@@ -5,7 +5,11 @@ import { Button } from "../../Components/Button/Button";
 import {
   historyRotateBlack,
   lightbulbBlue,
+  lightbulbWhite,
+  lightModeButton,
   modraZarovkaO,
+  moon,
+  moonAdaptive,
   profilePageRedImg,
   settingFullWhite,
   settingsButton,
@@ -16,8 +20,19 @@ import {
   zarovkaFigma,
 } from "../../assets/assets";
 import { userInfo } from "node:os";
+import { useDarkMode } from "../../DarkModeContext";
+import { Link, useNavigate } from "react-router-dom";
 
 export const ProfilePage = () => {
+  const [editMode, setEditMode] = useState(false);
+  const [selectedColor, setSelectedColor] = useState("#91bedc");
+  const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
+  const navigate = useNavigate();
+
+  const handleColorChange = (color: string) => {
+    setSelectedColor(color);
+  };
+
   return (
     <div className={styles.ProfilePage}>
       <Header />
@@ -112,53 +127,148 @@ export const ProfilePage = () => {
 
       <div className={styles.edit}>
         <div className={styles.editLeft}>
-          <h2 className={styles.editTitle}>Úpravy</h2>
-          <div className={styles.editSelects}>
-            <div className={styles.editSelect}>
-              <h3>Osobní informace</h3>
-              <img src={userInfoErb} alt="" />
-            </div>
+          <div>
+            <h2 className={styles.editTitle}>Úpravy</h2>
+            <div className={styles.editSelects}>
+              <button
+                onClick={() => setEditMode(false)}
+                className={styles.editSelect}
+              >
+                <h3>Osobní informace</h3>
+                <img src={userInfoErb} alt="" />
+              </button>
 
-            <div className={styles.editSelect}>
-              <h3>Přizpůsobení</h3>
-              <img src={userInfoBrush} alt="" />
+              <button
+                onClick={() => setEditMode(true)}
+                className={styles.editSelect}
+              >
+                <h3>Přizpůsobení</h3>
+                <img src={userInfoBrush} alt="" />
+              </button>
             </div>
           </div>
 
           <Button text="Uložit změny" backgroundColor color="white" />
         </div>
-        <div className={styles.editRight}>
+        <div
+          style={{ display: editMode ? "none" : "block" }}
+          className={styles.editRight}
+        >
           <div>
-            <h3>Avatar</h3>
+            <h5>Poznámka</h5>
+            <input type="text" />
+          </div>
+
+          <div>
+            <h5>Uživatelské jméno</h5>
+            <input type="text" />
+          </div>
+
+          <div>
+            <h5>Email</h5>
+            <input type="text" />
+          </div>
+
+          <div>
+            <h5>Heslo</h5>
+            <input type="text" />
+          </div>
+        </div>
+        <div
+          style={{ display: editMode ? "block" : "none" }}
+          className={styles.editRight}
+        >
+          <div
+            style={{
+              paddingBottom: "25px",
+              borderBottom: "1px solid rgb(184, 184, 184)",
+            }}
+            className={styles.editRightSection}
+          >
+            <h3 className={styles.editRightTitle}>Avatar</h3>
             <div
-              className={styles.userImgContainer}
+              className={styles.changeColorPreview}
               style={{ backgroundColor: "#00000000" }}
             >
-              <img className={styles.userImg} src={lightbulbBlue} alt="" />
+              <img
+                style={{ backgroundColor: selectedColor }}
+                className={styles.userImgEdit}
+                src={lightbulbWhite}
+                alt=""
+              />
 
-              <div>
-                <button></button>
-                <button></button>
-                <button></button>
-                <button></button>
-                <button></button>
+              <div className={styles.changeColorContainer}>
+                <button
+                  style={{ backgroundColor: "var(--secondary1)" }}
+                  className={styles.changeColor}
+                  onClick={() => handleColorChange("var(--secondary1)")}
+                ></button>
+                <button
+                  style={{ backgroundColor: "var(--secondary2)" }}
+                  className={styles.changeColor}
+                  onClick={() => handleColorChange("var(--secondary2)")}
+                ></button>
+                <button
+                  style={{ backgroundColor: "var(--secondary3)" }}
+                  className={styles.changeColor}
+                  onClick={() => handleColorChange("var(--secondary3)")}
+                ></button>
+                <button
+                  style={{ backgroundColor: "var(--secondary4)" }}
+                  className={styles.changeColor}
+                  onClick={() => handleColorChange("var(--secondary4)")}
+                ></button>
+                <button
+                  style={{ backgroundColor: "var(--secondary5)" }}
+                  className={styles.changeColor}
+                  onClick={() => handleColorChange("var(--secondary5)")}
+                ></button>
               </div>
             </div>
           </div>
-          <div>
-            <h3>Zobrazovací řežim</h3>
-            <div>
-              <button>
+          <div
+            style={{ marginTop: "20px" }}
+            className={styles.editRightSection}
+          >
+            <h3 className={styles.editRightTitle}>Zobrazovací řežim</h3>
+            <div className={styles.changeDarkmodeContainer}>
+              <button
+                onClick={disableDarkMode}
+                style={{ backgroundColor: "white" }}
+                className={styles.changeDarkMode}
+              >
+                <img
+                  className={styles.changeDarkmodeImg}
+                  src={lightModeButton}
+                  alt=""
+                />
                 <p>Světlý</p>
-                <img src="" alt="" />
               </button>
-              <button>
+              <button
+                onClick={enableDarkMode}
+                style={{ backgroundColor: "black", color: "white" }}
+                className={styles.changeDarkMode}
+              >
+                <img
+                  style={{
+                    width: "13px",
+                  }}
+                  className={styles.changeDarkmodeImg}
+                  src={moon}
+                  alt=""
+                />
                 <p>Tmavý</p>
-                <img src="" alt="" />
               </button>
-              <button>
+              <button
+                style={{ backgroundColor: "#395A9A", color: "white" }}
+                className={styles.changeDarkMode}
+              >
+                <img
+                  className={styles.changeDarkmodeImg}
+                  src={moonAdaptive}
+                  alt=""
+                />
                 <p>Adaptivní</p>
-                <img src="" alt="" />
               </button>
             </div>
           </div>

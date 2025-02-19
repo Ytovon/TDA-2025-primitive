@@ -9,7 +9,8 @@ import React, {
 // Typy pro kontext
 interface DarkModeContextType {
   darkMode: boolean;
-  toggleDarkMode: () => void;
+  enableDarkMode: () => void;
+  disableDarkMode: () => void;
 }
 
 // Inicializace kontextu
@@ -34,25 +35,24 @@ export const DarkModeProvider: React.FC<DarkModeProviderProps> = ({
   useEffect(() => {
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
 
-    if (!darkMode) {
+    if (darkMode) {
       document.body.classList.add("dark-mode");
-      metaThemeColor != null &&
-        metaThemeColor.setAttribute("content", "#1a1a1a");
+      metaThemeColor?.setAttribute("content", "#1a1a1a");
     } else {
       document.body.classList.remove("dark-mode");
-      metaThemeColor != null &&
-        metaThemeColor.setAttribute("content", "#ffffff");
+      metaThemeColor?.setAttribute("content", "#ffffff");
     }
     localStorage.setItem("darkMode", JSON.stringify(darkMode));
   }, [darkMode]);
 
-  // Funkce pro přepínání režimu
-  const toggleDarkMode = () => {
-    setDarkMode((prevMode) => !prevMode);
-  };
+  // Funkce pro zapnutí/vypnutí dark mode
+  const enableDarkMode = () => setDarkMode(true);
+  const disableDarkMode = () => setDarkMode(false);
 
   return (
-    <DarkModeContext.Provider value={{ darkMode, toggleDarkMode }}>
+    <DarkModeContext.Provider
+      value={{ darkMode, enableDarkMode, disableDarkMode }}
+    >
       {children}
     </DarkModeContext.Provider>
   );

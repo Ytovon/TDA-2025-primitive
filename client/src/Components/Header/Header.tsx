@@ -17,7 +17,7 @@ import styles from "./Header.module.css";
 import { useDarkMode } from "../../DarkModeContext";
 
 export default function Header() {
-  const { darkMode, toggleDarkMode } = useDarkMode();
+  const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [Registered, setRegistered] = useState(true);
 

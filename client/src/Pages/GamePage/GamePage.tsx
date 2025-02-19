@@ -34,7 +34,7 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
     uuid: string;
   };
   const navigate = useNavigate();
-  const { darkMode, toggleDarkMode } = useDarkMode();
+  const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
   const [player, setPlayer] = useState(true); // true = hráč X, false = hráč O
   const [winner, setWinner] = useState<string | null>(null);
   const [game, setGame] = useState<Game>({
