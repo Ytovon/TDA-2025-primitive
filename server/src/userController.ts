@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto"; // Import crypto
 import { Op } from "sequelize";
 import { Request, Response } from "express"; // Import Response
-import passport from "./passportConfig.js"; // Import the passport configuration
 import { User } from "./models.js"; // Import the User model
 import { promisify } from "util";
 

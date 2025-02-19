@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./Footer.module.css";
-import { useDarkMode } from "../../DarkModeContext";
+import { useDarkMode } from "../../Context/DarkModeContext";
 import { footerLogoWhite, footerLogoBlack } from "../../assets/assets";
 
 interface FooterProps {

@@ -17,7 +17,7 @@ import {
 } from "../../assets/assets";
 import { ApiClient } from "../../API/GameApi";
 import { Button } from "../../Components/Button/Button";
-import { useDarkMode } from "../../DarkModeContext";
+import { useDarkMode } from "../../Context/DarkModeContext";
 import { Link, useNavigate } from "react-router-dom";
 import { validate } from "uuid";
 

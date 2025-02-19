@@ -12,7 +12,7 @@ import {
   winnerRed,
 } from "../../assets/assets";
 import BlinkingEyesSVG from "../../Components/Animation/lightbulb";
-import { useDarkMode } from "../../DarkModeContext";
+import { useDarkMode } from "../../Context/DarkModeContext";
 import { Button } from "../../Components/Button/Button";
 import { useNavigate } from "react-router-dom";
 import { ApiClient } from "../../API/GameApi";

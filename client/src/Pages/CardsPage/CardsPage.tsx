@@ -13,7 +13,7 @@ import styles from "./CardsPage.module.css";
 import { Card } from "../../Components/Card/Card";
 import Header from "../../Components/Header/Header";
 import { Link } from "react-router-dom";
-import { useDarkMode } from "../../DarkModeContext";
+import { useDarkMode } from "../../Context/DarkModeContext";
 import { useEffect, useState } from "react";
 import { Footer } from "../../Components/Footer/Footer";
 import BackgroundSymbol from "../../Components/Animation/BackgroundSymbol";

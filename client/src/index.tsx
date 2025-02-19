@@ -4,7 +4,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import { DarkModeProvider } from "./DarkModeContext";
+import { DarkModeProvider } from "./Context/DarkModeContext";
 import { WebSocketProvider } from "./Context/WebSocketContext";
 import CardsPage from "./Pages/CardsPage/CardsPage";
 import { GamePage } from "./Pages/GamePage/GamePage";

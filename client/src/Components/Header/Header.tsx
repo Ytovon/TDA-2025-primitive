@@ -15,13 +15,14 @@ import {
   userImg,
 } from "../../assets/assets";
 import styles from "./Header.module.css";
-import { useDarkMode } from "../../DarkModeContext";
+import { useDarkMode } from "../../Context/DarkModeContext";
 import {
   getAccessToken,
   clearTokens,
   getRefreshToken,
   setUUID,
   clearUUID,
+  getUUID,
 } from "../../API/tokenstorage"; // Your token storage functions
 import { User, UserModel } from "../../Model/UserModel";
 
@@ -126,7 +127,10 @@ export default function Header() {
                   src={darkMode ? triangleDropdownWhite : triangleDropdownBlack}
                   alt=""
                 />
-                <Link to="/game" className={`${styles.navLink} ${styles.link}`}>
+                <Link
+                  to="/loading"
+                  className={`${styles.navLink} ${styles.link}`}
+                >
                   Hrát online
                 </Link>
                 <Link to="/game" className={`${styles.navLink} ${styles.link}`}>

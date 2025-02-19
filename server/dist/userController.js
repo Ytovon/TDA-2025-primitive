@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from "crypto"; // Import crypto
 import { Op } from "sequelize";
-import passport from "./passportConfig.js"; // Import the passport configuration
 import { User } from "./models.js"; // Import the User model
 import { promisify } from "util";
 // Secret keys (Replace with environment variables in production)
