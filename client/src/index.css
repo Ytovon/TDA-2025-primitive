@@ -42,6 +42,11 @@ button {
   --color-symbol-background: white;
   --color-border-filtration: #f5f5f5;
   --color-line: black;
+  --color1: #0070bb;
+  --color2: #39599a;
+  --color3: #724479;
+  --color4: #ab2e58;
+  --color5: #e31837;
 }
 
 .dark-mode {

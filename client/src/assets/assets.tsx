@@ -48,10 +48,14 @@ import lightbulbWhite from "./images/lightbulbWhite.svg";
 import profilePageRedImg from "./images/ProfilePageRedImg.svg";
 import statsGames from "./images/statsGames.svg";
 import statsTrophy from "./images/statsTrophy.svg";
+import statsTrophyWhite from "./images/statsTrophyWhite.svg";
 import settingFullWhite from "./images/settingFullWhite.svg";
 import historyRotateBlack from "./images/clock-rotate-left-solid.svg";
+import historyRotateWhite from "./images/clock-rotate-left-solid-white.svg";
 import userInfoErb from "./images/userInfoErb.svg";
+import userInfoErbWhite from "./images/userInfoErbWhite.svg";
 import userInfoBrush from "./images/userInfoBrush.svg";
+import userInfoBrushWhite from "./images/userInfoBrushWhite.svg";
 import moon from "./images/moon-solid.svg";
 import moonAdaptive from "./images/moonAdaptive.svg";
 
@@ -148,10 +152,14 @@ export {
   profilePageRedImg,
   statsGames,
   statsTrophy,
+  statsTrophyWhite,
   settingFullWhite,
   historyRotateBlack,
+  historyRotateWhite,
   userInfoBrush,
+  userInfoBrushWhite,
   userInfoErb,
+  userInfoErbWhite,
   moon,
   moonAdaptive,
 };

@@ -1,10 +1,21 @@
+@charset "UTF-8";
+.dark-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.3); /* Černý poloprůhledný filtr */
+  pointer-events: none; /* Zabrání blokování kliknutí */
+  z-index: 9999; /* Umístění nad všemi prvky */
+}
+
 .container {
   width: clamp(970px, 60vw, 1100px);
   margin: 150px auto 50px;
   display: flex;
   flex-direction: column;
   gap: 50px;
-  filter: brightness(0.7);
 }
 
 .userInfoContainer {
@@ -15,7 +26,7 @@
 .userInfo {
   width: 65%;
   border-radius: 20px;
-  background-color: white;
+  background-color: var(--color-background-primary);
 }
 
 .userInfoHeader {
@@ -25,11 +36,12 @@
   grid-template-columns: 22%;
   grid-template-rows: 75%;
   grid-template-areas: "logo name setting" "logoBackground joinDate idk";
+  background-color: var(--color-background-light);
 }
 
 .userImgContainer {
   grid-area: logo logoBackground;
-  background-color: var(--secondary1);
+  background-color: var(--color1);
   border-radius: 20px 0 0 0;
   padding: 20px 0 0 20px;
   z-index: 10;
@@ -37,15 +49,15 @@
 
 .userImg {
   width: 35px;
+  aspect-ratio: 1/1;
   padding: 22px;
-  background-color: #91bedc;
   border: 4px solid white;
   border-radius: 15px;
 }
 
 .username {
   grid-area: name;
-  background-color: var(--secondary1);
+  background-color: var(--color1);
   color: white;
   align-content: end;
   padding-bottom: 7px;
@@ -57,6 +69,7 @@
   align-content: end;
   padding-left: 2px;
   color: var(--color-text-primary);
+  background-color: var(--color-background-light);
 }
 
 .setting {
@@ -68,14 +81,14 @@
   padding: 0 20px 12px 0;
   font-weight: 500;
   color: white;
-  background-color: var(--secondary1);
+  background-color: var(--color1);
   border-radius: 0 20px 0 0;
 }
 
 .settingBtn {
+  cursor: pointer;
   width: 25px;
   height: 25px;
-  cursor: pointer;
   transition: 0.2s ease-in-out;
 }
 .settingBtn:hover {
@@ -84,6 +97,8 @@
 
 .noteContainer {
   padding: 40px 21px 50px;
+  background-color: var(--color-background-light);
+  border-radius: 0 0 20px 20px;
 }
 
 .noteTitle {
@@ -93,18 +108,20 @@
 
 .note {
   width: 80%;
-  height: 100px;
-  padding: 0 10px;
+  height: 95px;
+  padding: 5px 10px;
   margin-top: 5px;
   border: none;
   background-color: var(--color-background-primary);
   color: var(--color-text-primary);
   font-size: 15px;
+  resize: none;
+  outline: none;
 }
 
 .statsContainer {
   width: 30%;
-  background-color: white;
+  background-color: var(--color-background-light);
   border-radius: 20px;
 }
 
@@ -112,7 +129,7 @@
   display: flex;
   justify-content: center;
   gap: 10px;
-  background-color: var(--secondary5);
+  background-color: var(--color5);
   height: 82.5px;
   border-radius: 20px 20px 0 0;
 }
@@ -132,6 +149,7 @@
   flex-direction: column;
   gap: 15px;
   padding: 25px;
+  color: var(--color-text-primary);
 }
 
 .stat {
@@ -147,14 +165,15 @@
 
 .redBold {
   font-weight: 600;
-  color: var(--secondary5);
+  color: var(--color5);
 }
 
 .gameHistory {
   min-height: 250px;
   padding: 30px;
   border-radius: 20px;
-  background-color: white;
+  background-color: var(--color-background-light);
+  color: var(--color-text-primary);
 }
 
 .gameHistoryTitle {
@@ -176,7 +195,7 @@
   text-align: center;
 }
 .gameHistoryTable tr:nth-child(1) {
-  background-color: var(--color-background-secondary);
+  background-color: var(--color-background-primary);
 }
 
 .edit {
@@ -185,9 +204,10 @@
   display: flex;
   position: absolute;
   left: 50%;
-  top: 25%;
+  top: 40%;
   transform: translate(-50%, -50%);
-  background-color: white;
+  background-color: var(--color-background-light-alt);
+  color: var(--color-text-primary);
   border-radius: 20px;
 }
 
@@ -206,7 +226,7 @@
 .editSelects {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   margin-right: 30px;
 }
 
@@ -215,19 +235,50 @@
   display: flex;
   gap: 7px;
   padding: 9px 15px;
-  background-color: #f1f1f1;
+  color: var(--color-text-primary);
   cursor: pointer;
   border-radius: 10px;
 }
 .editSelect:hover {
-  color: var(--secondary1);
+  color: var(--color1);
 }
 
 .editRight {
   width: 100%;
   padding: 40px;
-  background-color: #f1f1f1;
+  background-color: var(--color-background-secondary);
   border-radius: 0 20px 20px 0;
+}
+
+.editInputTitle1 {
+  display: flex;
+  justify-content: space-between;
+}
+
+.characterLeft {
+  font-size: 13px;
+  align-content: end;
+  padding-bottom: 5px;
+}
+
+.editInputContainer {
+  margin-bottom: 13px;
+}
+
+.editInputTitle {
+  margin-bottom: 4px;
+}
+
+.editInput {
+  width: calc(100% - 14px);
+  height: 25px;
+  padding-inline: 7px;
+  outline: none;
+  border: none;
+  border-radius: 3px;
+  resize: none;
+  background-color: var(--color-background-light-alt);
+  color: var(--color-text-primary);
 }
 
 .editRightTitle {
