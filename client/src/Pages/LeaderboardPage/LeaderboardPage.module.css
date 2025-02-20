@@ -1,0 +1,10 @@
+.leaderboardWrapper {
+  margin-top: 100px;
+}
+
+.leaderboardTitle {
+  text-align: center;
+  color: var(--color-text-primary);
+}
+
+/*# sourceMappingURL=LeaderboardPage.module.css.map */
