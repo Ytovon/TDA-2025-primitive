@@ -89,6 +89,12 @@ class User extends Model {
     get updatedAt() {
         return this.getDataValue('updatedAt');
     }
+    get isAdmin() {
+        return this.getDataValue('isAdmin');
+    }
+    get isBanned() {
+        return this.getDataValue('isBanned');
+    }
 }
 User.init({
     uuid: {
@@ -146,6 +152,16 @@ User.init({
     resetPasswordExpires: {
         type: DataTypes.DATE,
         allowNull: true,
+    },
+    isAdmin: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false, // Only one user should be manually set to true
+    },
+    isBanned: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
     },
 }, {
     sequelize,

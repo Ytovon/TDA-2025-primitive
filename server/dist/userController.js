@@ -270,6 +270,30 @@ const deleteUserByUUID = async (req, res) => {
         res.status(500).json({ message: "Internal server error." });
     }
 };
+// Ban user by UUID
+const banUser = async (req, res) => {
+    try {
+        const { uuid } = req.params;
+        // Find the user to be banned
+        const userToBan = await User.findByPk(uuid);
+        if (!userToBan) {
+            res.status(404).json({ message: "User not found." });
+            return;
+        }
+        // Prevent banning an admin (optional)
+        if (userToBan.isAdmin) {
+            res.status(403).json({ message: "Cannot ban an admin." });
+            return;
+        }
+        // Ban the user by setting isBanned to true
+        await userToBan.update({ isBanned: true });
+        res.status(200).json({ message: "User banned successfully." });
+    }
+    catch (err) {
+        console.error("Error banning user:", err);
+        res.status(500).json({ message: "Internal server error." });
+    }
+};
 // Google OAuth login route
 const googleLogin = (req, res) => {
     passport.authenticate("google", { scope: ["profile", "email"] })(req, res);
@@ -290,5 +314,6 @@ const googleCallback = (req, res) => {
             .json({ message: "Login successful!", accessToken, refreshToken });
     })(req, res);
 };
-export { register, login, refreshToken, logout, getAllUsers, getUserByUUID, updateUserByUUID, deleteUserByUUID, verifyToken, googleLogin, googleCallback, forgotPassword, };
+export { register, login, refreshToken, logout, getAllUsers, getUserByUUID, updateUserByUUID, deleteUserByUUID, verifyToken, googleLogin, googleCallback, forgotPassword, banUser, // Export the new banUser function
+ };
 //# sourceMappingURL=userController.js.map

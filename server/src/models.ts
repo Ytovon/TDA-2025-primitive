@@ -89,6 +89,8 @@ interface UserAttributes {
   resetPasswordExpires?: Date;
   createdAt?: Date;
   updatedAt?: Date;
+  isAdmin?: boolean;
+  isBanned?: boolean; // Add isBanned property
 }
 
 // Define the creation attributes for the User model
@@ -130,6 +132,12 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   }
   get updatedAt(): Date | undefined {
     return this.getDataValue('updatedAt');
+  }
+  get isAdmin(): boolean | undefined {
+    return this.getDataValue('isAdmin');
+  }
+  get isBanned(): boolean | undefined {
+    return this.getDataValue('isBanned');
   }
 }
 
@@ -190,6 +198,16 @@ User.init(
     resetPasswordExpires: {
       type: DataTypes.DATE,
       allowNull: true,
+    },
+    isAdmin: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false, // Only one user should be manually set to true
+    },
+    isBanned: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
   },
   {
