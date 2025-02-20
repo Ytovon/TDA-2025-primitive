@@ -24,6 +24,7 @@ import {
 } from "../../assets/assets";
 import { useDarkMode } from "../../Context/DarkModeContext";
 import { Link, useNavigate } from "react-router-dom";
+import { Footer } from "../../Components/Footer/Footer";
 
 export const ProfilePage = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -327,6 +328,8 @@ export const ProfilePage = () => {
           </div>
         </div>
       </div>
+
+      <Footer landingPageFooter={false} />
     </div>
   );
 };

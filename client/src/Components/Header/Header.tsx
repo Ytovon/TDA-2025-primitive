@@ -201,7 +201,7 @@ export default function Header() {
                 />
                 <p>
                   <Link
-                    to="/userPage/user1"
+                    to="/ProfilePage/user1"
                     className={`${styles.navLink} ${styles.link}`}
                   >
                     Přehled
