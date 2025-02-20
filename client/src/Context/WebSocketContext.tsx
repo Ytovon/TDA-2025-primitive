@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { getAccessToken } from "../API/tokenstorage";
-import { json } from "stream/consumers";
 
 const WEBSOCKET_URL = `ws://localhost:5000/ws?token=${getAccessToken()}`;
 
@@ -11,6 +10,7 @@ interface WebSocketContextType {
   sendMessage: (message: any) => void;
   gameID: string;
   multiplayerBoard: string[][];
+  multiplayerWinner: string | null;
 }
 
 const WebSocketContext = createContext<WebSocketContextType | undefined>(
@@ -33,6 +33,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   const [multiplayerBoard, setMultiplayerBoard] = useState<string[][]>(
     Array.from({ length: 15 }, () => Array(15).fill(""))
   );
+  const [multiplayerWinner, setWinner] = useState("");
 
   useEffect(() => {
     const ws = new WebSocket(WEBSOCKET_URL);
@@ -52,21 +53,23 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       const data = JSON.parse(event.data);
       console.log("Received message:", data);
 
-      if (data.type === "matched") {
-        setStatus("Matched! Game ID: " + data.gameId);
-        setGameID(data.gameId);
-        navigate(`/game`); // Use navigate to redirect to the matched game
-      } else if (data.type === "waiting") {
-        setStatus(data.message);
-      } else if (data.type === "error") {
-      } else if (data.type === "update") {
-        setStatus(data.message);
-
-        console.log(data.board);
-
-        setMultiplayerBoard(data.board);
-      } else if (data.type === "error") {
-        setStatus("Error: " + data.message);
+      switch (data.type) {
+        case "matched":
+          setStatus("Match! Game ID: " + data.gameId);
+          setGameID(data.gameId);
+          navigate(`/game`); // Use navigate to redirect to the matched game
+          break;
+        case "update":
+          setStatus(data.message);
+          setMultiplayerBoard(data.board);
+          break;
+        case "end":
+          setStatus(data.message);
+          setWinner(data.winner);
+          break;
+        default:
+          setStatus(data.message);
+          break;
       }
     };
 
@@ -102,6 +105,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
         sendMessage,
         gameID,
         multiplayerBoard,
+        multiplayerWinner,
       }}
     >
       {children}

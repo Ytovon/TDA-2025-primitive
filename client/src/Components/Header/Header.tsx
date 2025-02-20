@@ -166,7 +166,7 @@ export default function Header() {
               <p className={styles.username}>{user.username}</p>
               <div className={styles.userStats}>
                 <div className={styles.userStat}>
-                  <p>{user.elo}</p>
+                  <p>{Math.floor(user.elo)}</p>
                   <img src={eloStar} alt="" />
                 </div>
                 <div className={styles.userStat}>

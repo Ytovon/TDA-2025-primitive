@@ -17,7 +17,7 @@ import { useWebSocket } from "../../Context/WebSocketContext";
 
 export const LoadingPage = () => {
   const navigate = useNavigate();
-  const { isConnected, status, sendMessage } = useWebSocket();
+  const { status } = useWebSocket();
 
   useEffect(() => {
     const verifyAccess = async () => {

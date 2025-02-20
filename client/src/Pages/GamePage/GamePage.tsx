@@ -18,21 +18,28 @@ import { useNavigate } from "react-router-dom";
 import { ApiClient } from "../../API/GameApi";
 import { Game } from "../../Model/GameModel";
 import { useWebSocket } from "../../Context/WebSocketContext";
-import { json } from "stream/consumers";
 
 interface GamePageProps {
   uuid?: string;
 }
+
+// if winner == null, then its draw... handle that correctly
 
 export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
   const navigate = useNavigate();
 
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [player, setPlayer] = useState(true); // true = hráč X, false = hráč O
-  const [winner, setWinner] = useState<string | null>(null);
+  const [winner, setWinner] = useState<string | null>("");
 
-  const { isConnected, status, sendMessage, gameID, multiplayerBoard } =
-    useWebSocket();
+  const {
+    isConnected,
+    sendMessage,
+    gameID,
+    multiplayerBoard,
+    multiplayerWinner,
+    status,
+  } = useWebSocket();
 
   const [game, setGame] = useState<Game>({
     board: [],
@@ -40,10 +47,12 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
     createdAt: "",
     difficulty: "",
     gameState: "",
-    name: isConnected ? "Lokální multiplayer" : "Online multiplayer",
+    name: isConnected ? "Online multiplayer" : "Lokální multiplayer",
     updatedAt: "",
     uuid,
   });
+
+  const [refresh, setRefresh] = useState(0);
 
   const [grid, setGrid] = useState<string[][]>(
     Array.from({ length: 15 }, () => Array(15).fill(""))
@@ -51,15 +60,6 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
   const [initialBoard, setInitialBoard] = useState<string[][]>(
     Array.from({ length: 15 }, () => Array(15).fill(""))
   );
-
-  // change in board when multiplayerBoard changes... when opponent makes a move
-  useEffect(() => {
-    setGrid((prevGrid) => {
-      return JSON.stringify(prevGrid) !== JSON.stringify(multiplayerBoard)
-        ? multiplayerBoard
-        : prevGrid;
-    });
-  }, [multiplayerBoard]);
 
   useEffect(() => {
     const fetchGame = async () => {
@@ -81,6 +81,33 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
     };
     fetchGame();
   }, []);
+
+  // handles multiplayer winner
+  useEffect(() => {
+    setWinner((prevWinner) => {
+      const newWinner =
+        multiplayerWinner === "X"
+          ? "red"
+          : multiplayerWinner === "O"
+          ? "blue"
+          : multiplayerWinner;
+      console.log("Setting Winner:", newWinner);
+      return newWinner;
+    });
+  }, [multiplayerWinner]);
+
+  useEffect(() => {
+    setRefresh((prev) => prev + 1);
+  }, [winner]);
+
+  // change in board when multiplayerBoard changes... when opponent makes a move
+  useEffect(() => {
+    setGrid((prevGrid) => {
+      return JSON.stringify(prevGrid) !== JSON.stringify(multiplayerBoard)
+        ? multiplayerBoard
+        : prevGrid;
+    });
+  }, [multiplayerBoard]);
 
   useEffect(() => {
     let xCount = 0;
@@ -224,7 +251,7 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
           </button>
         </div>
 
-        <div className={styles.gameWrapper}>
+        <div key={refresh} className={styles.gameWrapper}>
           <div className={styles.titleWrapper}>
             <h2 className={styles.title}>{game.name}</h2>
             <span
@@ -278,7 +305,9 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
       </div>
 
       <div
-        className={`${styles.winnerCardWrapper} ${winner ? styles.active : ""}`}
+        className={`${styles.winnerCardWrapper} ${
+          winner != "" ? styles.active : ""
+        }`}
       >
         <div className={styles.winnerCard}>
           <div className={styles.winnerCardTextImg}>
@@ -286,12 +315,12 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
               <h2 className={styles.winnerCardTitle}>Gratulujeme</h2>
               <p className={styles.winnerCardSubtitle}>
                 k výhře{" "}
-                {winner === "red" ? "hráči v červeném" : "hráči v modrém"}
+                {winner == "red" ? "hráči v červeném" : "hráči v modrém"}
               </p>
             </div>
             <img
               className={styles.winnerCardImg}
-              src={winner === "red" ? winnerRed : winnerBlue}
+              src={winner == "red" ? winnerRed : winnerBlue}
             />
           </div>
 
@@ -305,12 +334,15 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
 
             <Button
               text="Ukončit"
-              color={winner === "red" ? "#E31837" : "#0070BB"}
-              border={winner === "red" ? false : true}
+              color={winner == "red" ? "#E31837" : "#0070BB"}
+              border={winner == "red" ? false : true}
               onClick={() => navigate(game.uuid !== "" ? "/Games" : "/")}
             />
           </div>
         </div>
+      </div>
+      <div>
+        <p style={{ color: "white" }}>{status != "" ? status : ""}</p>
       </div>
     </body>
   );
