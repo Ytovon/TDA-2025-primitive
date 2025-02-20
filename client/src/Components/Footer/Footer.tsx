@@ -8,7 +8,7 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ landingPageFooter = true }) => {
-  const { darkMode, toggleDarkMode } = useDarkMode();
+  const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
   const currentYear = new Date().getFullYear();
   return (
     <footer
@@ -31,7 +31,7 @@ export const Footer: React.FC<FooterProps> = ({ landingPageFooter = true }) => {
       <div className={styles.footerBottom}>
         <img
           className={styles.footerLogo}
-          src={darkMode ? footerLogoBlack : footerLogoWhite}
+          src={darkMode ? footerLogoWhite : footerLogoBlack}
           alt="Think Different Academy"
         />
         <div className={styles.copyright}>

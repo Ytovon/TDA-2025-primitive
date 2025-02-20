@@ -12,7 +12,6 @@ export const LoginPage = () => {
   const navigate = useNavigate();
   const [isRegistered, setIsRegistered] = useState(true);
   const [formData, setFormData] = useState<Partial<UserModel>>({
-
     username: "",
     email: "",
     password: "",
@@ -161,14 +160,6 @@ export const LoginPage = () => {
             </button>
           </p>
         </form>
-
-        <p>
-          <button
-            className={styles.link}
-            type="submit"
-            onClick={handleIsRegistered}
-          ></button>
-        </p>
 
         <div className={styles.or}>
           <span className={styles.line}></span>

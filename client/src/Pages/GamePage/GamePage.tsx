@@ -25,8 +25,7 @@ interface GamePageProps {
 
 export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
   const navigate = useNavigate();
-
-  const { darkMode, toggleDarkMode } = useDarkMode();
+  const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
   const [player, setPlayer] = useState(true); // true = hráč X, false = hráč O
   const [winner, setWinner] = useState<string | null>(null);
   const [game, setGame] = useState<Game>({
@@ -186,7 +185,7 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
             <Link to={game.uuid !== "" ? "/Games" : "/"}>
               <img
                 className={styles.arrow}
-                src={darkMode ? arrowBlack : arrowWhite}
+                src={darkMode ? arrowWhite : arrowBlack}
                 alt=""
               />
             </Link>
@@ -195,7 +194,7 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
           <button onClick={resetGame}>
             <img
               className={styles.resetGame}
-              src={darkMode ? resetBtnBlack : resetBtnWhite}
+              src={darkMode ? resetBtnWhite : resetBtnBlack}
               alt=""
             />
           </button>

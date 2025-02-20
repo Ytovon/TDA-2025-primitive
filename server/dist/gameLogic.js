@@ -33,7 +33,8 @@ const getGameState = (board) => {
         return { gameState: "endgame", debugInfo };
     }
     // Check for midgame scenarios: Four blocked by wall or opponent's symbol
-    const fourBlocked = hasBlockedFour(board, currentPlayer) || hasOpponentBlockedFour(board, currentPlayer);
+    const fourBlocked = hasBlockedFour(board, currentPlayer) ||
+        hasOpponentBlockedFour(board, currentPlayer);
     debugInfo.fourBlocked = fourBlocked;
     // Classify based on the number of rounds
     const roundsPlayed = xCount + oCount;

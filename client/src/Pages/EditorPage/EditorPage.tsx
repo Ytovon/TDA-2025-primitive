@@ -26,7 +26,7 @@ interface EditorPageProps {
 }
 
 export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
-  const { darkMode, toggleDarkMode } = useDarkMode();
+  const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
   const [player, setPlayer] = useState<boolean>(true);
   const [hasSymbol, setHasSymbol] = useState<boolean>(false);
   const [nameInputStyle, setNameInputStyle] = useState({});
@@ -196,7 +196,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
       <Link to="/Games">
         <img
           className={styles.arrow}
-          src={darkMode ? arrowBlack : arrowWhite}
+          src={darkMode ? arrowWhite : arrowBlack}
         />
       </Link>
 
