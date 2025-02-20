@@ -11,6 +11,7 @@ interface WebSocketContextType {
   gameID: string;
   multiplayerBoard: string[][];
   multiplayerWinner: string | null;
+  startConnection: () => void; // NEW FUNCTION
 }
 
 const WebSocketContext = createContext<WebSocketContextType | undefined>(
@@ -28,25 +29,27 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 }) => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [status, setStatus] = useState("Čekám na uživatele");
+  const [status, setStatus] = useState("...");
   const [gameID, setGameID] = useState("");
   const [multiplayerBoard, setMultiplayerBoard] = useState<string[][]>(
     Array.from({ length: 15 }, () => Array(15).fill(""))
   );
-  const [multiplayerWinner, setWinner] = useState("");
+  const [multiplayerWinner, setWinner] = useState<string | null>(null);
 
-  useEffect(() => {
+  // Function to start WebSocket connection (only called when needed)
+  const startConnection = () => {
+    if (socket) return; // Prevent re-initializing if already connected
+
     const ws = new WebSocket(WEBSOCKET_URL);
-
     setSocket(ws);
 
-    ws.onopen = async () => {
+    ws.onopen = () => {
       console.log("Connected to WebSocket");
       setIsConnected(true);
 
       setTimeout(() => {
         ws.send(JSON.stringify({ type: "matchmaking" }));
-      }, 1000); // Small delay (100ms)
+      }, 1000);
     };
 
     ws.onmessage = (event) => {
@@ -57,7 +60,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
         case "matched":
           setStatus("Match! Game ID: " + data.gameId);
           setGameID(data.gameId);
-          navigate(`/game`); // Use navigate to redirect to the matched game
+          navigate("/game");
           break;
         case "update":
           setStatus(data.message);
@@ -73,24 +76,18 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       }
     };
 
-    ws.onerror = (error) => {
-      console.error("WebSocket Error:", error);
-    };
-
+    ws.onerror = (error) => console.error("WebSocket Error:", error);
     ws.onclose = (event) => {
       console.log("WebSocket closed:", event.code, event.reason);
       setIsConnected(false);
+      setSocket(null); // Reset socket on close
     };
-
-    return () => {
-      ws.close();
-    };
-  }, []);
+  };
 
   const sendMessage = (message: any) => {
     if (socket && isConnected) {
       socket.send(JSON.stringify(message));
-      console.log(message);
+      console.log("Sent:", message);
     } else {
       console.warn("WebSocket is not connected.");
     }
@@ -106,6 +103,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
         gameID,
         multiplayerBoard,
         multiplayerWinner,
+        startConnection, // Expose the function
       }}
     >
       {children}

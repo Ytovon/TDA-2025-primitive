@@ -17,7 +17,7 @@ import { useWebSocket } from "../../Context/WebSocketContext";
 
 export const LoadingPage = () => {
   const navigate = useNavigate();
-  const { status } = useWebSocket();
+  const { status, startConnection } = useWebSocket();
 
   useEffect(() => {
     const verifyAccess = async () => {
@@ -56,7 +56,7 @@ export const LoadingPage = () => {
         console.error("Access verification failed:", error);
       }
     };
-
+    startConnection();
     verifyAccess();
 
     return () => {};
