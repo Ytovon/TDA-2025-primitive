@@ -24,6 +24,7 @@
 
 .error_text {
   font-size: 1.75rem;
+  color: var(--color-text-primary);
 }
 
 @media screen and (max-width: 500px) {

@@ -49,7 +49,9 @@ export default function CardsPage() {
 
   async function fetchAllGames() {
     try {
-      const response = await fetch("https://2a459380.app.deploy.tourde.app/api/v1/games");
+      const response = await fetch(
+        "https://2a459380.app.deploy.tourde.app/api/v1/games"
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -201,7 +203,7 @@ export default function CardsPage() {
                       ? { display: "none" }
                       : { display: "flex" }
                   }
-                  src={darkMode ? xMarkBlack : xMarkWhite}
+                  src={darkMode ? xMarkWhite : xMarkBlack}
                   onClick={resetFilters}
                 />
                 <span className={styles.lineBtns}></span>
@@ -212,7 +214,7 @@ export default function CardsPage() {
                       : styles.filtrationChevronDown
                   }
                   onClick={openFiltration}
-                  src={darkMode ? chevronUpBlack : chevronUpWhite}
+                  src={darkMode ? chevronUpWhite : chevronUpBlack}
                 />
               </div>
             </div>
@@ -325,7 +327,7 @@ export default function CardsPage() {
               <img
                 className={styles.addGameBtn}
                 style={{ visibility: "visible" }}
-                src={darkMode ? whitePlus : bluePlus}
+                src={darkMode ? bluePlus : whitePlus}
               />
             </button>
           </Link>

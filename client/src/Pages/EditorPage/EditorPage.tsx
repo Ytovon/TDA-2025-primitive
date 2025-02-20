@@ -185,7 +185,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
       <Link to="/Games">
         <img
           className={styles.arrow}
-          src={darkMode ? arrowBlack : arrowWhite}
+          src={darkMode ? arrowWhite : arrowBlack}
         />
       </Link>
 

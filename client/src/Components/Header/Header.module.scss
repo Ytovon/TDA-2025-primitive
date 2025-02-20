@@ -121,7 +121,7 @@ header {
   font-weight: 500;
   text-align: right;
   margin: 0 auto;
-  padding-block: 50px;
+  padding-block: 40px 50px;
 }
 
 .mobileMenuLink {
@@ -140,6 +140,87 @@ header {
       color: white;
     }
   }
+}
+
+.mobileLinkDropdownContainer {
+  width: fit-content;
+  text-align: left;
+  display: flex;
+  gap: 30px;
+  cursor: pointer !important;
+
+  .mobileLinkDropdown {
+    display: flex;
+  }
+}
+
+.mobileDropdownTitle {
+  text-align: left;
+
+  cursor: pointer;
+  height: min-content;
+  font-size: 1.375rem;
+  display: flex;
+  gap: 5px;
+}
+
+.mobileLinkDropdown {
+  display: none;
+  gap: 20px;
+  text-decoration: none !important;
+  align-self: center;
+
+  &:nth-child(n) {
+    width: max-content;
+  }
+}
+
+.pointerToDropdown {
+  display: none;
+  width: 20px;
+  rotate: 180deg;
+}
+
+.mobileLink {
+  font-size: 1.25rem;
+  align-self: center;
+  height: min-content;
+}
+/* mobile User*/
+
+.mobileUserContainer {
+  display: flex;
+  gap: 10px;
+  cursor: pointer;
+}
+.mobileUser {
+  display: flex;
+  flex-direction: column;
+  color: var(--color-text-primary);
+}
+
+.mobileUsername {
+  text-align: left;
+  font-weight: 500;
+}
+
+.mobileUserStats {
+  display: flex;
+  gap: 15px;
+}
+
+.mobileUserStat {
+  display: flex;
+  gap: 5px;
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+.mobileUserImg {
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  object-fit: cover;
 }
 
 .dropdown {
@@ -189,6 +270,7 @@ header {
 .username {
   user-select: text;
   text-align: right;
+  color: var(--color-text-primary);
 }
 
 .userContainer {
@@ -255,6 +337,22 @@ header {
   .headerContainer,
   .mobileMenu {
     width: clamp(300px, 80vw, 800px);
+  }
+
+  .mobileLinkDropdownContainer {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mobileLinkDropdown {
+    gap: 15px;
+    align-items: center;
+    padding-left: 30px;
+    font-size: 1.35rem;
+  }
+
+  .pointerToDropdown {
+    display: none !important;
   }
 }
 

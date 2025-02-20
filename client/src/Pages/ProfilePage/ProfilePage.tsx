@@ -165,7 +165,7 @@ export const ProfilePage = () => {
                 style={{
                   backgroundColor: editMode
                     ? "var(--color-background-secondary)"
-                    : "var(--color-background-light)",
+                    : "var(---color-background-light)",
                 }}
                 onClick={() => setEditMode(true)}
                 className={styles.editSelect}
