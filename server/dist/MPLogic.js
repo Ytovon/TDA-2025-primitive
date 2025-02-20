@@ -4,7 +4,7 @@ const hasWon = (board, player) => {
         { row: 0, col: 1 }, // Horizontal
         { row: 1, col: 0 }, // Vertical
         { row: 1, col: 1 }, // Diagonal (top-left to bottom-right)
-        { row: 1, col: -1 } // Diagonal (top-right to bottom-left)
+        { row: 1, col: -1 }, // Diagonal (top-right to bottom-left)
     ];
     for (let row = 0; row < 15; row++) {
         for (let col = 0; col < 15; col++) {
@@ -14,7 +14,11 @@ const hasWon = (board, player) => {
                     for (let i = 0; i < 5; i++) {
                         const r = row + i * dRow;
                         const c = col + i * dCol;
-                        if (r >= 0 && r < 15 && c >= 0 && c < 15 && board[r][c] === player) {
+                        if (r >= 0 &&
+                            r < 15 &&
+                            c >= 0 &&
+                            c < 15 &&
+                            board[r][c] === player) {
                             count++;
                         }
                         else {
@@ -76,7 +80,7 @@ const calculateElo = (playerA, playerB, result) => {
 };
 // Utility to check if the game is a draw
 const isDraw = (board) => {
-    return board.flat().every(cell => cell !== null); // All cells are occupied
+    return board.flat().every((cell) => cell !== ""); // All cells are occupied
 };
 export { hasWon, calculateElo, isDraw };
 //# sourceMappingURL=MPLogic.js.map

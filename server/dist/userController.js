@@ -139,7 +139,7 @@ const refreshToken = async (req, res) => {
         try {
             await verifyTokenInRefreshToken(token);
             // Generate new access token
-            const newAccessToken = jwt.sign({ uuid: user.uuid, username: user.username }, ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+            const newAccessToken = jwt.sign({ uuid: user.uuid, username: user.username }, ACCESS_TOKEN_SECRET, { expiresIn: "1h" });
             res.json({ accessToken: newAccessToken });
         }
         catch (err) {

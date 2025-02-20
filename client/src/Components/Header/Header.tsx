@@ -48,6 +48,7 @@ export default function Header() {
       const token = getAccessToken();
       if (token && token !== "" && token !== undefined) {
         let isValid: any = await UserApiClient.verifyToken(token);
+
         if (!isValid) {
           // Try to refresh the token if the current token is not valid
           const refreshToken = getRefreshToken();
@@ -64,7 +65,7 @@ export default function Header() {
           const valid = isValid.data.valid;
           const uuid = isValid.data.uuid;
 
-          setRegistered(isValid);
+          setRegistered(valid);
 
           if (valid && uuid) {
             setUUID(uuid);
@@ -178,7 +179,7 @@ export default function Header() {
               <p className={styles.username}>{user.username}</p>
               <div className={styles.userStats}>
                 <div className={styles.userStat}>
-                  <p>{user.elo}</p>
+                  <p>{Math.floor(user.elo)}</p>
                   <img src={eloStar} alt="" />
                 </div>
                 <div className={styles.userStat}>

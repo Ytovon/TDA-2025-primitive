@@ -178,7 +178,7 @@ const refreshToken = async (req: Request, res: Response): Promise<void> => {
       const newAccessToken = jwt.sign(
         { uuid: user.uuid, username: user.username },
         ACCESS_TOKEN_SECRET,
-        { expiresIn: "15m" }
+        { expiresIn: "1h" }
       );
 
       res.json({ accessToken: newAccessToken });

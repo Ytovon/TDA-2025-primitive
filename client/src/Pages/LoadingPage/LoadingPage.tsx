@@ -14,29 +14,39 @@ import {
   clearUUID,
 } from "../../API/tokenstorage"; // Your token storage functions
 import { useWebSocket } from "../../Context/WebSocketContext";
-const accessToken: string | null = getAccessToken();
 
 export const LoadingPage = () => {
   const navigate = useNavigate();
-  const { isConnected, status, sendMessage } = useWebSocket();
+  const { status, startConnection } = useWebSocket();
 
   useEffect(() => {
     const verifyAccess = async () => {
       try {
         const refreshToken = getRefreshToken() ?? "";
-        const accessTokenToCheck = accessToken ?? "";
+        const accessTokenToCheck = getAccessToken() ?? "";
 
         const isValid: any = await UserApiClient.verifyToken(
           accessTokenToCheck
         );
 
-        if (!isValid) {
+        const isValidToCheck = isValid == false ? isValid : isValid.data.valid;
+
+        if (isValidToCheck == false) {
+          console.log("hell");
+
           await UserApiClient.refreshToken(refreshToken);
 
-          const newAccessToken = getAccessToken();
+          const newAccessToken = getAccessToken() ?? "";
+
+          console.log(
+            newAccessToken == accessTokenToCheck || accessTokenToCheck == null
+          );
 
           // refresh was unsuccessful - clear tokens and navigate to login
-          if (newAccessToken === null && newAccessToken === undefined) {
+          if (
+            newAccessToken == accessTokenToCheck ||
+            accessTokenToCheck == null
+          ) {
             clearTokens();
             clearUUID();
             navigate("/login");
@@ -46,7 +56,7 @@ export const LoadingPage = () => {
         console.error("Access verification failed:", error);
       }
     };
-
+    startConnection();
     verifyAccess();
 
     return () => {};
