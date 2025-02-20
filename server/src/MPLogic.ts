@@ -54,15 +54,15 @@ const calculateElo = (
   const K = 40; // Fixed K-factor
   const alpha = 0.5; // Adjustment factor
 
-  // Extract ratings and win/draw/loss stats
-  const RA = playerA.elo || 400; // Default to 400 if elo is null
-  const RB = playerB.elo || 400; // Default to 400 if elo is null
-  const WA = playerA.wins || 0;
-  const DA = playerA.draws || 0;
-  const LA = playerA.losses || 0;
-  const WB = playerB.wins || 0;
-  const DB = playerB.draws || 0;
-  const LB = playerB.losses || 0;
+  // Ensure Elo ratings have default values only if null or undefined
+  const RA = playerA.elo ?? 400;
+  const RB = playerB.elo ?? 400;
+  const WA = playerA.wins ?? 0;
+  const DA = playerA.draws ?? 0;
+  const LA = playerA.losses ?? 0;
+  const WB = playerB.wins ?? 0;
+  const DB = playerB.draws ?? 0;
+  const LB = playerB.losses ?? 0;
 
   console.log(`Player A: RA=${RA}, WA=${WA}, DA=${DA}, LA=${LA}`);
   console.log(`Player B: RB=${RB}, WB=${WB}, DB=${DB}, LB=${LB}`);
@@ -84,17 +84,27 @@ const calculateElo = (
     SB = 0.5;
   }
 
-  // Calculate W/D/L ratios
-  const ratioA = (WA + DA) / (WA + DA + LA);
-  const ratioB = (WB + DB) / (WB + DB + LB);
+  // **Fix Division by Zero**: Ensure denominator is at least 1
+  const totalGamesA = WA + DA + LA || 1;
+  const totalGamesB = WB + DB + LB || 1;
+  
+  const ratioA = (WA + DA) / totalGamesA;
+  const ratioB = (WB + DB) / totalGamesB;
 
   // Apply Think Different Elo Formula
   const deltaA = K * (SA - EA) * (1 + alpha * (0.5 - ratioA));
   const deltaB = K * (SB - EB) * (1 + alpha * (0.5 - ratioB));
 
   // Update ratings
-  const newRA = RA + deltaA;
-  const newRB = RB + deltaB;
+  let newRA = RA + deltaA;
+  let newRB = RB + deltaB;
+
+  // **Final NaN Check**: If calculation still fails, keep previous values
+  if (isNaN(newRA) || isNaN(newRB)) {
+    console.error("Elo calculation failed, resetting to previous values.");
+    newRA = RA;
+    newRB = RB;
+  }
 
   console.log(`New Elo Ratings: newRA=${newRA}, newRB=${newRB}`);
 

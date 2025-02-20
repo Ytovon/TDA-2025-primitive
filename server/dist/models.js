@@ -89,6 +89,12 @@ class User extends Model {
     get updatedAt() {
         return this.getDataValue('updatedAt');
     }
+    get isAdmin() {
+        return this.getDataValue('isAdmin');
+    }
+    get isBanned() {
+        return this.getDataValue('isBanned');
+    }
 }
 User.init({
     uuid: {
@@ -147,6 +153,16 @@ User.init({
         type: DataTypes.DATE,
         allowNull: true,
     },
+    isAdmin: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false, // Only one user should be manually set to true
+    },
+    isBanned: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    },
 }, {
     sequelize,
     tableName: "Users",
@@ -158,5 +174,77 @@ User.init({
         withPassword: { attributes: { include: ["password"] } },
     },
 });
-export { Game, User };
+// Define the MatchmakingGame model
+class MatchmakingGame extends Model {
+    playerX;
+    playerO;
+    winner;
+    loser;
+    eloChangeX;
+    eloChangeO;
+    board;
+    bitmap;
+    endedAt;
+}
+MatchmakingGame.init({
+    playerX: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        primaryKey: true,
+        references: { model: "Users", key: "uuid" },
+    },
+    playerO: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        primaryKey: true,
+        references: { model: "Users", key: "uuid" },
+    },
+    endedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        primaryKey: true,
+    },
+    winner: {
+        type: DataTypes.UUID,
+        allowNull: true,
+        references: { model: "Users", key: "uuid" },
+    },
+    loser: {
+        type: DataTypes.UUID,
+        allowNull: true,
+        references: { model: "Users", key: "uuid" },
+    },
+    eloChangeX: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+    },
+    eloChangeO: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+    },
+    board: {
+        type: DataTypes.JSON,
+        allowNull: false,
+    },
+    bitmap: {
+        type: DataTypes.TEXT,
+        allowNull: true, // Nullable if not generated
+    },
+}, {
+    sequelize,
+    tableName: "MatchmakingGames",
+    timestamps: false, // We only store `endedAt`
+});
+// Define relationships
+User.hasMany(MatchmakingGame, { foreignKey: "playerX", as: "gamesAsX" });
+User.hasMany(MatchmakingGame, { foreignKey: "playerO", as: "gamesAsO" });
+User.hasMany(MatchmakingGame, { foreignKey: "winner", as: "gamesWon" });
+User.hasMany(MatchmakingGame, { foreignKey: "loser", as: "gamesLost" });
+MatchmakingGame.belongsTo(User, { foreignKey: "playerX", as: "playerXData" });
+MatchmakingGame.belongsTo(User, { foreignKey: "playerO", as: "playerOData" });
+MatchmakingGame.belongsTo(User, { foreignKey: "winner", as: "winnerData" });
+MatchmakingGame.belongsTo(User, { foreignKey: "loser", as: "loserData" });
+export { Game, User, MatchmakingGame };
 //# sourceMappingURL=models.js.map

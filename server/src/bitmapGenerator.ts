@@ -9,7 +9,7 @@ class BitmapGenerator {
   private static readonly O_COLOR = "#0070bb";
   private static readonly BG_COLOR = "#000";
 
-  static generateBitmap(board: string[][]): string {
+  static generateBitmap(board: (string | null)[][]): string  {
     const canvas = createCanvas(this.CANVAS_SIZE, this.CANVAS_SIZE);
     const ctx = canvas.getContext("2d");
 
@@ -37,7 +37,7 @@ class BitmapGenerator {
     }
   }
 
-  private static drawSymbols(ctx: CanvasRenderingContext2D, board: string[][]): void {
+  private static drawSymbols(ctx: CanvasRenderingContext2D, board: (string | null)[][]): void {
     for (let row = 0; row < board.length; row++) {
       for (let col = 0; col < board[row].length; col++) {
         const symbol = board[row][col];

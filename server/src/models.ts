@@ -85,10 +85,12 @@ interface UserAttributes {
   draws: number;
   losses: number;
   refreshToken?: string;
-  resetPasswordToken?: string;  // <-- Add this
-  resetPasswordExpires?: Date;  // <-- Add this
+  resetPasswordToken?: string;
+  resetPasswordExpires?: Date;
   createdAt?: Date;
   updatedAt?: Date;
+  isAdmin?: boolean;
+  isBanned?: boolean; // Add isBanned property
 }
 
 // Define the creation attributes for the User model
@@ -130,6 +132,12 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   }
   get updatedAt(): Date | undefined {
     return this.getDataValue('updatedAt');
+  }
+  get isAdmin(): boolean | undefined {
+    return this.getDataValue('isAdmin');
+  }
+  get isBanned(): boolean | undefined {
+    return this.getDataValue('isBanned');
   }
 }
 
@@ -183,13 +191,23 @@ User.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
-    resetPasswordToken: {  // <-- Add this field
+    resetPasswordToken: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    resetPasswordExpires: {  // <-- Add this field
+    resetPasswordExpires: {
       type: DataTypes.DATE,
       allowNull: true,
+    },
+    isAdmin: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false, // Only one user should be manually set to true
+    },
+    isBanned: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
   },
   {
@@ -204,4 +222,102 @@ User.init(
     },
   }
 );
-export { Game, User, UserCreationAttributes };
+
+// Define Matchmaking Game attributes
+interface MatchmakingGameAttributes {
+  playerX: string;
+  playerO: string;
+  winner?: string | null;
+  loser?: string | null;
+  eloChangeX: number;
+  eloChangeO: number;
+  board: string[][];
+  bitmap?: string | null;  // Allow null in addition to undefined
+  endedAt: Date;
+}
+
+
+// Define creation attributes
+interface MatchmakingGameCreationAttributes extends Optional<MatchmakingGameAttributes, 'winner' | 'loser' | 'bitmap'> {}
+
+// Define the MatchmakingGame model
+class MatchmakingGame extends Model<MatchmakingGameAttributes, MatchmakingGameCreationAttributes> 
+  implements MatchmakingGameAttributes {
+  public playerX!: string;
+  public playerO!: string;
+  public winner!: string | null;
+  public loser!: string | null;
+  public eloChangeX!: number;
+  public eloChangeO!: number;
+  public board!: string[][];
+  public bitmap!: string | null;
+  public endedAt!: Date;
+}
+
+MatchmakingGame.init(
+  {
+    playerX: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      primaryKey: true,
+      references: { model: "Users", key: "uuid" },
+    },
+    playerO: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      primaryKey: true,
+      references: { model: "Users", key: "uuid" },
+    },
+    endedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      primaryKey: true,
+    },
+    winner: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: { model: "Users", key: "uuid" },
+    },
+    loser: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: { model: "Users", key: "uuid" },
+    },
+    eloChangeX: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    eloChangeO: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    board: {
+      type: DataTypes.JSON,
+      allowNull: false,
+    },
+    bitmap: {
+      type: DataTypes.TEXT,
+      allowNull: true, // Nullable if not generated
+    },
+  },
+  {
+    sequelize,
+    tableName: "MatchmakingGames",
+    timestamps: false, // We only store `endedAt`
+  }
+);
+
+// Define relationships
+User.hasMany(MatchmakingGame, { foreignKey: "playerX", as: "gamesAsX" });
+User.hasMany(MatchmakingGame, { foreignKey: "playerO", as: "gamesAsO" });
+User.hasMany(MatchmakingGame, { foreignKey: "winner", as: "gamesWon" });
+User.hasMany(MatchmakingGame, { foreignKey: "loser", as: "gamesLost" });
+
+MatchmakingGame.belongsTo(User, { foreignKey: "playerX", as: "playerXData" });
+MatchmakingGame.belongsTo(User, { foreignKey: "playerO", as: "playerOData" });
+MatchmakingGame.belongsTo(User, { foreignKey: "winner", as: "winnerData" });
+MatchmakingGame.belongsTo(User, { foreignKey: "loser", as: "loserData" });
+
+export { Game, User, MatchmakingGame, UserCreationAttributes };
