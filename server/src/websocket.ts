@@ -42,28 +42,35 @@ function initializeWebSocket(server: any): void {
 
   wss.on("connection", async (ws: WebSocket, req: Request) => {
     const token = extractToken(req);
-
+  
     if (!token) {
       ws.close(4001, "Unauthorized: Token required");
       return;
     }
-
+  
     jwt.verify(token, ACCESS_TOKEN_SECRET, async (err: any, decoded: any) => {
       if (err) {
         ws.close(4001, "Unauthorized: Invalid token");
         return;
       }
-
+  
       // Fetch the user's stats from the database
       try {
         const user = await User.findOne({
           where: { uuid: (decoded as any).uuid },
         });
+  
         if (!user) {
           ws.close(4001, "Unauthorized: User not found");
           return;
         }
-
+  
+        // Check if the user is banned
+        if (user.isBanned) {
+          ws.close(4003, "Forbidden: User is banned");
+          return;
+        }
+  
         // Attach user data to WebSocket connection with default values
         (ws as any).user = {
           uuid: user.uuid,
@@ -73,12 +80,12 @@ function initializeWebSocket(server: any): void {
           draws: user.draws ?? 0,
           losses: user.losses ?? 0,
         };
-
+  
         console.log(
           `User ${(ws as any).user.username} connected with stats:`,
           (ws as any).user
         );
-
+  
         ws.on("message", (message: any) => handleMessage(ws, message));
         ws.on("close", () => handleDisconnect(ws));
       } catch (err) {
