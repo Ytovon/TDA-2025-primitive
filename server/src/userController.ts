@@ -5,6 +5,7 @@ import { Op } from "sequelize";
 import { Request, Response } from "express"; // Import Response
 import { User } from "./models.js"; // Import the User model
 import { promisify } from "util";
+import passport from "passport";
 
 // Secret keys (Replace with environment variables in production)
 const ACCESS_TOKEN_SECRET =
@@ -177,7 +178,7 @@ const refreshToken = async (req: Request, res: Response): Promise<void> => {
       const newAccessToken = jwt.sign(
         { uuid: user.uuid, username: user.username },
         ACCESS_TOKEN_SECRET,
-        { expiresIn: "15m" }
+        { expiresIn: "1h" }
       );
 
       res.json({ accessToken: newAccessToken });

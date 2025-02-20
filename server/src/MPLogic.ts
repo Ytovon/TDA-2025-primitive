@@ -1,10 +1,10 @@
 // Utility to determine if a player has won
 const hasWon = (board: (string | null)[][], player: string): boolean => {
   const directions = [
-    { row: 0, col: 1 },  // Horizontal
-    { row: 1, col: 0 },  // Vertical
-    { row: 1, col: 1 },  // Diagonal (top-left to bottom-right)
-    { row: 1, col: -1 }  // Diagonal (top-right to bottom-left)
+    { row: 0, col: 1 }, // Horizontal
+    { row: 1, col: 0 }, // Vertical
+    { row: 1, col: 1 }, // Diagonal (top-left to bottom-right)
+    { row: 1, col: -1 }, // Diagonal (top-right to bottom-left)
   ];
 
   for (let row = 0; row < 15; row++) {
@@ -15,7 +15,13 @@ const hasWon = (board: (string | null)[][], player: string): boolean => {
           for (let i = 0; i < 5; i++) {
             const r = row + i * dRow;
             const c = col + i * dCol;
-            if (r >= 0 && r < 15 && c >= 0 && c < 15 && board[r][c] === player) {
+            if (
+              r >= 0 &&
+              r < 15 &&
+              c >= 0 &&
+              c < 15 &&
+              board[r][c] === player
+            ) {
               count++;
             } else {
               break;
@@ -40,7 +46,11 @@ interface Player {
   losses: number;
 }
 
-const calculateElo = (playerA: Player, playerB: Player, result: "win" | "lose" | "draw"): { newRA: number, newRB: number } => {
+const calculateElo = (
+  playerA: Player,
+  playerB: Player,
+  result: "win" | "lose" | "draw"
+): { newRA: number; newRB: number } => {
   const K = 40; // Fixed K-factor
   const alpha = 0.5; // Adjustment factor
 
@@ -93,7 +103,7 @@ const calculateElo = (playerA: Player, playerB: Player, result: "win" | "lose" |
 
 // Utility to check if the game is a draw
 const isDraw = (board: (string | null)[][]): boolean => {
-  return board.flat().every(cell => cell !== null); // All cells are occupied
+  return board.flat().every((cell) => cell !== ""); // All cells are occupied
 };
 
 export { hasWon, calculateElo, isDraw };

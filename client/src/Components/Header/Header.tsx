@@ -42,6 +42,7 @@ export default function Header() {
       const token = getAccessToken();
       if (token && token !== "" && token !== undefined) {
         let isValid: any = await UserApiClient.verifyToken(token);
+
         if (!isValid) {
           // Try to refresh the token if the current token is not valid
           const refreshToken = getRefreshToken();
@@ -58,7 +59,7 @@ export default function Header() {
           const valid = isValid.data.valid;
           const uuid = isValid.data.uuid;
 
-          setRegistered(isValid);
+          setRegistered(valid);
 
           if (valid && uuid) {
             setUUID(uuid);

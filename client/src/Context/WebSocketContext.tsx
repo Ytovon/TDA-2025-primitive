@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { getAccessToken } from "../API/tokenstorage";
+import { json } from "stream/consumers";
 
 const WEBSOCKET_URL = `ws://localhost:5000/ws?token=${getAccessToken()}`;
 
@@ -8,6 +9,8 @@ interface WebSocketContextType {
   isConnected: boolean;
   status: string;
   sendMessage: (message: any) => void;
+  gameID: string;
+  multiplayerBoard: string[][];
 }
 
 const WebSocketContext = createContext<WebSocketContextType | undefined>(
@@ -26,14 +29,23 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [status, setStatus] = useState("Čekám na uživatele");
+  const [gameID, setGameID] = useState("");
+  const [multiplayerBoard, setMultiplayerBoard] = useState<string[][]>(
+    Array.from({ length: 15 }, () => Array(15).fill(""))
+  );
 
   useEffect(() => {
     const ws = new WebSocket(WEBSOCKET_URL);
 
-    ws.onopen = () => {
+    setSocket(ws);
+
+    ws.onopen = async () => {
       console.log("Connected to WebSocket");
       setIsConnected(true);
-      ws.send(JSON.stringify({ type: "matchmaking" }));
+
+      setTimeout(() => {
+        ws.send(JSON.stringify({ type: "matchmaking" }));
+      }, 1000); // Small delay (100ms)
     };
 
     ws.onmessage = (event) => {
@@ -42,9 +54,17 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
       if (data.type === "matched") {
         setStatus("Matched! Game ID: " + data.gameId);
+        setGameID(data.gameId);
         navigate(`/game`); // Use navigate to redirect to the matched game
       } else if (data.type === "waiting") {
         setStatus(data.message);
+      } else if (data.type === "error") {
+      } else if (data.type === "update") {
+        setStatus(data.message);
+
+        console.log(data.board);
+
+        setMultiplayerBoard(data.board);
       } else if (data.type === "error") {
         setStatus("Error: " + data.message);
       }
@@ -59,16 +79,15 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       setIsConnected(false);
     };
 
-    setSocket(ws);
-
     return () => {
       ws.close();
     };
-  }, [navigate]); // `navigate` is included as a dependency for useEffect
+  }, []);
 
   const sendMessage = (message: any) => {
     if (socket && isConnected) {
       socket.send(JSON.stringify(message));
+      console.log(message);
     } else {
       console.warn("WebSocket is not connected.");
     }
@@ -76,7 +95,14 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
   return (
     <WebSocketContext.Provider
-      value={{ socket, isConnected, status, sendMessage }}
+      value={{
+        socket,
+        isConnected,
+        status,
+        sendMessage,
+        gameID,
+        multiplayerBoard,
+      }}
     >
       {children}
     </WebSocketContext.Provider>

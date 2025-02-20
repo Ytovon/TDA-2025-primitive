@@ -83,8 +83,8 @@ async function handleMessage(ws, message) {
                 games[newGameId] = {
                     players: [ws],
                     board: Array(15)
-                        .fill(null)
-                        .map(() => Array(15).fill(null)),
+                        .fill("")
+                        .map(() => Array(15).fill("")),
                     currentPlayer: "X",
                     gameState: "waiting",
                     lastActivity: Date.now(),
@@ -118,8 +118,8 @@ async function handleMessage(ws, message) {
                         games[newGameId] = {
                             players: [player1.ws, player2.ws],
                             board: Array(15)
-                                .fill(null)
-                                .map(() => Array(15).fill(null)),
+                                .fill("")
+                                .map(() => Array(15).fill("")),
                             currentPlayer: "X",
                             lastActivity: Date.now(),
                         };
@@ -152,8 +152,9 @@ async function handleMessage(ws, message) {
                 const gameToUpdate = games[gameId];
                 if (gameToUpdate && gameToUpdate.players.includes(ws)) {
                     const newBoard = JSON.parse(JSON.stringify(gameToUpdate.board));
+                    console.log("hraju!");
                     // Check if the cell is already occupied
-                    if (newBoard[move.row][move.col] !== null) {
+                    if (newBoard[move.row][move.col] !== "") {
                         ws.send(JSON.stringify({
                             type: "error",
                             message: "Cell already occupied",
@@ -239,6 +240,7 @@ async function handleMessage(ws, message) {
                     }
                     // Check if the game is a draw
                     if (isDraw(newBoard)) {
+                        console.log("je to remiza");
                         const { newRA, newRB } = calculateElo({
                             elo: gameToUpdate.players[0].user.elo,
                             wins: gameToUpdate.players[0].user.wins,

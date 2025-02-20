@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { ApiClient } from "../../API/GameApi";
 import { Game } from "../../Model/GameModel";
 import { useWebSocket } from "../../Context/WebSocketContext";
+import { json } from "stream/consumers";
 
 interface GamePageProps {
   uuid?: string;
@@ -29,17 +30,20 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [player, setPlayer] = useState(true); // true = hráč X, false = hráč O
   const [winner, setWinner] = useState<string | null>(null);
+
+  const { isConnected, status, sendMessage, gameID, multiplayerBoard } =
+    useWebSocket();
+
   const [game, setGame] = useState<Game>({
     board: [],
     initialBoard: [],
     createdAt: "",
     difficulty: "",
     gameState: "",
-    name: "Lokální multiplayer",
+    name: isConnected ? "Lokální multiplayer" : "Online multiplayer",
     updatedAt: "",
     uuid,
   });
-  const { isConnected, status, sendMessage } = useWebSocket();
 
   const [grid, setGrid] = useState<string[][]>(
     Array.from({ length: 15 }, () => Array(15).fill(""))
@@ -47,6 +51,15 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
   const [initialBoard, setInitialBoard] = useState<string[][]>(
     Array.from({ length: 15 }, () => Array(15).fill(""))
   );
+
+  // change in board when multiplayerBoard changes... when opponent makes a move
+  useEffect(() => {
+    setGrid((prevGrid) => {
+      return JSON.stringify(prevGrid) !== JSON.stringify(multiplayerBoard)
+        ? multiplayerBoard
+        : prevGrid;
+    });
+  }, [multiplayerBoard]);
 
   useEffect(() => {
     const fetchGame = async () => {
@@ -152,23 +165,33 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
 
   // Funkce pro kliknutí na buňku
   const cellClick = (row: number, col: number) => {
-    if (grid[row][col] !== "" || winner) return;
-
-    const symbol = player ? "X" : "O";
-
-    setGrid((prevGrid) => {
-      const newGrid = [...prevGrid];
-      newGrid[row] = [...prevGrid[row]]; // Vytvoří kopii řádku.
-      newGrid[row][col] = symbol; // Nastaví symbol podle hráče.
-      return newGrid;
-    });
-
-    if (checkWin(row, col, symbol)) {
-      console.log(`${symbol} wins!`);
-      return;
+    // multiplayer
+    if (isConnected) {
+      sendMessage({
+        type: "move",
+        gameId: gameID,
+        move: { row: row, col: col },
+      });
     }
+    // basic game
+    else {
+      if (grid[row][col] !== "" || winner) return;
 
-    setPlayer(!player);
+      const symbol = player ? "X" : "O";
+
+      setGrid((prevGrid) => {
+        const newGrid = [...prevGrid];
+        newGrid[row] = [...prevGrid[row]]; // Vytvoří kopii řádku.
+        newGrid[row][col] = symbol; // Nastaví symbol podle hráče.
+        return newGrid;
+      });
+
+      if (checkWin(row, col, symbol)) {
+        console.log(`${symbol} wins!`);
+        return;
+      }
+      setPlayer(!player);
+    }
   };
 
   const resetGame = () => {
