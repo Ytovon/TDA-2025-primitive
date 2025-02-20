@@ -22,8 +22,7 @@ import {
   userInfoErb,
   userInfoErbWhite,
 } from "../../assets/assets";
-import { userInfo } from "node:os";
-import { useDarkMode } from "../../DarkModeContext";
+import { useDarkMode } from "../../Context/DarkModeContext";
 import { Link, useNavigate } from "react-router-dom";
 
 export const ProfilePage = () => {
