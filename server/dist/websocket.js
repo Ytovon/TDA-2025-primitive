@@ -9,6 +9,8 @@ import { GameClock } from "./gameClock.js";
 const games = {};
 const matchmakingQueue = [];
 const gameClocks = {};
+// Store active public lobbies
+const publicLobbies = {};
 // Secret key for verifying tokens
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "your-access-token-secret";
 // Define the maximum allowed ELO difference for matching players
@@ -17,56 +19,88 @@ function initializeWebSocket(server) {
     const wss = new WebSocketServer({ server });
     wss.on("connection", async (ws, req) => {
         const token = extractToken(req);
-        if (!token) {
-            ws.close(4001, "Unauthorized: Token required");
-            return;
-        }
-        jwt.verify(token, ACCESS_TOKEN_SECRET, async (err, decoded) => {
-            if (err) {
-                ws.close(4001, "Unauthorized: Invalid token");
+        const urlParts = parse(req.url ?? "", true);
+        const gameId = urlParts.query.gameId;
+        const pin = urlParts.query.pin;
+        // If a guest is trying to join a public lobby, allow them without a token
+        if (!token && gameId && pin) {
+            if (publicLobbies[gameId] && publicLobbies[gameId].pin === pin) {
+                console.log(`Guest joined lobby ${gameId} with PIN ${pin}`);
+                ws.gameId = gameId; // Attach game info to WebSocket
+                ws.send(JSON.stringify({ type: "guest_connected", gameId }));
                 return;
             }
-            // Fetch the user's stats from the database
-            try {
-                const user = await User.findOne({
-                    where: { uuid: decoded.uuid },
-                });
-                if (!user) {
-                    ws.close(4001, "Unauthorized: User not found");
+            else {
+                ws.close(4001, "Neautorizováno: Neplatný PIN nebo lobby nenalezeno");
+                return;
+            }
+        }
+        if (token) {
+            jwt.verify(token, ACCESS_TOKEN_SECRET, async (err, decoded) => {
+                if (err) {
+                    ws.close(4001, "Neautorizováno: Neplatný token");
                     return;
                 }
-                // Attach user data to WebSocket connection with default values
-                ws.user = {
-                    uuid: user.uuid,
-                    username: user.username,
-                    elo: user.elo ?? 400,
-                    wins: user.wins ?? 0,
-                    draws: user.draws ?? 0,
-                    losses: user.losses ?? 0,
-                };
-                console.log(`User ${ws.user.username} connected with stats:`, ws.user);
-                ws.on("message", (message) => handleMessage(ws, message));
-                ws.on("close", () => handleDisconnect(ws));
-            }
-            catch (err) {
-                console.error("Error fetching user stats:", err);
-                ws.close(500, "Internal server error");
-            }
-        });
+                // Fetch the user's stats from the database
+                try {
+                    const user = await User.findOne({
+                        where: { uuid: decoded.uuid },
+                    });
+                    if (!user) {
+                        ws.close(4001, "Neautorizováno: Uživatel nenalezen");
+                        return;
+                    }
+                    // Check if the user is banned
+                    if (user.isBanned) {
+                        ws.close(4003, "Zakázáno: Uživatel je zablokován");
+                        return;
+                    }
+                    // Attach user data to WebSocket connection with default values
+                    ws.user = {
+                        uuid: user.uuid,
+                        username: user.username,
+                        elo: user.elo ?? 400,
+                        wins: user.wins ?? 0,
+                        draws: user.draws ?? 0,
+                        losses: user.losses ?? 0,
+                    };
+                    console.log(`User ${ws.user.username} connected with stats:`, ws.user);
+                    ws.on("message", (message) => handleMessage(ws, message));
+                    ws.on("close", () => handleDisconnect(ws));
+                }
+                catch (err) {
+                    console.error("Error fetching user stats:", err);
+                    ws.close(500, "Interní chyba serveru");
+                }
+            });
+        }
+        else {
+            ws.close(4001, "Neautorizováno: Token nebyl poskytnut");
+        }
     });
     console.log("WebSocket server initialized");
     // Clean up abandoned games every hour
     setInterval(cleanupAbandonedGames, 3600000); // 1 hour
+    // Clean up inactive lobbies every 10 minutes
+    setInterval(() => {
+        const now = Date.now();
+        Object.keys(publicLobbies).forEach((gameId) => {
+            if (publicLobbies[gameId].players.length === 0) {
+                console.log(`Removing inactive public lobby: ${gameId}`);
+                delete publicLobbies[gameId];
+            }
+        });
+    }, 600000); // Run every 10 minutes
 }
 function extractToken(req) {
     try {
-        // 1. Zkusit token z hlavičky
+        // 1. Try token from header
         const authHeader = req.headers["authorization"];
         if (authHeader && authHeader.startsWith("Bearer ")) {
             return authHeader.split(" ")[1];
         }
-        // 2. Zkusit token z query stringu (pro WebSockety)
-        const urlParts = parse(req.url ?? "", true); // Rozparsovat URL
+        // 2. Try token from query string (for WebSockets)
+        const urlParts = parse(req.url ?? "", true); // Parse URL
         return urlParts.query.token ?? null;
     }
     catch (err) {
@@ -81,29 +115,44 @@ async function handleMessage(ws, message) {
         const { type, gameId, move } = data;
         switch (type) {
             case "create":
-                const newGameId = generateGameId();
-                games[newGameId] = {
+                const newGameId = generateGameId(); // 6-digit game ID
+                const pin = Math.floor(1000 + Math.random() * 9000).toString(); // Generate 4-digit PIN
+                publicLobbies[newGameId] = {
+                    pin,
                     players: [ws],
-                    board: Array(15)
-                        .fill(null)
-                        .map(() => Array(15).fill(null)),
-                    currentPlayer: "X",
-                    gameState: "waiting",
-                    lastActivity: Date.now(),
                 };
-                ws.send(JSON.stringify({ type: "created", gameId: newGameId }));
+                ws.send(JSON.stringify({
+                    type: "created",
+                    gameId: newGameId,
+                    pin, // Send the PIN to the registered user
+                }));
                 break;
             case "joinLobby":
-                const game = games[gameId];
-                if (game && game.players.length === 1) {
-                    game.players.push(ws);
-                    game.gameState = "in-progress";
-                    game.lastActivity = Date.now();
-                    game.players[0].send(JSON.stringify({ type: "start", player: "X" }));
-                    game.players[1].send(JSON.stringify({ type: "start", player: "O" }));
+                const { gameId, pin: lobbyPin } = data;
+                // Check if the lobby exists and the PIN is correct
+                if (publicLobbies[gameId] && publicLobbies[gameId].pin === lobbyPin) {
+                    publicLobbies[gameId].players.push(ws);
+                    // Notify both players that the game is starting
+                    publicLobbies[gameId].players.forEach((player, index) => {
+                        player.send(JSON.stringify({
+                            type: "start",
+                            gameId,
+                            player: index === 0 ? "X" : "O", // First player is "X", second is "O"
+                        }));
+                    });
+                    // Remove lobby from publicLobbies (it’s now a game)
+                    games[gameId] = {
+                        players: [...publicLobbies[gameId].players],
+                        board: Array(15)
+                            .fill(null)
+                            .map(() => Array(15).fill(null)),
+                        currentPlayer: "X",
+                        lastActivity: Date.now(),
+                    };
+                    delete publicLobbies[gameId]; // Cleanup
                 }
                 else {
-                    ws.send(JSON.stringify({ type: "error", message: "Game not found or full" }));
+                    ws.send(JSON.stringify({ type: "error", message: "Neplatné ID hry nebo PIN" }));
                 }
                 break;
             case "matchmaking":
@@ -139,14 +188,14 @@ async function handleMessage(ws, message) {
                     else {
                         ws.send(JSON.stringify({
                             type: "waiting",
-                            message: "Waiting for an opponent with a closer ELO...",
+                            message: "Čekání na hráče s bližším ELO...",
                         }));
                     }
                 }
                 else {
                     ws.send(JSON.stringify({
                         type: "waiting",
-                        message: "Waiting for an opponent...",
+                        message: "Čekání na hráče...",
                     }));
                 }
                 break;
@@ -158,7 +207,7 @@ async function handleMessage(ws, message) {
                     if (newBoard[move.row][move.col] !== null) {
                         ws.send(JSON.stringify({
                             type: "error",
-                            message: "Cell already occupied",
+                            message: "Buňka je již obsazena",
                         }));
                         return;
                     }
@@ -167,7 +216,7 @@ async function handleMessage(ws, message) {
                     const playerSymbol = playerIndex === 0 ? "X" : "O";
                     // Ensure it's the player's turn
                     if (playerSymbol !== gameToUpdate.currentPlayer) {
-                        ws.send(JSON.stringify({ type: "error", message: "Not your turn" }));
+                        ws.send(JSON.stringify({ type: "error", message: "Nejste na tahu" }));
                         return;
                     }
                     // Stop the clock for the player who just moved
@@ -405,12 +454,12 @@ async function handleMessage(ws, message) {
                 break;
             default:
                 console.log("Unknown message type:", type);
-                ws.send(JSON.stringify({ type: "error", message: "Unknown message type" }));
+                ws.send(JSON.stringify({ type: "error", message: "Neznámý typ zprávy" }));
         }
     }
     catch (err) {
         console.error("Error handling message:", err);
-        ws.send(JSON.stringify({ type: "error", message: "Invalid message format" }));
+        ws.send(JSON.stringify({ type: "error", message: "Neplatný formát zprávy" }));
     }
 }
 // Handle disconnection

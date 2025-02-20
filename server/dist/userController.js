@@ -295,11 +295,12 @@ const banUser = async (req, res) => {
     }
 };
 // Google OAuth login route
-const googleLogin = (req, res) => {
-    passport.authenticate("google", { scope: ["profile", "email"] })(req, res);
+// Google OAuth login route
+const googleLogin = (req, res, next) => {
+    passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
 };
 // Google OAuth callback route
-const googleCallback = (req, res) => {
+const googleCallback = (req, res, next) => {
     passport.authenticate("google", (err, user) => {
         if (err || !user) {
             res.status(400).json({ message: "Authentication failed." });
@@ -309,11 +310,8 @@ const googleCallback = (req, res) => {
         const accessToken = jwt.sign({ uuid: user.uuid, username: user.username }, ACCESS_TOKEN_SECRET, { expiresIn: "1h" });
         const refreshToken = jwt.sign({ uuid: user.uuid, username: user.username }, REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
         user.update({ refreshToken });
-        res
-            .status(200)
-            .json({ message: "Login successful!", accessToken, refreshToken });
-    })(req, res);
+        res.status(200).json({ message: "Login successful!", accessToken, refreshToken });
+    })(req, res, next);
 };
-export { register, login, refreshToken, logout, getAllUsers, getUserByUUID, updateUserByUUID, deleteUserByUUID, verifyToken, googleLogin, googleCallback, forgotPassword, banUser, // Export the new banUser function
- };
+export { register, login, refreshToken, logout, getAllUsers, getUserByUUID, updateUserByUUID, deleteUserByUUID, verifyToken, googleLogin, googleCallback, forgotPassword, banUser, };
 //# sourceMappingURL=userController.js.map

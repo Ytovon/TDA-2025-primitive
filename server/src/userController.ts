@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from "crypto"; // Import crypto
 import { Op } from "sequelize";
-import { Request, Response } from "express"; // Import Response
+import { Request, Response, NextFunction } from "express"; // Import NextFunction
 import { User } from "./models.js"; // Import the User model
 import { promisify } from "util";
 import passport from "passport";
@@ -353,12 +353,13 @@ const banUser = async (req: Request, res: Response): Promise<void> => {
 };
 
 // Google OAuth login route
-const googleLogin = (req: Request, res: Response) => {
-  passport.authenticate("google", { scope: ["profile", "email"] })(req, res);
+// Google OAuth login route
+const googleLogin = (req: Request, res: Response, next: NextFunction) => {
+  passport.authenticate("google", { scope: ["profile", "email"] })(req, res, next);
 };
 
 // Google OAuth callback route
-const googleCallback = (req: Request, res: Response) => {
+const googleCallback = (req: Request, res: Response, next: NextFunction) => {
   passport.authenticate("google", (err: any, user: any) => {
     if (err || !user) {
       res.status(400).json({ message: "Authentication failed." });
@@ -379,10 +380,8 @@ const googleCallback = (req: Request, res: Response) => {
 
     user.update({ refreshToken });
 
-    res
-      .status(200)
-      .json({ message: "Login successful!", accessToken, refreshToken });
-  })(req, res);
+    res.status(200).json({ message: "Login successful!", accessToken, refreshToken });
+  })(req, res, next);
 };
 
 export {
@@ -398,5 +397,5 @@ export {
   googleLogin,
   googleCallback,
   forgotPassword,
-  banUser, // Export the new banUser function
+  banUser,
 };
