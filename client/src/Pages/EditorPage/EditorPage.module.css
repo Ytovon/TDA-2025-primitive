@@ -1,8 +1,7 @@
 .body {
-  background-color: var(--primary);
+  background-color: var(--color-background-primary);
   margin: 0;
   padding: 0;
-  height: 100vh;
 }
 
 :root {
@@ -11,27 +10,20 @@
 }
 
 /* ********************************** */
-
-.editorPageMenu {
-  width: 98vw;
-  margin: 0 auto;
-  padding-top: 10px;
-  display: flex;
-  justify-content: space-between;
-}
-
 .arrow {
   width: 2rem;
   transition: 0.3s ease-in-out;
+  position: absolute;
+  top: -10px;
+  left: 10px;
 }
-
 .arrow:hover {
   transform: scale(1.15);
 }
 
 .darkModeBtn {
   aspect-ratio: 1/1;
-  background-color: var(--darkModeBtn);
+  background-color: var(--darkmode-button);
   border-radius: 50%;
   cursor: pointer;
 }
@@ -39,8 +31,8 @@
 .editorPageTitle {
   text-align: center;
   font-size: 2rem;
-  color: var(--textColor);
-  margin-bottom: 4vh;
+  color: var(--color-text-primary);
+  margin-block: 20px;
 }
 
 .editWrapper {
@@ -64,8 +56,8 @@
   top: 0;
   right: 21vw;
 }
-/* ****************************** */
 
+/* ****************************** */
 .leftSide {
   display: flex;
   flex-direction: column;
@@ -73,7 +65,7 @@
   width: 15vw;
   min-width: 280px;
   position: relative;
-  color: var(--textColor);
+  color: var(--color-text-primary);
   margin: 1%;
   padding: 1%;
 }
@@ -81,29 +73,32 @@
 .editorPageInput {
   width: calc(100% - 20px);
   height: 22px;
-  margin-bottom: 15px;
-  background-color: var(--primary1);
-  color: var(--textColor);
+  background-color: var(--color-background-light);
+  color: var(--color-text-primary);
+  border: none;
   border-radius: 5px;
   padding: 10px;
+  margin-bottom: 15px;
   font-size: 1rem;
+}
+.editorPageInput:focus {
+  outline: none;
 }
 
 input::placeholder {
-  color: var(--textColor);
+  color: var(--color-text-primary);
 }
 
 .editorPageSelect {
   width: 100%;
   height: 40px;
-  background-color: var(--primary1);
-  color: var(--textColor);
-  padding: 0 10px;
+  background-color: var(--color-background-light);
+  color: var(--color-text-primary);
+  padding: 0 7px;
   border: 0;
   border-radius: 5px;
   font-size: 1rem;
 }
-
 .editorPageSelect:focus {
   outline: none;
 }
@@ -123,15 +118,17 @@ input::placeholder {
   display: flex;
   justify-content: space-between;
 }
-
-.selectSymbolImg img:nth-child(2n + 0) {
+.selectSymbolImg img:nth-child(2n+0) {
   width: 7.5rem;
+  cursor: pointer;
 }
 
 .numberAboveImg {
   font-size: 1.45rem;
   font-weight: 700;
   margin-bottom: 5px;
+  color: var(--color-text-primary);
+  border: none;
 }
 
 .circleBtn {
@@ -139,6 +136,7 @@ input::placeholder {
   padding: 6px;
   aspect-ratio: 1/1;
   border-radius: 50px;
+  background-color: white;
 }
 
 .leftSideBtns {
@@ -148,7 +146,6 @@ input::placeholder {
 }
 
 /* ******************************* */
-
 .rightSide {
   position: relative;
 }
@@ -156,7 +153,7 @@ input::placeholder {
 .gameGrid {
   display: grid;
   grid-template-columns: repeat(15, var(--cellSizeClamped));
-  border: 1px solid var(--gameBorder);
+  border: 1px solid var(--color-border-game);
   padding-right: 2px;
   border-radius: 10px;
 }
@@ -164,13 +161,12 @@ input::placeholder {
 .cell {
   width: var(--cellSizeClamped);
   aspect-ratio: 1/0.95;
-  background-color: var(--gameBackground);
-  border: 1px solid var(--gameBorder);
+  background-color: var(--color-background-game);
+  border: 1px solid var(--color-border-game);
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
 .cell:nth-child(1) {
   border-radius: 8px 0 0 0;
 }
@@ -196,7 +192,7 @@ input::placeholder {
 
 .clearGame {
   position: absolute;
-  color: var(--grey);
+  color: var(--color-grey);
   font-size: 1.1rem;
   right: 8px;
   top: -27px;
@@ -209,143 +205,108 @@ input::placeholder {
     --cellSize: 6vw;
     --cellSizeClamped: clamp(18px, var(--cellSize), 40px);
   }
-
-  .editorPageMenu {
-    padding: 0 7px 0 0;
-    margin: 10px auto;
-    width: 97%;
-  }
-
   .editWrapper {
     flex-direction: column;
     gap: 0;
   }
-
   .leftSide {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      "item1 item2"
-      "item3 item3";
+    grid-template-areas: "item1 item2" "item3 item3";
     margin: 0px auto 4vh;
     width: 600px;
     gap: 25px;
     padding: 0;
   }
-
   .editArea1 {
     grid-area: item1;
   }
-
   .editorPageInputs {
     display: flex;
     flex-direction: column;
     height: 60%;
     gap: 15%;
   }
-
   .editorPageInput {
     margin: 0;
   }
-
   .editArea2 {
     grid-area: item2;
   }
-
-  .selectSymbolImg img:nth-child(2n + 0) {
+  .selectSymbolImg img:nth-child(2n+0) {
     width: 6rem;
   }
-
   .leftSideBtns {
     grid-area: item3;
   }
-
   .rightSide {
     width: min-content;
     margin: 0 auto;
   }
-
   .editorPageTitle {
     margin-bottom: 50px;
   }
-
   .leftSideTitle {
     margin-bottom: 25px;
   }
-
   .editacePlochyTitle {
     gap: 25px;
   }
-
   .editorPageSelect {
     margin-bottom: 20px;
   }
-
   .gameGrid {
     justify-content: center;
     border: 0;
     padding-right: 3px;
     margin-bottom: 3%;
   }
-
   .cell:nth-child(15n) {
-    border-right: 1px solid var(--gameBorder);
+    border-right: 1px solid var(--color-border-game);
   }
-
   .selectSymbolImg {
     justify-content: space-around;
     margin-bottom: 10px;
   }
-
   .leftSideBtns {
     justify-content: center;
     gap: 3vw;
   }
-
   .clearGame {
     top: -23px;
     font-size: 1rem;
   }
-
   .errorWin {
     width: 220px;
   }
 }
-
 @media screen and (max-height: 800px) {
   .editWrapper {
     margin-block: 15px 10px;
   }
-
   .leftSide {
     justify-content: space-between;
   }
 }
-
 @media screen and (max-width: 800px) {
   .editorPageTitle {
     margin-bottom: 40px;
   }
-
   .leftSide {
     display: flex;
     width: 50vw;
     margin-bottom: 50px;
   }
-
   .editorPageInputs {
     gap: 10px;
   }
-
   .leftSideBtns {
     gap: 30px;
   }
-
   .errorWin {
     right: 30px;
   }
 }
-
 @media screen and (max-width: 500px) {
   .errorWin {
     right: 15px;
@@ -353,3 +314,5 @@ input::placeholder {
     padding: 10px;
   }
 }
+
+/*# sourceMappingURL=EditorPage.module.css.map */

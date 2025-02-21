@@ -1,0 +1,43 @@
+.body {
+  position: relative;
+  height: 100vh;
+}
+
+.error_container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.error_images {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.error_img {
+  font-size: 13.5rem;
+  color: #0070bb;
+}
+
+.error_text {
+  font-size: 1.75rem;
+  color: var(--color-text-primary);
+}
+
+@media screen and (max-width: 500px) {
+  .error_container {
+    left: 52%;
+  }
+  .error_images {
+    gap: 0;
+  }
+  .error_img {
+    font-size: 10rem;
+    width: 120px;
+  }
+}
+
+/*# sourceMappingURL=NotFoundPage.module.css.map */

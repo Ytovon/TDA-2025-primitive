@@ -1,5 +1,5 @@
 import styles from "./Card.module.css";
-import { nahledPiskvorek, settingsButton } from "../../assets/assets";
+import { settingsButton } from "../../assets/assets";
 import { Link } from "react-router-dom";
 import { inspect } from "util";
 

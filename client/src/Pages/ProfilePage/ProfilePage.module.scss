@@ -1,0 +1,408 @@
+.dark-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.3); /* Černý poloprůhledný filtr */
+  pointer-events: none; /* Zabrání blokování kliknutí */
+  z-index: 9999; /* Umístění nad všemi prvky */
+}
+
+.container {
+  width: clamp(970px, 60vw, 1100px);
+  margin: 150px auto 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.userInfoContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.userInfo {
+  width: 65%;
+  border-radius: 20px;
+  background-color: var(--color-background-primary);
+}
+
+.userInfoHeader {
+  height: 110px;
+  position: relative;
+  display: grid;
+  grid-template-columns: 22%;
+  grid-template-rows: 75%;
+  grid-template-areas:
+    "logo name setting"
+    "logoBackground joinDate idk";
+  background-color: var(--color-background-light);
+}
+
+.userImgContainer {
+  grid-area: logo logoBackground;
+  background-color: var(--color1);
+  border-radius: 20px 0 0 0;
+  padding: 20px 0 0 20px;
+  z-index: 10;
+}
+
+.userImg {
+  width: 35px;
+  aspect-ratio: 1/1;
+  padding: 22px;
+  border: 4px solid white;
+  border-radius: 15px;
+}
+
+.username {
+  grid-area: name;
+  background-color: var(--color1);
+  color: white;
+  align-content: end;
+  padding-bottom: 7px;
+  font-size: 2.4rem;
+}
+
+.joinDate {
+  grid-area: joinDate;
+  align-content: end;
+  padding-left: 2px;
+  color: var(--color-text-primary);
+  background-color: var(--color-background-light);
+}
+
+.setting {
+  grid-area: setting;
+  display: flex;
+  justify-content: right;
+  align-items: end;
+  gap: 5px;
+  padding: 0 20px 12px 0;
+  font-weight: 500;
+  color: white;
+  background-color: var(--color1);
+  border-radius: 0 20px 0 0;
+}
+
+.settingBtn {
+  cursor: pointer;
+  width: 25px;
+  height: 25px;
+  transition: 0.2s ease-in-out;
+
+  &:hover {
+    transform: rotate(45deg);
+  }
+}
+
+.noteContainer {
+  padding: 40px 21px 50px;
+  background-color: var(--color-background-light);
+  border-radius: 0 0 20px 20px;
+}
+
+.noteTitle {
+  font-size: 1.3rem;
+  color: var(--color-text-primary);
+}
+
+.note {
+  width: 80%;
+  height: 95px;
+  padding: 5px 10px;
+  margin-top: 5px;
+  border: none;
+  background-color: var(--color-background-primary);
+  color: var(--color-text-primary);
+  font-size: 15px;
+  resize: none;
+  outline: none;
+}
+
+.statsContainer {
+  width: 30%;
+  background-color: var(--color-background-light);
+  border-radius: 20px;
+}
+
+.statsHeader {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  background-color: var(--color5);
+  height: calc(110px * 0.75);
+  border-radius: 20px 20px 0 0;
+}
+
+.statsTitle {
+  color: white;
+  font-size: 3rem;
+  align-content: center;
+}
+
+.statsImg {
+  width: 40px;
+}
+
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 25px;
+  color: var(--color-text-primary);
+}
+
+.stat {
+  display: flex;
+  gap: 7px;
+  font-size: 20px;
+  columns: var(--color-text-primary);
+}
+
+.statImg {
+  width: 24px;
+}
+
+.redBold {
+  font-weight: 600;
+  color: var(--color5);
+}
+
+.gameHistory {
+  min-height: 250px;
+  padding: 30px;
+  border-radius: 20px;
+  background-color: var(--color-background-light);
+  color: var(--color-text-primary);
+}
+
+.gameHistoryTitle {
+  display: flex;
+  gap: 10px;
+}
+
+.gameHistoryImg {
+  width: 20px;
+}
+
+.gameHistoryTable {
+  width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
+
+  tr {
+    height: 32px;
+    text-align: center;
+
+    &:nth-child(1) {
+      background-color: var(--color-background-primary);
+    }
+  }
+}
+
+.edit {
+  width: 580px;
+  height: 325px;
+  display: flex;
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  background-color: var(--color-background-light-alt);
+  color: var(--color-text-primary);
+  border-radius: 20px;
+}
+
+.editLeft {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 30px 25px 30px 40px;
+}
+
+.editTitle {
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+}
+
+.editSelects {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-right: 30px;
+}
+
+.editSelect {
+  width: max-content;
+  display: flex;
+  gap: 7px;
+  padding: 9px 15px;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  border-radius: 10px;
+
+  &:hover {
+    color: var(--color1);
+  }
+}
+
+.editRight {
+  width: 100%;
+  padding: 40px;
+  background-color: var(--color-background-secondary);
+  border-radius: 0 20px 20px 0;
+}
+
+.editInputTitle1 {
+  display: flex;
+  justify-content: space-between;
+}
+
+.characterLeft {
+  font-size: 13px;
+  align-content: end;
+  padding-bottom: 5px;
+}
+
+.editInputContainer {
+  margin-bottom: 13px;
+}
+
+.editInputTitle {
+  margin-bottom: 4px;
+}
+
+.editInput {
+  width: calc(100% - 14px);
+  height: 25px;
+  padding-inline: 7px;
+  outline: none;
+  border: none;
+  border-radius: 3px;
+  resize: none;
+  background-color: var(--color-background-light-alt);
+  color: var(--color-text-primary);
+}
+
+.editRightTitle {
+  margin-bottom: 15px;
+}
+
+.changeColorPreview {
+  display: flex;
+  gap: 10px;
+}
+
+.userImgEdit {
+  width: 27px;
+  aspect-ratio: 1/1;
+  padding: 9px;
+  border-radius: 11px;
+}
+
+.changeColorContainer {
+  display: flex;
+  gap: 6px;
+}
+
+.changeColor {
+  width: 20px;
+  height: 20px;
+  border: 2px solid white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+
+.changeDarkmodeContainer {
+  display: flex;
+  gap: 15px;
+}
+
+.changeDarkMode {
+  width: 70px;
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  border-radius: 5px;
+  font-weight: 500;
+  font-size: 1.05rem;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.changeDarkmodeImg {
+  width: 15px;
+  align-self: center;
+}
+
+@media screen and (max-width: 1100px) {
+  .container {
+    width: 700px;
+  }
+
+  .userInfoContainer {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .userInfoContainer,
+  .container {
+    gap: 30px;
+  }
+
+  .userInfo {
+    width: 100%;
+  }
+
+  .statsContainer {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .container {
+    width: clamp(300px, 80vw, 800px);
+  }
+
+  .username,
+  .joinDate {
+    padding-left: 15px;
+    text-align: left;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .username,
+  .joinDate {
+    padding-left: 20px;
+  }
+
+  .userImgContainer {
+    padding: 25px 0 0 7px;
+  }
+
+  .userImg {
+    width: 30px;
+    padding: 18px;
+  }
+
+  .username {
+    font-size: 2rem;
+  }
+
+  .settingBtn {
+    width: 20px;
+  }
+}

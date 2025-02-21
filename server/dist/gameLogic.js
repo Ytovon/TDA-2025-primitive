@@ -2,12 +2,13 @@
 const getGameState = (board) => {
     const debugInfo = {}; // Collect debugging information here
     // Validate board dimensions
-    if (!isValidBoard(board)) {
+    if (!Array.isArray(board) || board.length !== 15 || board.some(row => row.length !== 15)) {
         debugInfo.error = "Invalid board dimensions.";
         return { statusCode: 422, error: "Invalid board size.", debugInfo };
     }
     // Validate symbols
-    if (!isValidSymbols(board)) {
+    const validSymbols = ["X", "O", ""];
+    if (!board.flat().every(cell => validSymbols.includes(cell))) {
         debugInfo.error = "Invalid symbols on the board.";
         return { statusCode: 422, error: "Invalid symbols.", debugInfo };
     }
@@ -16,13 +17,9 @@ const getGameState = (board) => {
     const oCount = countSymbols(board, "O");
     debugInfo.xCount = xCount;
     debugInfo.oCount = oCount;
-    if (!isValidTurnOrder(xCount, oCount)) {
+    if (xCount < oCount || xCount > oCount + 1) {
         debugInfo.error = "Invalid turn sequence.";
-        return {
-            statusCode: 422,
-            error: "Wrong starting player or invalid turn sequence.",
-            debugInfo,
-        };
+        return { statusCode: 422, error: "Wrong starting player or invalid turn sequence.", debugInfo };
     }
     // Determine the current player
     const currentPlayer = xCount === oCount ? "X" : "O";
@@ -31,6 +28,7 @@ const getGameState = (board) => {
     const currentWinningMove = hasWinningMove(board, currentPlayer);
     debugInfo.currentWinningMove = currentWinningMove;
     if (currentWinningMove) {
+        // If a player can win within one move, classify as "endgame" regardless of the number of rounds
         debugInfo.condition = "Winning move detected for current player";
         return { gameState: "endgame", debugInfo };
     }
@@ -52,19 +50,6 @@ const getGameState = (board) => {
     debugInfo.condition = "Default midgame classification";
     return { gameState: "midgame", debugInfo };
 };
-// Validate board dimensions
-const isValidBoard = (board) => {
-    return Array.isArray(board) && board.length === 15 && board.every(row => row.length === 15);
-};
-// Validate symbols on the board
-const isValidSymbols = (board) => {
-    const validSymbols = ["X", "O", ""];
-    return board.flat().every(cell => validSymbols.includes(cell));
-};
-// Validate turn order
-const isValidTurnOrder = (xCount, oCount) => {
-    return !(xCount < oCount || xCount > oCount + 1);
-};
 // Count occurrences of a symbol
 const countSymbols = (board, symbol) => {
     return board.flat().filter(cell => cell === symbol).length;
@@ -75,7 +60,7 @@ const hasWinningMove = (board, player) => {
         { row: 0, col: 1 }, // Horizontal
         { row: 1, col: 0 }, // Vertical
         { row: 1, col: 1 }, // Diagonal (top-left to bottom-right)
-        { row: 1, col: -1 }, // Diagonal (top-right to bottom-left)
+        { row: 1, col: -1 } // Diagonal (top-right to bottom-left)
     ];
     for (let row = 0; row < 15; row++) {
         for (let col = 0; col < 15; col++) {
@@ -97,7 +82,7 @@ const hasBlockedFour = (board, player) => {
         { row: 0, col: 1 }, // Horizontal
         { row: 1, col: 0 }, // Vertical
         { row: 1, col: 1 }, // Diagonal (top-left to bottom-right)
-        { row: 1, col: -1 }, // Diagonal (top-right to bottom-left)
+        { row: 1, col: -1 } // Diagonal (top-right to bottom-left)
     ];
     for (let row = 0; row < 15; row++) {
         for (let col = 0; col < 15; col++) {

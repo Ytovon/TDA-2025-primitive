@@ -10,40 +10,49 @@ import {
   resetBtnWhite,
   winnerBlue,
   winnerRed,
-  modraZarovkaO,
-  darkModeButton,
-  lightModeButton,
 } from "../../assets/assets";
 import BlinkingEyesSVG from "../../Components/Animation/lightbulb";
-import { useDarkMode } from "../../DarkModeContext";
+import { useDarkMode } from "../../Context/DarkModeContext";
 import { Button } from "../../Components/Button/Button";
 import { useNavigate } from "react-router-dom";
+import { ApiClient } from "../../API/GameApi";
+import { Game } from "../../Model/GameModel";
+import { useWebSocket } from "../../Context/WebSocketContext";
 
 interface GamePageProps {
   uuid?: string;
 }
 
+// if winner == null, then its draw... handle that correctly
+
 export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
-  type Game = {
-    createdAt: string;
-    difficulty: string;
-    gameState: string;
-    name: string;
-    updatedAt: string;
-    uuid: string;
-  };
   const navigate = useNavigate();
-  const { darkMode, toggleDarkMode } = useDarkMode();
+  const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
   const [player, setPlayer] = useState(true); // true = hráč X, false = hráč O
-  const [winner, setWinner] = useState<string | null>(null);
+  const [winner, setWinner] = useState<string | null>("");
+
+  const {
+    isConnected,
+    sendMessage,
+    gameID,
+    multiplayerBoard,
+    multiplayerWinner,
+    status,
+  } = useWebSocket();
+
   const [game, setGame] = useState<Game>({
+    board: [],
+    initialBoard: [],
     createdAt: "",
     difficulty: "",
     gameState: "",
-    name: "Lokální multiplayer",
+    name: isConnected ? "Online multiplayer" : "Lokální multiplayer",
     updatedAt: "",
     uuid,
   });
+
+  const [refresh, setRefresh] = useState(0);
+
   const [grid, setGrid] = useState<string[][]>(
     Array.from({ length: 15 }, () => Array(15).fill(""))
   );
@@ -52,14 +61,52 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
   );
 
   useEffect(() => {
-    // Odebere třídu "winnerRed" z HTML elementu při načtení stránky
-    document.documentElement.classList.remove("winnerRed");
+    const fetchGame = async () => {
+      // Odebere třídu "winnerRed" z HTML elementu při načtení stránky
+      document.documentElement.classList.remove("winnerRed");
 
-    const url = new URL(window.location.href);
-    const uuid: string | undefined = url.pathname.split("/").pop(); // Poslední část cesty
+      const url = new URL(window.location.href);
+      const uuid: string | undefined = url.pathname.split("/").pop(); // Poslední část cesty
 
-    fetchSpecificGame(typeof uuid == "string" ? uuid : "");
+      const fetchedGame: Game | undefined = await ApiClient.fetchSpecificGame(
+        typeof uuid == "string" ? uuid : ""
+      );
+
+      if (fetchedGame !== undefined) {
+        setGame(fetchedGame);
+        setGrid(fetchedGame.board);
+        setInitialBoard(fetchedGame.board);
+      }
+    };
+    fetchGame();
   }, []);
+
+  // handles multiplayer winner
+  useEffect(() => {
+    setWinner((prevWinner) => {
+      const newWinner =
+        multiplayerWinner === "X"
+          ? "red"
+          : multiplayerWinner === "O"
+          ? "blue"
+          : multiplayerWinner;
+      console.log("Setting Winner:", newWinner);
+      return newWinner;
+    });
+  }, [multiplayerWinner]);
+
+  useEffect(() => {
+    setRefresh((prev) => prev + 1);
+  }, [winner]);
+
+  // change in board when multiplayerBoard changes... when opponent makes a move
+  useEffect(() => {
+    setGrid((prevGrid) => {
+      return JSON.stringify(prevGrid) !== JSON.stringify(multiplayerBoard)
+        ? multiplayerBoard
+        : prevGrid;
+    });
+  }, [multiplayerBoard]);
 
   useEffect(() => {
     let xCount = 0;
@@ -83,41 +130,6 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
       setPlayer(false); // Hráč O na tahu
     }
   }, [grid]);
-
-  async function fetchSpecificGame(uuid: string) {
-    try {
-      // pokud je uuid prázdné, spustí se normální hra
-      if (uuid === "") {
-        return;
-      }
-
-      const response = await fetch(
-        `https://2a459380.app.deploy.tourde.app/api/v1/Games/${uuid}`
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      setGame({
-        createdAt: data.createdAt,
-        difficulty: data.difficulty,
-        gameState: data.gameState,
-        name: data.name,
-        updatedAt: data.updatedAt,
-        uuid: uuid,
-      });
-
-      setInitialBoard(data.board);
-      setGrid(data.board);
-
-      console.log(data.board);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }
 
   // Funkce pro kontrolu výhry
   const checkWin = (row: number, col: number, symbol: string) => {
@@ -165,7 +177,6 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
 
   let typeStyle: React.CSSProperties = {};
 
-  //TODO !!!
   if (game.difficulty.toLowerCase() === "začátečník") {
     typeStyle = { color: "#0070BB" };
   } else if (game.difficulty.toLowerCase() === "jednoduchá") {
@@ -180,23 +191,33 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
 
   // Funkce pro kliknutí na buňku
   const cellClick = (row: number, col: number) => {
-    if (grid[row][col] !== "" || winner) return;
-
-    const symbol = player ? "X" : "O";
-
-    setGrid((prevGrid) => {
-      const newGrid = [...prevGrid];
-      newGrid[row] = [...prevGrid[row]]; // Vytvoří kopii řádku.
-      newGrid[row][col] = symbol; // Nastaví symbol podle hráče.
-      return newGrid;
-    });
-
-    if (checkWin(row, col, symbol)) {
-      console.log(`${symbol} wins!`);
-      return;
+    // multiplayer
+    if (isConnected) {
+      sendMessage({
+        type: "move",
+        gameId: gameID,
+        move: { row: row, col: col },
+      });
     }
+    // basic game
+    else {
+      if (grid[row][col] !== "" || winner) return;
 
-    setPlayer(!player);
+      const symbol = player ? "X" : "O";
+
+      setGrid((prevGrid) => {
+        const newGrid = [...prevGrid];
+        newGrid[row] = [...prevGrid[row]]; // Vytvoří kopii řádku.
+        newGrid[row][col] = symbol; // Nastaví symbol podle hráče.
+        return newGrid;
+      });
+
+      if (checkWin(row, col, symbol)) {
+        console.log(`${symbol} wins!`);
+        return;
+      }
+      setPlayer(!player);
+    }
   };
 
   const resetGame = () => {
@@ -214,35 +235,22 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
             <Link to={game.uuid !== "" ? "/Games" : "/"}>
               <img
                 className={styles.arrow}
-                src={darkMode ? arrowBlack : arrowWhite}
+                src={darkMode ? arrowWhite : arrowBlack}
                 alt=""
               />
             </Link>
           </button>
 
-          <div className={styles.gameBtns}>
-            <button onClick={resetGame}>
-              <img
-                className={styles.resetBtn}
-                src={darkMode ? resetBtnBlack : resetBtnWhite}
-                alt=""
-              />
-            </button>
-            <button onClick={toggleDarkMode}>
-              <img
-                style={
-                  darkMode
-                    ? { width: "20px", padding: "7px" }
-                    : { width: "22px", padding: "6px" }
-                }
-                className={styles.darkModeBtn}
-                src={darkMode ? darkModeButton : lightModeButton}
-              />
-            </button>
-          </div>
+          <button onClick={resetGame}>
+            <img
+              className={styles.resetGame}
+              src={darkMode ? resetBtnWhite : resetBtnBlack}
+              alt=""
+            />
+          </button>
         </div>
 
-        <div className={styles.gameWrapper}>
+        <div key={refresh} className={styles.gameWrapper}>
           <div className={styles.titleWrapper}>
             <h2 className={styles.title}>{game.name}</h2>
             <span
@@ -259,7 +267,12 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
           <h2 className={styles.gameState}>{game.gameState}</h2>
 
           <div className={styles.game}>
-            <BlinkingEyesSVG isRedPlayer={true} OnMove={player} />
+            <div
+              className={styles.playerWrapper}
+              style={{ opacity: player ? 1 : 0.4 }}
+            >
+              <BlinkingEyesSVG isRedPlayer={true} OnMove={player} />
+            </div>
 
             <div className={styles.gameGrid}>
               {Array.isArray(grid) &&
@@ -280,13 +293,20 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
                   ))
                 )}
             </div>
-            <BlinkingEyesSVG isRedPlayer={false} OnMove={!player} />
+            <div
+              className={styles.playerWrapper}
+              style={{ opacity: player ? 0.4 : 1 }}
+            >
+              <BlinkingEyesSVG isRedPlayer={false} OnMove={!player} />
+            </div>
           </div>
         </div>
       </div>
 
       <div
-        className={`${styles.winnerCardWrapper} ${winner ? styles.active : ""}`}
+        className={`${styles.winnerCardWrapper} ${
+          winner != "" ? styles.active : ""
+        }`}
       >
         <div className={styles.winnerCard}>
           <div className={styles.winnerCardTextImg}>
@@ -294,12 +314,12 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
               <h2 className={styles.winnerCardTitle}>Gratulujeme</h2>
               <p className={styles.winnerCardSubtitle}>
                 k výhře{" "}
-                {winner === "red" ? "hráči v červeném" : "hráči v modrém"}
+                {winner == "red" ? "hráči v červeném" : "hráči v modrém"}
               </p>
             </div>
             <img
               className={styles.winnerCardImg}
-              src={winner === "red" ? winnerRed : winnerBlue}
+              src={winner == "red" ? winnerRed : winnerBlue}
             />
           </div>
 
@@ -313,12 +333,15 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
 
             <Button
               text="Ukončit"
-              color={winner === "red" ? "#E31837" : "#0070BB"}
-              border={winner === "red" ? false : true}
+              color={winner == "red" ? "#E31837" : "#0070BB"}
+              border={winner == "red" ? false : true}
               onClick={() => navigate(game.uuid !== "" ? "/Games" : "/")}
             />
           </div>
         </div>
+      </div>
+      <div>
+        <p style={{ color: "white" }}>{status != "" ? status : ""}</p>
       </div>
     </body>
   );

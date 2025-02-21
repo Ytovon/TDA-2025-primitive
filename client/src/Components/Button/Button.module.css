@@ -1,3 +1,4 @@
+@charset "UTF-8";
 :root {
   --hover-border-color: white;
 }
@@ -9,13 +10,12 @@
   align-items: center;
   gap: 5px;
   cursor: pointer;
-  width: 9rem !important;
-  height: 2.7rem;
+  width: 8.5rem !important;
+  height: 2.8rem;
   border-radius: 6px;
   transition: all 0.3s ease-in-out;
   outline: none;
 }
-
 .button:hover {
   transform: scale(1.07); /* Mírné zvětšení tlačítka */
 }
@@ -35,15 +35,15 @@
     width: 144px;
     height: 43px;
   }
-
   .text {
     font-size: 16px;
   }
 }
-
 @media screen and (min-width: 1200px) {
   .button {
     width: 9.75rem;
     height: 2.6rem;
   }
 }
+
+/*# sourceMappingURL=Button.module.css.map */

@@ -1,7 +1,9 @@
 /* Everywhere */
 
-import darkModeButton from "./images/Primary.svg";
-import lightModeButton from "./images/sun.svg";
+// TODO
+// smazat Primary.svg
+import darkModeButton from "./images/moon-solid.svg";
+import lightModeButton from "./images/sun-solid.svg";
 
 /* HomePage */
 
@@ -28,8 +30,8 @@ import whitePlus from "./images/plus-solid.svg";
 
 /* GamePage */
 
-import symbolX from "./images/X_cervene.png";
-import symbolO from "./images/O_modre.png";
+import symbolX from "./images/X_cervene.svg";
+import symbolO from "./images/O_modre.svg";
 import arrowBlack from "./images/arrow-left-solid-black.svg";
 import arrowWhite from "./images/arrow-left-solid-white.svg";
 import resetBtnBlack from "./images/rotate-right-solid.svg";
@@ -39,7 +41,25 @@ import winnerRed from "./images/vyherniZarovkaCervena.svg";
 import cervenaZarovkaX from "./images/cervenaZarovkaX.svg";
 import modraZarovkaO from "./images/modraZarovkaO.svg";
 
-/* editorPage */
+/* ProfilePage */
+
+import lightbulbBlue from "./images/lightbulbBlue.svg";
+import lightbulbWhite from "./images/lightbulbWhite.svg";
+import profilePageRedImg from "./images/ProfilePageRedImg.svg";
+import statsGames from "./images/statsGames.svg";
+import statsTrophy from "./images/statsTrophy.svg";
+import statsTrophyWhite from "./images/statsTrophyWhite.svg";
+import settingFullWhite from "./images/settingFullWhite.svg";
+import historyRotateBlack from "./images/clock-rotate-left-solid.svg";
+import historyRotateWhite from "./images/clock-rotate-left-solid-white.svg";
+import userInfoErb from "./images/userInfoErb.svg";
+import userInfoErbWhite from "./images/userInfoErbWhite.svg";
+import userInfoBrush from "./images/userInfoBrush.svg";
+import userInfoBrushWhite from "./images/userInfoBrushWhite.svg";
+import moon from "./images/moon-solid.svg";
+import moonAdaptive from "./images/moonAdaptive.svg";
+
+/* EditorPage */
 
 import blueBulb from "./images/modraZarovka.svg";
 import redBulb from "./images/cervenaZarovka.svg";
@@ -47,12 +67,25 @@ import check from "./images/check-solid.svg";
 import redCancel from "./images/xmark-solid-red.svg";
 import trashBin from "./images/trash-solid.svg";
 
+/* LoginPage */
+
+import GoogleIcon from "./images/google.svg";
+import FacebookIcon from "./images/facebook-brands-solid.svg";
+
+/* NotFoundPage*/
+import NotFoundPageImg from "./images/NotFoundPageImg.svg";
+
 /* Header */
 
 import lightModeLogo from "./images/Think-different-Academy_LOGO_oficialni_1.png";
 import darkModeLogo from "./images/Think-different-Academy_LOGO_oficialni_1_dark-mode.png";
 import barsWhite from "./images/bars-staggered-solid-white.svg";
 import barsBlack from "./images/bars-staggered-solid-black.svg";
+import triangleDropdownBlack from "./images/triangleDropdownBlack.svg";
+import triangleDropdownWhite from "./images/triangleDropdownWhite.svg";
+import numberOfUser from "./images/numberOfUser.svg";
+import eloStar from "./images/eloStar.svg";
+import userImg from "./images/userImageTemplate.jpg";
 
 /* Footer */
 
@@ -61,7 +94,6 @@ import footerLogoBlack from "./images/Think-different-Academy_LOGO_textove-cerne
 
 /* Card */
 
-import nahledPiskvorek from "../assets/images/piskvorky.png";
 import settingsButton from "../assets/images/setting.png";
 import zarovkaFigma from "../assets/images/zarovkaFigma.svg";
 
@@ -80,7 +112,6 @@ export {
   lightModeButton,
   lightModeLogo,
   darkModeLogo,
-  nahledPiskvorek,
   settingsButton,
   xMarkWhite,
   xMarkBlack,
@@ -108,4 +139,27 @@ export {
   footerLogoBlack,
   landingImageBlack,
   landingImageWhite,
+  NotFoundPageImg,
+  GoogleIcon,
+  FacebookIcon,
+  triangleDropdownBlack,
+  triangleDropdownWhite,
+  eloStar,
+  numberOfUser,
+  userImg,
+  lightbulbBlue,
+  lightbulbWhite,
+  profilePageRedImg,
+  statsGames,
+  statsTrophy,
+  statsTrophyWhite,
+  settingFullWhite,
+  historyRotateBlack,
+  historyRotateWhite,
+  userInfoBrush,
+  userInfoBrushWhite,
+  userInfoErb,
+  userInfoErbWhite,
+  moon,
+  moonAdaptive,
 };

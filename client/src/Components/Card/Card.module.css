@@ -1,23 +1,21 @@
-* {
-  margin: 0;
-  padding: 0;
-  font-family: Dosis;
-}
-
 .card {
   position: relative;
   border-radius: 10px;
   width: clamp(250px, 30vw, 300px);
   height: 100%;
-  background-color: var(--primary1);
+  background-color: var(--color-background-light);
   display: flex;
   flex-direction: column;
-  box-shadow: var(--cardShadow);
+  box-shadow: var(--shadow-card);
   user-select: none;
   aspect-ratio: 9/10;
   z-index: 10;
   z-index: 200;
-  border: 1px solid var(--cardBorder);
+  border: 1px solid var(--border-card);
+  transition: 0.3s;
+}
+.card:hover {
+  transform: scale(1.01);
 }
 
 .cardImage {
@@ -41,7 +39,7 @@
   top: 9px;
   right: 7px;
   background-color: rgba(240, 248, 255, 0);
-  color: var(--textColor);
+  color: var(--color-text-primary);
   cursor: pointer;
   transform: rotate(0deg);
   transition: 0.2s ease-in-out;
@@ -53,15 +51,15 @@
 .cardTitle {
   font-size: 23px;
   padding: 4px 10px 7px;
-  background-color: var(--primary1);
-  color: var(--textColor);
+  background-color: var(--color-background-light);
+  color: var(--color-text-primary);
 }
 
 .cardType {
   padding: 2px 0 2px 10px;
   font-size: 17px;
   font-weight: 600;
-  filter: brightness(var(--brightness));
+  filter: brightness(var(--global-brightness));
 }
 
 .cardStart {
@@ -76,6 +74,8 @@
   border-radius: 5px;
   cursor: pointer;
   text-decoration: none;
+  position: relative;
+  transition: ease 0.3s;
 }
 
 @media screen and (max-width: 1300px) {
@@ -83,34 +83,30 @@
     padding-top: 2px;
   }
 }
-
 @media screen and (max-width: 1100px) {
   .card {
     width: 300px;
     aspect-ratio: unset;
   }
 }
-
 @media screen and (max-width: 800px) {
   .card {
     width: clamp(200px, 100%, 300px);
   }
 }
-
 @media screen and (max-width: 500px) {
   .card {
     width: 100%;
   }
-
   .cardImage {
     height: clamp(100px, 50vw, 250px);
   }
-
   .cardTitle {
     font-size: 25px;
   }
-
   .cardType {
     font-size: 17.5px;
   }
 }
+
+/*# sourceMappingURL=Card.module.css.map */

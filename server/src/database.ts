@@ -12,11 +12,13 @@ const sequelize = new Sequelize({
     // Test the connection
     await sequelize.authenticate();
     console.log("Connection to the database has been established successfully.");
+    await sequelize.sync({ alter: true });
+    console.log("Database synced successfully.");
   } catch (err: unknown) {
     if (err instanceof Error) {
-      console.error("Unable to connect to the database:", err.message);
+      console.error("Unable to connect or sync to the database:", err.message);
     } else {
-      console.error("An unknown error occurred while connecting to the database.");
+      console.error("An unknown error occurred while connecting or syncing to the database.");
     }
   }
 })();
