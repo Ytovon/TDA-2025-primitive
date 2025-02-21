@@ -45,7 +45,8 @@ import modraZarovkaO from "./images/modraZarovkaO.svg";
 
 import lightbulbBlue from "./images/lightbulbBlue.svg";
 import lightbulbWhite from "./images/lightbulbWhite.svg";
-import profilePageRedImg from "./images/ProfilePageRedImg.svg";
+import eloWhite from "./images/ProfilePageRedImg.svg";
+import eloRed from "./images/eloRed.svg";
 import statsGames from "./images/statsGames.svg";
 import statsTrophy from "./images/statsTrophy.svg";
 import statsTrophyWhite from "./images/statsTrophyWhite.svg";
@@ -149,7 +150,8 @@ export {
   userImg,
   lightbulbBlue,
   lightbulbWhite,
-  profilePageRedImg,
+  eloWhite,
+  eloRed,
   statsGames,
   statsTrophy,
   statsTrophyWhite,

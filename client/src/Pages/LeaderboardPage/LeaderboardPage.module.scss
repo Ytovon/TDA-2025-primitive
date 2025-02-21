@@ -1,8 +1,48 @@
-.leaderboardWrapper {
-  margin-top: 100px;
+.leaderboardPageWrapper {
+  margin-top: 150px;
+  color: var(--color-text-primary);
+  text-align: center;
+  color: var(--color-text-primary);
 }
 
 .leaderboardTitle {
-  text-align: center;
+  font-size: 3.25rem;
+  margin-bottom: 10px;
+}
+
+.leaderboardText {
+  font-size: 1.25rem;
+}
+
+.leaderboardWrapper {
+  width: 700px;
+  background-color: var(--color-background-secondary);
+  margin: 50px auto;
   color: var(--color-text-primary);
+  border-radius: 10px;
+}
+
+table td {
+  text-align: center;
+
+  &:nth-child(1) {
+    width: 10%;
+  }
+
+  &:nth-child(2) {
+    width: 75%;
+    text-align: left;
+    font-size: 1.15rem;
+    font-weight: 500;
+  }
+
+  .tableElo {
+    width: 15%;
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    font-size: 1.15rem;
+    color: var(--color5);
+    font-weight: 500;
+  }
 }

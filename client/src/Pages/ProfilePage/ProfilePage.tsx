@@ -11,9 +11,8 @@ import {
   modraZarovkaO,
   moon,
   moonAdaptive,
-  profilePageRedImg,
+  eloWhite,
   settingFullWhite,
-  settingsButton,
   statsGames,
   statsTrophy,
   statsTrophyWhite,
@@ -81,7 +80,7 @@ export const ProfilePage = () => {
           <div className={styles.statsContainer}>
             <div className={styles.statsHeader}>
               <h1 className={styles.statsTitle}>420</h1>
-              <img className={styles.statsImg} src={profilePageRedImg} />
+              <img className={styles.statsImg} src={eloWhite} />
             </div>
 
             <div className={styles.stats}>
