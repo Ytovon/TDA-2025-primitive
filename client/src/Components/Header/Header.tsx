@@ -150,6 +150,12 @@ export default function Header() {
                 <Link to="/game" className={`${styles.navLink} ${styles.link}`}>
                   Hrát sólo
                 </Link>
+                <Link
+                  to="/lobby"
+                  className={`${styles.navLink} ${styles.link}`}
+                >
+                  Hrát s přítelem
+                </Link>
               </div>
             </div>
             <Link to="/games" className={`${styles.navLink} ${styles.link}`}>

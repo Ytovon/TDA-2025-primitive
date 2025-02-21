@@ -17,6 +17,7 @@ import { Leaderboard } from "./Pages/LeaderboardPage/Leaderboard";
 import { LoadingPage } from "./Pages/LoadingPage/LoadingPage";
 import { useNavigate } from "react-router-dom";
 import { ProfilePage } from "./Pages/ProfilePage/ProfilePage";
+import { LobbyPage } from "./Pages/LobbyPage/LobbyPage";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -53,6 +54,7 @@ root.render(
         <Route path="/EditorPage/:uuid" element={<EditorPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/ProfilePage/:uuid" element={<ProfilePage />} />
+        <Route path="/lobby" element={<LobbyPage />} />
         <Route
           path="/loading"
           element={
