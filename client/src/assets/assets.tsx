@@ -73,6 +73,10 @@ import trashBin from "./images/trash-solid.svg";
 import GoogleIcon from "./images/google.svg";
 import FacebookIcon from "./images/facebook-brands-solid.svg";
 
+/* LeaderboardPage */
+
+import lightbulbRed from "./images/lightbulbRed.svg";
+
 /* NotFoundPage*/
 import NotFoundPageImg from "./images/NotFoundPageImg.svg";
 
@@ -149,6 +153,7 @@ export {
   numberOfUser,
   userImg,
   lightbulbBlue,
+  lightbulbRed,
   lightbulbWhite,
   eloWhite,
   eloRed,

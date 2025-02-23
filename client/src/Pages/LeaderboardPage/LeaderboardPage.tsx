@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "./LeaderboardPage.module.css";
 import Header from "../../Components/Header/Header";
-import { eloRed, lightbulbBlue } from "../../assets/assets";
+import { eloRed, lightbulbBlue, lightbulbRed } from "../../assets/assets";
 import { UserApiClient } from "../../API/UserApi"; // Import klienta pro uživatele
 import { UserModel } from "../../Model/UserModel";
 
@@ -57,8 +57,10 @@ export const LeaderboardPage = () => {
                   <tr key={user.uuid || index}>
                     <td>
                       <img
-                        className={styles.leaderboardPosition}
-                        src={lightbulbBlue}
+                        className={`${styles.leaderboardPosition} ${
+                          index === 0 ? styles.firstPlace : styles.otherPlace
+                        }`}
+                        src={index === 0 ? lightbulbBlue : lightbulbRed}
                         alt="pozice"
                       />
                     </td>

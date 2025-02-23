@@ -132,6 +132,13 @@ export const ProfilePage = () => {
                 </p>
               </div>
               <div className={styles.stat}>
+                <img className={styles.statImg} src="" alt="" />
+                <p>
+                  Remíza: <span className={styles.redBold}>{user.draws}</span>
+                </p>
+              </div>
+
+              <div className={styles.stat}>
                 <img
                   style={{ rotate: "180deg" }}
                   className={styles.statImg}
@@ -237,7 +244,8 @@ export const ProfilePage = () => {
             <input
               className={styles.editInput}
               type="text"
-              value={"kdo ze to je?"}
+              placeholder="Uživatelské jméno"
+              value={user.username}
             />
           </div>
 
@@ -246,7 +254,8 @@ export const ProfilePage = () => {
             <input
               className={styles.editInput}
               type="email"
-              value={"example@email.com"}
+              placeholder="example@email.com"
+              value={user.email}
             />
           </div>
 

@@ -12,7 +12,6 @@ import NotFoundPage from "./Pages/NotFoundPage/NotFoundPage";
 import HomePage from "./Pages/HomePage/HomePage";
 import { EditorPage } from "./Pages/EditorPage/EditorPage";
 import { LoginPage } from "./Pages/LoginPage/LoginPage";
-import { UserPage } from "./Pages/UserPage/UserPage";
 import { LeaderboardPage } from "./Pages/LeaderboardPage/LeaderboardPage";
 import { LoadingPage } from "./Pages/LoadingPage/LoadingPage";
 import { useNavigate } from "react-router-dom";
@@ -53,7 +52,7 @@ root.render(
         <Route path="/EditorPage" element={<EditorPage />} />
         <Route path="/EditorPage/:uuid" element={<EditorPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/ProfilePage/:uuid" element={<ProfilePage />} />
+        <Route path="/Profile/:uuid" element={<ProfilePage />} />
         <Route path="/lobby" element={<LobbyPage />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
         <Route

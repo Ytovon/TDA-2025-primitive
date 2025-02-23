@@ -207,11 +207,12 @@ export default function Header() {
                 />
                 <p>
                   <Link
-                    to="/ProfilePage/user1"
+                    to={`/profile/${user.uuid}`}
                     className={`${styles.navLink} ${styles.link}`}
                   >
                     Přehled
                   </Link>
+
                   <p
                     style={{ cursor: "pointer" }}
                     className={`${styles.navLink} ${styles.link}`}
@@ -286,11 +287,12 @@ export default function Header() {
                 className={styles.mobileLinkDropdown}
               >
                 <Link
-                  to="/userpage/user1"
+                  to={user.uuid ? `/profile/${user.uuid}` : "#"}
                   className={`${styles.link} ${styles.mobileLink}`}
                 >
                   Přehled
                 </Link>
+
                 <button
                   onClick={() => setRegistered(false)}
                   className={`${styles.link} ${styles.mobileLink}`}

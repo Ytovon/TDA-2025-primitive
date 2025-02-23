@@ -18,6 +18,7 @@
   margin: 75px auto 50px;
   background-color: var(--color-background-secondary);
   border-radius: 10px;
+  border-collapse: collapse;
 
   td:nth-child(1) {
     width: 10%;
@@ -29,11 +30,17 @@
     text-align: left;
     font-size: 1.15rem;
     font-weight: 500;
+    padding-left: 5px;
   }
 
   td:nth-child(3) {
     width: 10%;
   }
+}
+
+th {
+  padding-block: 9px;
+  border-bottom: 2px solid #353535;
 }
 
 .eloContainer {
@@ -45,9 +52,17 @@
 }
 
 .leaderboardPosition {
-  width: 20px;
+  width: 18px;
   aspect-ratio: 1/1;
   padding: 7px;
-  background-color: #91bedc;
-  border-radius: 5px;
+  border: 3px solid #353535;
+  border-radius: 10px;
+}
+
+.firstPlace {
+  background-color: #91bedc; /* Modré pozadí pro 1. místo */
+}
+
+.otherPlace {
+  background-color: #e3183740; /* Červené pozadí pro ostatní */
 }
