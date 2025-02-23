@@ -37,6 +37,7 @@
   grid-template-rows: 75%;
   grid-template-areas: "logo name setting" "logoBackground joinDate idk";
   background-color: var(--color-background-light);
+  border-radius: 20px 20px 0 0;
 }
 
 .userImgContainer {
@@ -200,11 +201,11 @@
 
 .edit {
   width: 580px;
-  height: 325px;
+  height: 340px;
   display: flex;
   position: absolute;
   left: 50%;
-  top: 40%;
+  top: 25%;
   transform: translate(-50%, -50%);
   background-color: var(--color-background-light-alt);
   color: var(--color-text-primary);

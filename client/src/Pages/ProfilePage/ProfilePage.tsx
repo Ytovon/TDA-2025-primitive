@@ -11,7 +11,8 @@ import {
   modraZarovkaO,
   moon,
   moonAdaptive,
-  profilePageRedImg,
+  eloWhite,
+  eloRed,
   settingFullWhite,
   settingsButton,
   statsGames,
@@ -25,9 +26,15 @@ import {
 import { useDarkMode } from "../../Context/DarkModeContext";
 import { Link, useNavigate } from "react-router-dom";
 import { Footer } from "../../Components/Footer/Footer";
+import { useParams } from "react-router-dom";
+import { UserApiClient } from "../../API/UserApi";
+import { UserModel } from "../../Model/UserModel";
 
 export const ProfilePage = () => {
+  const { uuid } = useParams<{ uuid: string }>(); // Získání UUID z URL
+  const [user, setUser] = useState<UserModel | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [selectedColor, setSelectedColor] = useState("#91bedc");
   const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
@@ -37,6 +44,27 @@ export const ProfilePage = () => {
     setSelectedColor(color);
   };
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!uuid) return;
+
+      try {
+        const userData = await UserApiClient.getUserByUUID(uuid);
+        if (typeof userData === "string") {
+          setError(userData); // Pokud API vrátí chybovou zprávu
+        } else {
+          setUser(userData); // Nastavení získaného uživatele do stavu
+        }
+      } catch (err) {
+        setError("Nepodařilo se načíst uživatele.");
+      }
+    };
+
+    fetchUser();
+  }, [uuid]);
+
+  if (error) return <p>⚠️ Chyba: {error}</p>;
+  if (!user) return <p>⏳ Načítání...</p>;
   return (
     <div className={styles.ProfilePage}>
       <Header />
@@ -56,9 +84,9 @@ export const ProfilePage = () => {
                   alt="profile Picture"
                 />
               </div>
-              <h1 className={styles.username}>Username</h1>
+              <h1 className={styles.username}>{user.username}</h1>
               <p className={styles.joinDate}>
-                Členem od <b>16. 02. 2025</b>
+                Členem od <b>16. O2. 2025</b>
               </p>
               <button
                 onClick={() => setIsEditOpen(true)}
@@ -80,15 +108,18 @@ export const ProfilePage = () => {
           </div>
           <div className={styles.statsContainer}>
             <div className={styles.statsHeader}>
-              <h1 className={styles.statsTitle}>420</h1>
-              <img className={styles.statsImg} src={profilePageRedImg} />
+              <h1 className={styles.statsTitle}>{user.elo}</h1>
+              <img className={styles.statsImg} src={eloWhite} />
             </div>
 
             <div className={styles.stats}>
               <div className={styles.stat}>
                 <img className={styles.statImg} src={statsGames} />
                 <p>
-                  Hry: <span className={styles.redBold}>16</span>
+                  Hry:{" "}
+                  <span className={styles.redBold}>
+                    {user.losses + user.wins + user.draws}
+                  </span>
                 </p>
               </div>
               <div className={styles.stat}>
@@ -97,7 +128,7 @@ export const ProfilePage = () => {
                   src={darkMode ? statsTrophyWhite : statsTrophy}
                 />
                 <p>
-                  Výhry: <span className={styles.redBold}>2</span>
+                  Výhry: <span className={styles.redBold}>{user.wins}</span>
                 </p>
               </div>
               <div className={styles.stat}>
@@ -107,12 +138,12 @@ export const ProfilePage = () => {
                   src={darkMode ? statsTrophyWhite : statsTrophy}
                 />
                 <p>
-                  Prohry: <span className={styles.redBold}>14</span>
+                  Prohry: <span className={styles.redBold}>{user.losses}</span>
                 </p>
               </div>
               <div className={styles.stat}>
                 <p>
-                  WR: <span className={styles.redBold}>14%</span>
+                  WR: <span className={styles.redBold}>0%</span>
                 </p>
               </div>
             </div>
@@ -333,3 +364,6 @@ export const ProfilePage = () => {
     </div>
   );
 };
+function setError(arg0: string) {
+  throw new Error("Function not implemented.");
+}

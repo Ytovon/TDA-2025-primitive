@@ -138,7 +138,7 @@ export default function Header() {
               <div className={styles.dropdownContent}>
                 <img
                   className={styles.triangleDropdown}
-                  src={darkMode ? triangleDropdownWhite : triangleDropdownBlack}
+                  src={darkMode ? triangleDropdownBlack : triangleDropdownWhite}
                   alt=""
                 />
                 <Link
@@ -202,7 +202,7 @@ export default function Header() {
               >
                 <img
                   className={styles.triangleDropdown}
-                  src={darkMode ? triangleDropdownWhite : triangleDropdownBlack}
+                  src={darkMode ? triangleDropdownBlack : triangleDropdownWhite}
                   alt=""
                 />
                 <p>

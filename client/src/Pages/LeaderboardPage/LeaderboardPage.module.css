@@ -1,0 +1,52 @@
+.leaderboardWrapper {
+  margin-top: 150px;
+  text-align: center;
+  color: var(--color-text-primary);
+}
+
+.leaderboardTitle {
+  font-size: 3.5rem;
+  margin-bottom: 15px;
+}
+
+.leaderboardText {
+  font-size: 1.6rem;
+}
+
+.leaderboard {
+  width: 700px;
+  margin: 75px auto 50px;
+  background-color: var(--color-background-secondary);
+  border-radius: 10px;
+}
+.leaderboard td:nth-child(1) {
+  width: 10%;
+  padding-top: 4px;
+}
+.leaderboard td:nth-child(2) {
+  width: 80%;
+  text-align: left;
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+.leaderboard td:nth-child(3) {
+  width: 10%;
+}
+
+.eloContainer {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.leaderboardPosition {
+  width: 20px;
+  aspect-ratio: 1/1;
+  padding: 7px;
+  background-color: #91bedc;
+  border-radius: 5px;
+}
+
+/*# sourceMappingURL=LeaderboardPage.module.css.map */

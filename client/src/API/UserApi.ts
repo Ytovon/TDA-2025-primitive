@@ -109,4 +109,16 @@ export class UserApiClient {
       return error.response?.data?.message || error.message;
     }
   }
+
+  // Get all users
+  static async getAllUsers(): Promise<UserModel[] | string> {
+    try {
+      const response = await userApiInstance.get("");
+      console.log("API response:", response.data); // Přidej výpis do konzole
+      return response.data;
+    } catch (error: any) {
+      console.error("Error fetching all users:", error);
+      return error.response?.data?.message || error.message;
+    }
+  }
 }
