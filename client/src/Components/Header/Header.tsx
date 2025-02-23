@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UserApiClient } from "../../API/UserApi";
 import {
   lightModeLogo,
@@ -10,7 +10,7 @@ import {
   chevronDownWhite,
   triangleDropdownBlack,
   triangleDropdownWhite,
-  eloStar,
+  eloRed,
   numberOfUser,
   userImg,
   arrowBlack,
@@ -31,6 +31,7 @@ import {
 import { User, UserModel } from "../../Model/UserModel";
 
 export default function Header() {
+  const navigate = useNavigate();
   const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [Registered, setRegistered] = useState(false);
@@ -186,7 +187,7 @@ export default function Header() {
               <div className={styles.userStats}>
                 <div className={styles.userStat}>
                   <p>{Math.floor(user.elo)}</p>
-                  <img src={eloStar} alt="" />
+                  <img style={{ width: "19px" }} src={eloRed} alt="" />
                 </div>
                 <div className={styles.userStat}>
                   <p>0</p>
@@ -219,6 +220,7 @@ export default function Header() {
                     onClick={() => {
                       setRegistered(false);
                       clearTokens();
+                      navigate("/");
                     }}
                   >
                     Odhlásit se
@@ -262,7 +264,7 @@ export default function Header() {
                   <div className={styles.mobileUserStats}>
                     <div className={styles.mobileUserStat}>
                       <p>560</p>
-                      <img src={eloStar} alt="" />
+                      <img src={eloRed} alt="" />
                     </div>
                     <div className={styles.mobileUserStat}>
                       <p>4</p>
@@ -294,7 +296,10 @@ export default function Header() {
                 </Link>
 
                 <button
-                  onClick={() => setRegistered(false)}
+                  onClick={() => {
+                    setRegistered(false);
+                    navigate("/");
+                  }}
                   className={`${styles.link} ${styles.mobileLink}`}
                 >
                   Odhlásit se

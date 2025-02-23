@@ -16,7 +16,7 @@
 .leaderboard {
   width: 700px;
   margin: 75px auto 50px;
-  background-color: var(--color-background-secondary);
+  background-color: var(--color-background-light);
   border-radius: 10px;
   border-collapse: collapse;
 
@@ -40,7 +40,7 @@
 
 th {
   padding-block: 9px;
-  border-bottom: 2px solid #353535;
+  border-bottom: 2px solid var(--color-border-filtration);
 }
 
 .eloContainer {
@@ -55,7 +55,7 @@ th {
   width: 18px;
   aspect-ratio: 1/1;
   padding: 7px;
-  border: 3px solid #353535;
+  border: 3px solid var(--color-border-filtration);
   border-radius: 10px;
 }
 
