@@ -37,7 +37,7 @@ const ACCESS_TOKEN_SECRET =
   process.env.ACCESS_TOKEN_SECRET || "your-access-token-secret";
 
 // Define the maximum allowed ELO difference for matching players
-const MAX_ELO_DIFFERENCE = 100; // Players can be matched if their ELO difference is within this range
+const MAX_ELO_DIFFERENCE = 10000; // Players can be matched if their ELO difference is within this range
 
 function initializeWebSocket(server: any): void {
   const wss = new WebSocketServer({ server });
