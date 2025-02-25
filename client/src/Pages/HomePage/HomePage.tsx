@@ -150,7 +150,7 @@ export default function HomePage() {
           </section>
         </div>
       </div>
-      <div style={{ backgroundColor: "var(--color-background-light)" }}>
+      <div style={{ backgroundColor: "var(--color-background-light-alt)" }}>
         <Footer />
       </div>
     </div>

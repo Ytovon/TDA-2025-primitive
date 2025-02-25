@@ -10,6 +10,8 @@ export interface UserModel {
   refreshToken?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  isAdmin: boolean;
+  isBanned?: boolean;
 }
 
 export class User implements UserModel {
@@ -24,6 +26,8 @@ export class User implements UserModel {
   refreshToken?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  isAdmin: boolean;
+  isBanned?: boolean;
 
   constructor(
     username: string,
@@ -33,9 +37,11 @@ export class User implements UserModel {
     wins: number = 0,
     draws: number = 0,
     losses: number = 0,
+    isAdmin: boolean = false,
     refreshToken?: string,
     createdAt?: Date,
-    updatedAt?: Date
+    updatedAt?: Date,
+    isBanned?: boolean
   ) {
     this.username = username;
     this.email = email;
@@ -47,5 +53,7 @@ export class User implements UserModel {
     this.refreshToken = refreshToken;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.isAdmin = isAdmin;
+    this.isBanned = isBanned;
   }
 }

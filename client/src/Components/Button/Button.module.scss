@@ -9,14 +9,14 @@
   align-items: center;
   gap: 5px;
   cursor: pointer;
-  width: 8.5rem !important;
+  width: auto;
   height: 2.8rem;
   border-radius: 6px;
   transition: all 0.3s ease-in-out;
   outline: none;
 
   &:hover {
-    transform: scale(1.07); /* Mírné zvětšení tlačítka */
+    transform: scale(1.05); /* Mírné zvětšení tlačítka */
   }
 }
 

@@ -11,7 +11,8 @@ import {
   modraZarovkaO,
   moon,
   moonAdaptive,
-  profilePageRedImg,
+  eloWhite,
+  eloRed,
   settingFullWhite,
   settingsButton,
   statsGames,
@@ -21,13 +22,21 @@ import {
   userInfoBrushWhite,
   userInfoErb,
   userInfoErbWhite,
+  handshakeWhite,
+  handshakeBlack,
 } from "../../assets/assets";
 import { useDarkMode } from "../../Context/DarkModeContext";
 import { Link, useNavigate } from "react-router-dom";
 import { Footer } from "../../Components/Footer/Footer";
+import { useParams } from "react-router-dom";
+import { UserApiClient } from "../../API/UserApi";
+import { UserModel } from "../../Model/UserModel";
 
 export const ProfilePage = () => {
+  const { uuid } = useParams<{ uuid: string }>(); // Získání UUID z URL
+  const [user, setUser] = useState<UserModel | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [selectedColor, setSelectedColor] = useState("#91bedc");
   const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
@@ -37,6 +46,27 @@ export const ProfilePage = () => {
     setSelectedColor(color);
   };
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!uuid) return;
+
+      try {
+        const userData = await UserApiClient.getUserByUUID(uuid);
+        if (typeof userData === "string") {
+          setError(userData); // Pokud API vrátí chybovou zprávu
+        } else {
+          setUser(userData); // Nastavení získaného uživatele do stavu
+        }
+      } catch (err) {
+        setError("Nepodařilo se načíst uživatele.");
+      }
+    };
+
+    fetchUser();
+  }, [uuid]);
+
+  if (error) return <p>⚠️ Chyba: {error}</p>;
+  if (!user) return <p>⏳ Načítání...</p>;
   return (
     <div className={styles.ProfilePage}>
       <Header />
@@ -56,15 +86,15 @@ export const ProfilePage = () => {
                   alt="profile Picture"
                 />
               </div>
-              <h1 className={styles.username}>Username</h1>
+              <h1 className={styles.username}>{user.username}</h1>
               <p className={styles.joinDate}>
-                Členem od <b>16. 02. 2025</b>
+                Členem od <b>16. O2. 2025</b>
               </p>
               <button
                 onClick={() => setIsEditOpen(true)}
                 className={styles.setting}
               >
-                <p style={{ cursor: "pointer" }}>Upravit</p>
+                <p className={styles.settingText}>Upravit</p>
                 <img
                   className={styles.settingBtn}
                   src={settingFullWhite}
@@ -75,20 +105,27 @@ export const ProfilePage = () => {
 
             <div className={styles.noteContainer}>
               <h3 className={styles.noteTitle}>Poznámka</h3>
-              <textarea className={styles.note} disabled />
+              <textarea
+                className={styles.note}
+                disabled
+                placeholder="Vložte poznámku..."
+              />
             </div>
           </div>
           <div className={styles.statsContainer}>
             <div className={styles.statsHeader}>
-              <h1 className={styles.statsTitle}>420</h1>
-              <img className={styles.statsImg} src={profilePageRedImg} />
+              <h1 className={styles.statsTitle}>{user.elo}</h1>
+              <img className={styles.statsImg} src={eloWhite} />
             </div>
 
             <div className={styles.stats}>
               <div className={styles.stat}>
                 <img className={styles.statImg} src={statsGames} />
                 <p>
-                  Hry: <span className={styles.redBold}>16</span>
+                  Hry:{" "}
+                  <span className={styles.redBold}>
+                    {user.losses + user.wins + user.draws}
+                  </span>
                 </p>
               </div>
               <div className={styles.stat}>
@@ -97,9 +134,20 @@ export const ProfilePage = () => {
                   src={darkMode ? statsTrophyWhite : statsTrophy}
                 />
                 <p>
-                  Výhry: <span className={styles.redBold}>2</span>
+                  Výhry: <span className={styles.redBold}>{user.wins}</span>
                 </p>
               </div>
+              <div className={styles.stat}>
+                <img
+                  className={styles.statImg}
+                  src={darkMode ? handshakeWhite : handshakeBlack}
+                  alt=""
+                />
+                <p>
+                  Remíza: <span className={styles.redBold}>{user.draws}</span>
+                </p>
+              </div>
+
               <div className={styles.stat}>
                 <img
                   style={{ rotate: "180deg" }}
@@ -107,12 +155,12 @@ export const ProfilePage = () => {
                   src={darkMode ? statsTrophyWhite : statsTrophy}
                 />
                 <p>
-                  Prohry: <span className={styles.redBold}>14</span>
+                  Prohry: <span className={styles.redBold}>{user.losses}</span>
                 </p>
               </div>
               <div className={styles.stat}>
                 <p>
-                  WR: <span className={styles.redBold}>14%</span>
+                  WR: <span className={styles.redBold}>0%</span>
                 </p>
               </div>
             </div>
@@ -206,7 +254,8 @@ export const ProfilePage = () => {
             <input
               className={styles.editInput}
               type="text"
-              value={"kdo ze to je?"}
+              placeholder="Uživatelské jméno"
+              value={user.username}
             />
           </div>
 
@@ -215,7 +264,8 @@ export const ProfilePage = () => {
             <input
               className={styles.editInput}
               type="email"
-              value={"example@email.com"}
+              placeholder="example@email.com"
+              value={user.email}
             />
           </div>
 
@@ -313,17 +363,6 @@ export const ProfilePage = () => {
                 />
                 <p>Tmavý</p>
               </button>
-              <button
-                style={{ backgroundColor: "#395A9A", color: "white" }}
-                className={styles.changeDarkMode}
-              >
-                <img
-                  className={styles.changeDarkmodeImg}
-                  src={moonAdaptive}
-                  alt=""
-                />
-                <p>Adaptivní</p>
-              </button>
             </div>
           </div>
         </div>
@@ -333,3 +372,6 @@ export const ProfilePage = () => {
     </div>
   );
 };
+function setError(arg0: string) {
+  throw new Error("Function not implemented.");
+}

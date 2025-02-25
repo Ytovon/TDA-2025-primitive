@@ -1,0 +1,99 @@
+@charset "UTF-8";
+.leaderboardWrapper {
+  margin-top: 150px;
+  text-align: center;
+  color: var(--color-text-primary);
+}
+
+.leaderboardTitle {
+  font-size: 3.5rem;
+  margin-bottom: 15px;
+}
+
+.leaderboardText {
+  font-size: 1.6rem;
+}
+
+.leaderboard {
+  width: 700px;
+  margin: 75px auto 50px;
+  background-color: var(--color-background-light);
+  border-radius: 10px;
+  border-collapse: collapse;
+  box-shadow: var(--shadow-card);
+}
+.leaderboard tbody {
+  padding-block: 2px;
+}
+.leaderboard td:nth-child(1) {
+  width: 10%;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.leaderboard td:nth-child(2) {
+  width: 75%;
+  text-align: left;
+  font-size: 1.15rem;
+  font-weight: 500;
+  padding-left: 15px;
+  display: flex;
+  gap: 10px;
+  padding-block: 3px;
+  align-items: center;
+}
+.leaderboard td:nth-child(3) {
+  width: 15%;
+}
+
+th {
+  padding-block: 9px;
+  border-bottom: 2px solid var(--color-border-filtration);
+}
+
+.leaderboard tbody tr:nth-child(1) td:nth-child(1) {
+  background-color: var(--color1);
+}
+.leaderboard tbody tr:nth-child(2) td:nth-child(1) {
+  background-color: var(--color2);
+}
+.leaderboard tbody tr:nth-child(3) td:nth-child(1) {
+  background-color: var(--color3);
+}
+
+.eloContainer {
+  display: flex;
+  gap: 10px;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 500;
+  justify-content: center;
+}
+
+.leaderboardPosition {
+  width: 18px;
+  aspect-ratio: 1/1;
+  padding: 7px;
+  border: 3px solid var(--color-border-filtration);
+  border-radius: 10px;
+}
+
+.firstPlace {
+  background-color: #91bedc; /* Modré pozadí pro 1. místo */
+}
+
+.otherPlace {
+  background-color: rgba(227, 24, 55, 0.2509803922); /* Červené pozadí pro ostatní */
+}
+
+@media screen and (max-width: 1100px) {
+  .leaderboard {
+    width: 600px;
+  }
+}
+@media screen and (max-width: 800px) {
+  .leaderboard {
+    width: clamp(300px, 80vw, 800px);
+  }
+}
+
+/*# sourceMappingURL=LeaderboardPage.module.css.map */

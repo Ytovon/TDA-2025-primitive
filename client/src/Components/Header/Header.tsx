@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UserApiClient } from "../../API/UserApi";
 import {
   lightModeLogo,
@@ -10,8 +10,7 @@ import {
   chevronDownWhite,
   triangleDropdownBlack,
   triangleDropdownWhite,
-  eloStar,
-  numberOfUser,
+  eloRed,
   userImg,
   arrowBlack,
   arrowWhite,
@@ -31,6 +30,7 @@ import {
 import { User, UserModel } from "../../Model/UserModel";
 
 export default function Header() {
+  const navigate = useNavigate();
   const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [Registered, setRegistered] = useState(false);
@@ -127,7 +127,10 @@ export default function Header() {
 
           <div className={styles.links}>
             <div className={styles.dropdown}>
-              <Link to="/game" className={`${styles.navLink} ${styles.link}`}>
+              <Link
+                to="/freeplay"
+                className={`${styles.navLink} ${styles.link}`}
+              >
                 <p>Chci hrát</p>
                 <img
                   className={styles.scrollableBtn}
@@ -138,7 +141,7 @@ export default function Header() {
               <div className={styles.dropdownContent}>
                 <img
                   className={styles.triangleDropdown}
-                  src={darkMode ? triangleDropdownWhite : triangleDropdownBlack}
+                  src={darkMode ? triangleDropdownBlack : triangleDropdownWhite}
                   alt=""
                 />
                 <Link
@@ -147,7 +150,10 @@ export default function Header() {
                 >
                   Hrát online
                 </Link>
-                <Link to="/game" className={`${styles.navLink} ${styles.link}`}>
+                <Link
+                  to="/freeplay"
+                  className={`${styles.navLink} ${styles.link}`}
+                >
                   Hrát sólo
                 </Link>
                 <Link
@@ -186,11 +192,7 @@ export default function Header() {
               <div className={styles.userStats}>
                 <div className={styles.userStat}>
                   <p>{Math.floor(user.elo)}</p>
-                  <img src={eloStar} alt="" />
-                </div>
-                <div className={styles.userStat}>
-                  <p>0</p>
-                  <img src={numberOfUser} alt="" />
+                  <img style={{ width: "19px" }} src={eloRed} alt="" />
                 </div>
               </div>
             </div>
@@ -202,22 +204,31 @@ export default function Header() {
               >
                 <img
                   className={styles.triangleDropdown}
-                  src={darkMode ? triangleDropdownWhite : triangleDropdownBlack}
+                  src={darkMode ? triangleDropdownBlack : triangleDropdownWhite}
                   alt=""
                 />
                 <p>
                   <Link
-                    to="/ProfilePage/user1"
+                    to={`/profile/${user.uuid}`}
                     className={`${styles.navLink} ${styles.link}`}
                   >
                     Přehled
                   </Link>
+                  <Link
+                    style={{ display: user.isAdmin ? "block" : "none" }}
+                    to="/players"
+                    className={`${styles.navLink} ${styles.link}`}
+                  >
+                    Seznam hráčů
+                  </Link>
+
                   <p
                     style={{ cursor: "pointer" }}
                     className={`${styles.navLink} ${styles.link}`}
                     onClick={() => {
                       setRegistered(false);
                       clearTokens();
+                      navigate("/");
                     }}
                   >
                     Odhlásit se
@@ -261,11 +272,7 @@ export default function Header() {
                   <div className={styles.mobileUserStats}>
                     <div className={styles.mobileUserStat}>
                       <p>560</p>
-                      <img src={eloStar} alt="" />
-                    </div>
-                    <div className={styles.mobileUserStat}>
-                      <p>4</p>
-                      <img src={numberOfUser} alt="" />
+                      <img src={eloRed} alt="" />
                     </div>
                   </div>
                 </div>
@@ -286,13 +293,17 @@ export default function Header() {
                 className={styles.mobileLinkDropdown}
               >
                 <Link
-                  to="/userpage/user1"
+                  to={user.uuid ? `/profile/${user.uuid}` : "#"}
                   className={`${styles.link} ${styles.mobileLink}`}
                 >
                   Přehled
                 </Link>
+
                 <button
-                  onClick={() => setRegistered(false)}
+                  onClick={() => {
+                    setRegistered(false);
+                    navigate("/");
+                  }}
                   className={`${styles.link} ${styles.mobileLink}`}
                 >
                   Odhlásit se
@@ -338,13 +349,13 @@ export default function Header() {
               >
                 <Link
                   className={`${styles.link} ${styles.mobileLink}`}
-                  to="/game"
+                  to="/freeplay"
                 >
                   Hrát online
                 </Link>
                 <Link
                   className={`${styles.link} ${styles.mobileLink}`}
-                  to="/game"
+                  to="/freeplay"
                 >
                   Hrát sólo
                 </Link>

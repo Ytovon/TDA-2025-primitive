@@ -67,7 +67,7 @@ export const LoadingPage = () => {
       <Header />
 
       <div className={styles.container}>
-        <p style={{ color: "white" }}>{status}</p>
+        <p className={styles.status}>{status}</p>
         <BlinkingEyesSVG isRedPlayer={true} OnMove={true} />
       </div>
     </div>

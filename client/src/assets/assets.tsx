@@ -45,7 +45,8 @@ import modraZarovkaO from "./images/modraZarovkaO.svg";
 
 import lightbulbBlue from "./images/lightbulbBlue.svg";
 import lightbulbWhite from "./images/lightbulbWhite.svg";
-import profilePageRedImg from "./images/ProfilePageRedImg.svg";
+import eloWhite from "./images/ProfilePageRedImg.svg";
+import eloRed from "./images/eloRed.svg";
 import statsGames from "./images/statsGames.svg";
 import statsTrophy from "./images/statsTrophy.svg";
 import statsTrophyWhite from "./images/statsTrophyWhite.svg";
@@ -58,6 +59,8 @@ import userInfoBrush from "./images/userInfoBrush.svg";
 import userInfoBrushWhite from "./images/userInfoBrushWhite.svg";
 import moon from "./images/moon-solid.svg";
 import moonAdaptive from "./images/moonAdaptive.svg";
+import handshakeBlack from "./images/handshakeBlack.svg";
+import handshakeWhite from "./images/handshakeWhite.svg";
 
 /* EditorPage */
 
@@ -71,6 +74,15 @@ import trashBin from "./images/trash-solid.svg";
 
 import GoogleIcon from "./images/google.svg";
 import FacebookIcon from "./images/facebook-brands-solid.svg";
+
+/* LeaderboardPage */
+
+import lightbulbRed from "./images/lightbulbRed.svg";
+
+/* LobbyPage */
+
+import lightbulbRedLike from "./images/lightbulbRedLike.svg";
+import lightbulbBlueLike from "./images/lightbulbBlueLike.svg";
 
 /* NotFoundPage*/
 import NotFoundPageImg from "./images/NotFoundPageImg.svg";
@@ -148,8 +160,10 @@ export {
   numberOfUser,
   userImg,
   lightbulbBlue,
+  lightbulbRed,
   lightbulbWhite,
-  profilePageRedImg,
+  eloWhite,
+  eloRed,
   statsGames,
   statsTrophy,
   statsTrophyWhite,
@@ -162,4 +176,8 @@ export {
   userInfoErbWhite,
   moon,
   moonAdaptive,
+  handshakeBlack,
+  handshakeWhite,
+  lightbulbRedLike,
+  lightbulbBlueLike,
 };

@@ -291,6 +291,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
                 text="Vytvořit hru"
                 image={whitePlus}
                 color="white"
+                width="45%"
                 backgroundColor={true}
                 onClick={() => handleButtonClick("create")}
                 isDisabled={!goodNumberOfSymbols || isThereWinner}
@@ -300,6 +301,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
                 text="Uložit úlohu"
                 image={check}
                 color="white"
+                width="60% !important"
                 backgroundColor={true}
                 onClick={() => handleButtonClick("send")}
                 isDisabled={!goodNumberOfSymbols || isThereWinner}
