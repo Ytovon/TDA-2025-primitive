@@ -9,4 +9,8 @@
   font-size: 32px;
 }
 
+.status {
+  color: var(--color-text-primary);
+}
+
 /*# sourceMappingURL=LoadingPage.module.css.map */

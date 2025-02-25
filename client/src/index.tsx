@@ -17,6 +17,7 @@ import { LoadingPage } from "./Pages/LoadingPage/LoadingPage";
 import { useNavigate } from "react-router-dom";
 import { ProfilePage } from "./Pages/ProfilePage/ProfilePage";
 import { LobbyPage } from "./Pages/LobbyPage/LobbyPage";
+import { PlayerListPage } from "./Pages/PlayerListPage/PlayerListPage";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -41,20 +42,21 @@ root.render(
         <Route path="/" element={<HomePage />} />
         <Route path="/Games" element={<CardsPage />} />
         <Route
-          path="/Game"
+          path="/freeplay"
           element={
             <WebSocketWrapper>
               <GamePage />
             </WebSocketWrapper>
           }
         />
-        <Route path="/Game/:uuid" element={<GamePage />} />
+        <Route path="/freeplay/:uuid" element={<GamePage />} />
         <Route path="/EditorPage" element={<EditorPage />} />
         <Route path="/EditorPage/:uuid" element={<EditorPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/Profile/:uuid" element={<ProfilePage />} />
         <Route path="/lobby" element={<LobbyPage />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
+        <Route path="/players" element={<PlayerListPage />} />
         <Route
           path="/loading"
           element={

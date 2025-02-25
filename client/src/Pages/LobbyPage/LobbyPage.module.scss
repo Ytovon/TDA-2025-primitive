@@ -1,0 +1,60 @@
+.arrow {
+  position: absolute;
+  top: 95px;
+  left: 15px;
+  width: 35px;
+  cursor: pointer;
+}
+
+.lobbyWrapper {
+  width: clamp(970px, 60vw, 1100px);
+  height: fit-content;
+  margin: 170px auto 100px;
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-text-primary);
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 45px;
+  margin: auto 0;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.menuTitle {
+  font-size: 4.5rem;
+  line-height: 1;
+}
+
+.menuText {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.lobbyImg {
+  width: 40%;
+}
+
+.redBold {
+  color: var(--color5);
+}
+
+.insertCodeInput {
+  width: 250px;
+  height: 42px;
+  background-color: var(--color1);
+  color: white;
+  text-align: center;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  font-size: 1rem;
+  font-weight: 500;
+}

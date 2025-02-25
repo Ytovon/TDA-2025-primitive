@@ -13,10 +13,18 @@ export const LeaderboardPage = () => {
     const fetchUsers = async () => {
       try {
         const data = await UserApiClient.getAllUsers();
-        console.log("Fetched users:", data); // Zobrazí uživatele z API
+        console.log("Fetched users:", data);
 
         if (Array.isArray(data)) {
-          setUsers(data);
+          // Seřazení podle ELO a při shodě podle počtu výher (wins)
+          const sortedUsers = data.sort((a, b) => {
+            if ((b.elo || 0) !== (a.elo || 0)) {
+              return (b.elo || 0) - (a.elo || 0); // Nejprve podle ELO
+            }
+            return (b.wins || 0) - (a.wins || 0); // Pokud mají stejné ELO, tak podle výher
+          });
+
+          setUsers(sortedUsers);
         } else {
           console.error("API did not return an array:", data);
         }
@@ -55,6 +63,7 @@ export const LeaderboardPage = () => {
               {users.length > 0 ? (
                 users.map((user, index) => (
                   <tr key={user.uuid || index}>
+                    <td>{index + 1}.</td> {/* Přidá číslování umístění */}
                     <td>
                       <img
                         className={`${styles.leaderboardPosition} ${
@@ -63,8 +72,8 @@ export const LeaderboardPage = () => {
                         src={index === 0 ? lightbulbBlue : lightbulbRed}
                         alt="pozice"
                       />
+                      {user.username}
                     </td>
-                    <td>{user.username}</td>
                     <td>
                       <div className={styles.eloContainer}>
                         <p>{user.elo || "N/A"}</p>
@@ -75,7 +84,7 @@ export const LeaderboardPage = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={3}>Žádní uživatelé nenalezeni</td>
+                  <td colSpan={4}>Žádní uživatelé nenalezeni</td>
                 </tr>
               )}
             </tbody>

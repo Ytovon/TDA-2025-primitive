@@ -26,6 +26,7 @@
   width: 65%;
   border-radius: 20px;
   background-color: var(--color-background-primary);
+  box-shadow: var(--shadow-card);
 }
 
 .userInfoHeader {
@@ -87,6 +88,14 @@
   border-radius: 0 20px 0 0;
 }
 
+.settingText {
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .settingBtn {
   cursor: pointer;
   width: 25px;
@@ -111,7 +120,7 @@
 
 .note {
   width: 80%;
-  height: 95px;
+  height: 100px;
   padding: 5px 10px;
   margin-top: 5px;
   border: none;
@@ -126,6 +135,7 @@
   width: 30%;
   background-color: var(--color-background-light);
   border-radius: 20px;
+  box-shadow: var(--shadow-card);
 }
 
 .statsHeader {
@@ -177,6 +187,7 @@
   border-radius: 20px;
   background-color: var(--color-background-light);
   color: var(--color-text-primary);
+  box-shadow: var(--shadow-card);
 }
 
 .gameHistoryTitle {

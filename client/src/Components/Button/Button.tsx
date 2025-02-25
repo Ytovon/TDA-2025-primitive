@@ -11,6 +11,7 @@ interface ButtonProps {
   isDisabled?: boolean;
   isVisible?: boolean;
   width?: string;
+  height?: string;
 }
 
 // Definice komponenty Button
@@ -24,6 +25,7 @@ export const Button: React.FC<ButtonProps> = ({
   isDisabled,
   isVisible = true,
   width,
+  height,
 }) => {
   const [buttonColor, setButtonColor] = useState<React.CSSProperties>({
     backgroundColor: "00000000",
@@ -56,6 +58,8 @@ export const Button: React.FC<ButtonProps> = ({
       className={styles.button}
       onClick={onClick}
       style={{
+        width: width,
+        height: height,
         ...buttonColor,
         ...buttonBorder,
         display: isVisible ? "" : "none",

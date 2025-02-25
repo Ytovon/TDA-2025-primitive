@@ -11,7 +11,6 @@ import {
   triangleDropdownBlack,
   triangleDropdownWhite,
   eloRed,
-  numberOfUser,
   userImg,
   arrowBlack,
   arrowWhite,
@@ -128,7 +127,10 @@ export default function Header() {
 
           <div className={styles.links}>
             <div className={styles.dropdown}>
-              <Link to="/game" className={`${styles.navLink} ${styles.link}`}>
+              <Link
+                to="/freeplay"
+                className={`${styles.navLink} ${styles.link}`}
+              >
                 <p>Chci hrát</p>
                 <img
                   className={styles.scrollableBtn}
@@ -148,7 +150,10 @@ export default function Header() {
                 >
                   Hrát online
                 </Link>
-                <Link to="/game" className={`${styles.navLink} ${styles.link}`}>
+                <Link
+                  to="/freeplay"
+                  className={`${styles.navLink} ${styles.link}`}
+                >
                   Hrát sólo
                 </Link>
                 <Link
@@ -189,10 +194,6 @@ export default function Header() {
                   <p>{Math.floor(user.elo)}</p>
                   <img style={{ width: "19px" }} src={eloRed} alt="" />
                 </div>
-                <div className={styles.userStat}>
-                  <p>0</p>
-                  <img src={numberOfUser} alt="" />
-                </div>
               </div>
             </div>
             <div className={styles.dropdown}>
@@ -212,6 +213,13 @@ export default function Header() {
                     className={`${styles.navLink} ${styles.link}`}
                   >
                     Přehled
+                  </Link>
+                  <Link
+                    style={{ display: user.isAdmin ? "block" : "none" }}
+                    to="/players"
+                    className={`${styles.navLink} ${styles.link}`}
+                  >
+                    Seznam hráčů
                   </Link>
 
                   <p
@@ -265,10 +273,6 @@ export default function Header() {
                     <div className={styles.mobileUserStat}>
                       <p>560</p>
                       <img src={eloRed} alt="" />
-                    </div>
-                    <div className={styles.mobileUserStat}>
-                      <p>4</p>
-                      <img src={numberOfUser} alt="" />
                     </div>
                   </div>
                 </div>
@@ -345,13 +349,13 @@ export default function Header() {
               >
                 <Link
                   className={`${styles.link} ${styles.mobileLink}`}
-                  to="/game"
+                  to="/freeplay"
                 >
                   Hrát online
                 </Link>
                 <Link
                   className={`${styles.link} ${styles.mobileLink}`}
-                  to="/game"
+                  to="/freeplay"
                 >
                   Hrát sólo
                 </Link>

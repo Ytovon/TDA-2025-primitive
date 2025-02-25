@@ -25,31 +25,53 @@ export const LoginPage = () => {
     });
   };
 
-  const register = async () => {
-    if (
-      formData.username === "" ||
-      formData.password === "" ||
-      formData.email === ""
-    ) {
-      setError("Vyplňte všechny údaje");
-    } else {
-      const newUser = {
-        username: formData.username || "",
-        email: formData.email || "",
-        password: formData.password || "",
-      };
+  const validatePassword = (password: string): string | null => {
+    if (password.length < 8) {
+      return "Heslo musí mít alespoň 8 znaků.";
+    }
+    if (!/[A-Z]/.test(password)) {
+      return "Heslo musí obsahovat alespoň jedno velké písmeno.";
+    }
+    if (!/[a-z]/.test(password)) {
+      return "Heslo musí obsahovat alespoň jedno malé písmeno.";
+    }
+    if (!/[0-9]/.test(password)) {
+      return "Heslo musí obsahovat alespoň jednu číslici.";
+    }
+    if (!/[^A-Za-z0-9]/.test(password)) {
+      return "Heslo musí obsahovat alespoň jeden speciální znak.";
+    }
+    return null; // Heslo je platné
+  };
 
-      const response = await UserApiClient.registerUser(newUser);
-      // kontrola backend chyb
-      if (response.status === 409) {
-        setError("Uživatel s tímto jménem nebo emailem již existuje");
-      } else if (response.status === 500) {
-        setError("Chyba serveru");
-      } else if (response.status === 200) {
-        setError("Registrace úspěšná");
-      } else {
-        setError(response.message);
-      }
+  const register = async () => {
+    if (!formData.username || !formData.password || !formData.email) {
+      setError("Vyplňte všechny údaje");
+      return;
+    }
+
+    const passwordError = validatePassword(formData.password!);
+    if (passwordError) {
+      setError(passwordError);
+      return;
+    }
+
+    const newUser = {
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+    };
+
+    const response = await UserApiClient.registerUser(newUser);
+
+    if (response.status === 409) {
+      setError("Uživatel s tímto jménem nebo emailem již existuje");
+    } else if (response.status === 500) {
+      setError("Chyba serveru");
+    } else if (response.status === 200) {
+      setError("Registrace úspěšná");
+    } else {
+      setError(response.message);
     }
   };
 

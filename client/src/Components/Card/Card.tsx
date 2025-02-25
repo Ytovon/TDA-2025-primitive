@@ -44,7 +44,7 @@ export const Card: React.FC<CardProps> = ({
       <p className={styles.cardType} style={typeStyle}>
         {type}
       </p>
-      <Link className={styles.cardStart} to={`/Game/${uuid}`}>
+      <Link className={styles.cardStart} to={`/freeplay/${uuid}`}>
         <p>Spustit úlohu</p>
       </Link>
     </div>

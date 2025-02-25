@@ -59,6 +59,8 @@ import userInfoBrush from "./images/userInfoBrush.svg";
 import userInfoBrushWhite from "./images/userInfoBrushWhite.svg";
 import moon from "./images/moon-solid.svg";
 import moonAdaptive from "./images/moonAdaptive.svg";
+import handshakeBlack from "./images/handshakeBlack.svg";
+import handshakeWhite from "./images/handshakeWhite.svg";
 
 /* EditorPage */
 
@@ -76,6 +78,11 @@ import FacebookIcon from "./images/facebook-brands-solid.svg";
 /* LeaderboardPage */
 
 import lightbulbRed from "./images/lightbulbRed.svg";
+
+/* LobbyPage */
+
+import lightbulbRedLike from "./images/lightbulbRedLike.svg";
+import lightbulbBlueLike from "./images/lightbulbBlueLike.svg";
 
 /* NotFoundPage*/
 import NotFoundPageImg from "./images/NotFoundPageImg.svg";
@@ -169,4 +176,8 @@ export {
   userInfoErbWhite,
   moon,
   moonAdaptive,
+  handshakeBlack,
+  handshakeWhite,
+  lightbulbRedLike,
+  lightbulbBlueLike,
 };

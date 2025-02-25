@@ -214,6 +214,7 @@ header {
   gap: 5px;
   font-size: 1.15rem;
   font-weight: 500;
+  color: var(--color5);
 }
 
 .mobileUserImg {
@@ -254,7 +255,7 @@ header {
     position: absolute;
     top: -8px;
     z-index: 1;
-    left: 50%;
+    left: 30%;
     transform: translateX(-50%);
   }
 }
@@ -268,9 +269,12 @@ header {
 }
 
 .username {
+  font-size: 1.1rem;
+  padding-right: 1px;
   user-select: text;
   text-align: right;
   color: var(--color-text-primary);
+  letter-spacing: 1px;
 }
 
 .userContainer {

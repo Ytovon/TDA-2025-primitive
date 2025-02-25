@@ -22,6 +22,8 @@ import {
   userInfoBrushWhite,
   userInfoErb,
   userInfoErbWhite,
+  handshakeWhite,
+  handshakeBlack,
 } from "../../assets/assets";
 import { useDarkMode } from "../../Context/DarkModeContext";
 import { Link, useNavigate } from "react-router-dom";
@@ -92,7 +94,7 @@ export const ProfilePage = () => {
                 onClick={() => setIsEditOpen(true)}
                 className={styles.setting}
               >
-                <p style={{ cursor: "pointer" }}>Upravit</p>
+                <p className={styles.settingText}>Upravit</p>
                 <img
                   className={styles.settingBtn}
                   src={settingFullWhite}
@@ -103,7 +105,11 @@ export const ProfilePage = () => {
 
             <div className={styles.noteContainer}>
               <h3 className={styles.noteTitle}>Poznámka</h3>
-              <textarea className={styles.note} disabled />
+              <textarea
+                className={styles.note}
+                disabled
+                placeholder="Vložte poznámku..."
+              />
             </div>
           </div>
           <div className={styles.statsContainer}>
@@ -132,7 +138,11 @@ export const ProfilePage = () => {
                 </p>
               </div>
               <div className={styles.stat}>
-                <img className={styles.statImg} src="" alt="" />
+                <img
+                  className={styles.statImg}
+                  src={darkMode ? handshakeWhite : handshakeBlack}
+                  alt=""
+                />
                 <p>
                   Remíza: <span className={styles.redBold}>{user.draws}</span>
                 </p>
@@ -352,17 +362,6 @@ export const ProfilePage = () => {
                   alt=""
                 />
                 <p>Tmavý</p>
-              </button>
-              <button
-                style={{ backgroundColor: "#395A9A", color: "white" }}
-                className={styles.changeDarkMode}
-              >
-                <img
-                  className={styles.changeDarkmodeImg}
-                  src={moonAdaptive}
-                  alt=""
-                />
-                <p>Adaptivní</p>
               </button>
             </div>
           </div>
