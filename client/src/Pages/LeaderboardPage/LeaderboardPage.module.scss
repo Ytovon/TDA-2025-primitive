@@ -21,6 +21,10 @@
   border-collapse: collapse;
   box-shadow: var(--shadow-card);
 
+  tbody {
+    padding-block: 2px;
+  }
+
   td:nth-child(1) {
     width: 10%;
     font-size: 1rem;

@@ -22,6 +22,9 @@
   border-collapse: collapse;
   box-shadow: var(--shadow-card);
 }
+.leaderboard tbody {
+  padding-block: 2px;
+}
 .leaderboard td:nth-child(1) {
   width: 10%;
   font-size: 1rem;

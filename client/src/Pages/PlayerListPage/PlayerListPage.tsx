@@ -3,6 +3,7 @@ import styles from "./PlayerListPage.module.css";
 import Header from "../../Components/Header/Header";
 import { UserApiClient } from "../../API/UserApi"; // API pro uživatele
 import { UserModel } from "../../Model/UserModel";
+import { lightbulbWhite } from "../../assets/assets";
 
 export const PlayerListPage = () => {
   const [users, setUsers] = useState<UserModel[]>([]);
@@ -52,7 +53,15 @@ export const PlayerListPage = () => {
             {users.length > 0 ? (
               users.map((user) => (
                 <tr key={user.uuid}>
-                  <td>{user.username}</td>
+                  <td className={styles.user}>
+                    <img
+                      style={{ backgroundColor: "var(--color4)" }}
+                      className={styles.userImg}
+                      src={lightbulbWhite}
+                      alt=""
+                    />
+                    {user.username}
+                  </td>
                   <td>{user.elo}</td>
                   <td>
                     <button
