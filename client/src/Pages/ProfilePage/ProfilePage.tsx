@@ -72,7 +72,7 @@ export const ProfilePage = () => {
       <Header />
 
       <div
-        style={{ filter: isEditOpen ? "opacity(0.3)" : "opacity(1)" }}
+        style={{ filter: isEditOpen ? "opacity(0.2)" : "opacity(1)" }}
         className={styles.container}
       >
         <div className={styles.userInfoContainer}>
@@ -195,6 +195,7 @@ export const ProfilePage = () => {
         <div className={styles.editLeft}>
           <div>
             <h2 className={styles.editTitle}>Úpravy</h2>
+            <div></div>
             <div className={styles.editSelects}>
               <button
                 style={{
@@ -226,13 +227,15 @@ export const ProfilePage = () => {
               </button>
             </div>
           </div>
-
-          <Button
-            onClick={() => setIsEditOpen(false)}
-            text="Uložit změny"
-            backgroundColor
-            color="white"
-          />
+          <div className={styles.saveChanges}>
+            <Button
+              onClick={() => setIsEditOpen(false)}
+              text="Uložit změny"
+              backgroundColor
+              color="white"
+              width="130px"
+            />
+          </div>
         </div>
         <div
           style={{ display: editMode ? "none" : "block" }}
@@ -275,6 +278,14 @@ export const ProfilePage = () => {
               className={styles.editInput}
               type="password"
               value={"nevimk"}
+            />
+          </div>
+          <div className={styles.saveChangesResponsive}>
+            <Button
+              onClick={() => setIsEditOpen(false)}
+              text="Uložit změny"
+              backgroundColor
+              color="white"
             />
           </div>
         </div>
@@ -363,6 +374,14 @@ export const ProfilePage = () => {
                 />
                 <p>Tmavý</p>
               </button>
+            </div>
+            <div className={styles.saveChangesResponsive}>
+              <Button
+                onClick={() => setIsEditOpen(false)}
+                text="Uložit změny"
+                backgroundColor
+                color="white"
+              />
             </div>
           </div>
         </div>

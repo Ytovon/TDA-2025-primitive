@@ -4,10 +4,12 @@ import Header from "../../Components/Header/Header";
 import { eloRed, lightbulbBlue, lightbulbRed } from "../../assets/assets";
 import { UserApiClient } from "../../API/UserApi"; // Import klienta pro uživatele
 import { UserModel } from "../../Model/UserModel";
+import { useNavigate } from "react-router-dom";
 
 export const LeaderboardPage = () => {
   const [users, setUsers] = useState<UserModel[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -40,6 +42,9 @@ export const LeaderboardPage = () => {
 
   console.log("Current users state:", users); // Zobrazí obsah users po změně stavu
 
+  const handleRowClick = (uuid: string) => {
+    navigate(`/users/${uuid}`);
+  };
   return (
     <div className={styles.body}>
       <Header />
@@ -62,7 +67,11 @@ export const LeaderboardPage = () => {
             <tbody>
               {users.length > 0 ? (
                 users.map((user, index) => (
-                  <tr key={user.uuid || index}>
+                  <tr
+                    key={user.uuid || index}
+                    onClick={() => user.uuid && handleRowClick(user.uuid)}
+                    className={styles.row}
+                  >
                     <td>{index + 1}.</td> {/* Přidá číslování umístění */}
                     <td>
                       <img

@@ -271,7 +271,7 @@ header {
 .username {
   font-size: 1.1rem;
   padding-right: 1px;
-  user-select: text;
+  user-select: none;
   text-align: right;
   color: var(--color-text-primary);
   letter-spacing: 1px;

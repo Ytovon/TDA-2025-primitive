@@ -35,7 +35,7 @@
   text-align: left;
   font-size: 1.15rem;
   font-weight: 500;
-  padding-left: 15px;
+  padding-left: 25px;
   display: flex;
   gap: 10px;
   padding-block: 3px;
@@ -58,6 +58,13 @@ th {
 }
 .leaderboard tbody tr:nth-child(3) td:nth-child(1) {
   background-color: var(--color3);
+}
+
+.row {
+  cursor: pointer;
+}
+.row:hover {
+  background-color: rgba(0, 0, 0, 0.4392156863);
 }
 
 .eloContainer {
@@ -93,6 +100,23 @@ th {
 @media screen and (max-width: 800px) {
   .leaderboard {
     width: clamp(300px, 80vw, 800px);
+  }
+  .eloContainer {
+    gap: 6px;
+  }
+  .eloContainer img {
+    width: 19px;
+  }
+}
+@media screen and (max-width: 500px) {
+  .leaderboard {
+    width: clamp(300px, 90vw, 500px);
+  }
+  .leaderboard td:nth-child(1) {
+    width: 15%;
+  }
+  .leaderboard td:nth-child(3) {
+    width: 20%;
   }
 }
 

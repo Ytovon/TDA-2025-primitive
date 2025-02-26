@@ -4,7 +4,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.3); /* Černý poloprůhledný filtr */
+  background: rgba(0, 0, 0, 0.694); /* Černý poloprůhledný filtr */
   pointer-events: none; /* Zabrání blokování kliknutí */
   z-index: 9999; /* Umístění nad všemi prvky */
 }
@@ -124,6 +124,7 @@
   padding: 5px 10px;
   margin-top: 5px;
   border: none;
+  border-radius: 5px;
   background-color: var(--color-background-primary);
   color: var(--color-text-primary);
   font-size: 15px;
@@ -359,6 +360,11 @@
   align-self: center;
 }
 
+.saveChangesResponsive {
+  display: none;
+  margin-top: 20px;
+}
+
 @media screen and (max-width: 1100px) {
   .container {
     width: 700px;
@@ -393,6 +399,39 @@
     padding-left: 15px;
     text-align: left;
   }
+
+  .edit {
+    flex-direction: column;
+    width: 80vw;
+    min-width: 300px;
+
+    .editSelects {
+      flex-direction: row;
+    }
+
+    .editLeft {
+      min-width: 300px;
+    }
+
+    .editRight {
+      padding: 30px 40px 40px;
+      width: calc(100% - 80px);
+      min-width: calc(300px - 80px);
+      border-radius: 0 0 20px 20px;
+    }
+
+    .editInput {
+      height: 30px;
+    }
+
+    .saveChanges {
+      display: none;
+    }
+
+    .saveChangesResponsive {
+      display: block;
+    }
+  }
 }
 
 @media screen and (max-width: 600px) {
@@ -416,5 +455,23 @@
 
   .settingBtn {
     width: 20px;
+  }
+
+  .edit {
+    .editLeft {
+      padding: 25px 20px;
+    }
+
+    .editSelect {
+      align-items: center;
+      img {
+        width: 20px;
+      }
+    }
+
+    .editRight {
+      width: calc(100% - 60px);
+      padding: 30px;
+    }
   }
 }
