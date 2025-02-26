@@ -151,12 +151,6 @@ export default function Header() {
                   Hrát online
                 </Link>
                 <Link
-                  to="/freeplay"
-                  className={`${styles.navLink} ${styles.link}`}
-                >
-                  Hrát sólo
-                </Link>
-                <Link
                   to="/lobby"
                   className={`${styles.navLink} ${styles.link}`}
                 >
@@ -216,7 +210,7 @@ export default function Header() {
                   </Link>
                   <Link
                     style={{ display: user.isAdmin ? "block" : "none" }}
-                    to="/players"
+                    to="/users"
                     className={`${styles.navLink} ${styles.link}`}
                   >
                     Seznam hráčů
@@ -349,15 +343,15 @@ export default function Header() {
               >
                 <Link
                   className={`${styles.link} ${styles.mobileLink}`}
-                  to="/freeplay"
+                  to="/loading"
                 >
                   Hrát online
                 </Link>
                 <Link
                   className={`${styles.link} ${styles.mobileLink}`}
-                  to="/freeplay"
+                  to="/lobby"
                 >
-                  Hrát sólo
+                  Hrát s přítelem
                 </Link>
               </div>
             </div>

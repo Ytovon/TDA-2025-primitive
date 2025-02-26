@@ -36,7 +36,7 @@
     text-align: left;
     font-size: 1.15rem;
     font-weight: 500;
-    padding-left: 15px;
+    padding-left: 25px;
     display: flex;
     gap: 10px;
     padding-block: 3px;
@@ -64,6 +64,14 @@ th {
 
   &:nth-child(3) td:nth-child(1) {
     background-color: var(--color3);
+  }
+}
+
+.row {
+  cursor: pointer;
+
+  &:hover {
+    background-color: #00000070;
   }
 }
 
@@ -101,5 +109,27 @@ th {
 @media screen and (max-width: 800px) {
   .leaderboard {
     width: clamp(300px, 80vw, 800px);
+  }
+
+  .eloContainer {
+    gap: 6px;
+
+    img {
+      width: 19px;
+    }
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .leaderboard {
+    width: clamp(300px, 90vw, 500px);
+
+    td:nth-child(1) {
+      width: 15%;
+    }
+
+    td:nth-child(3) {
+      width: 20%;
+    }
   }
 }

@@ -23,7 +23,7 @@ interface WebSocketProviderProps {
   navigate: Function; // Accept navigate as prop
 }
 
-export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
+export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
   children,
   navigate,
 }) => {
@@ -60,7 +60,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
         case "matched":
           setStatus("Match! Game ID: " + data.gameId);
           setGameID(data.gameId);
-          navigate("/game");
+          navigate("/freeplay");
           break;
         case "update":
           setStatus(data.message);
@@ -111,7 +111,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   );
 };
 
-export const useWebSocket = (): WebSocketContextType => {
+export const useWebSocketMultiplayer = (): WebSocketContextType => {
   const context = useContext(WebSocketContext);
   if (!context) {
     throw new Error("useWebSocket must be used within a WebSocketProvider");

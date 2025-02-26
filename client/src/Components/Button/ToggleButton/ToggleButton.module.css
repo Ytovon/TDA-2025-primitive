@@ -1,0 +1,45 @@
+.toggle {
+  width: 60px;
+  height: 30px;
+  background-color: lightgray;
+  border-radius: 16px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: background 0.3s;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+.toggle .circle {
+  width: 24px;
+  height: 24px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s;
+}
+
+.toggle.on {
+  background-color: lightblue;
+}
+
+.toggle.on .circle {
+  transform: translateX(30px);
+}
+
+@media screen and (max-width: 800px) {
+  .toggle {
+    width: 49px;
+    height: 27px;
+  }
+  .toggle .circle {
+    width: 21px;
+    height: 21px;
+  }
+  .toggle.on .circle {
+    transform: translateX(20px);
+  }
+}
+
+/*# sourceMappingURL=ToggleButton.module.css.map */

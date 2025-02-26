@@ -4,9 +4,11 @@ import Header from "../../Components/Header/Header";
 import { UserApiClient } from "../../API/UserApi"; // API pro uživatele
 import { UserModel } from "../../Model/UserModel";
 import { lightbulbWhite } from "../../assets/assets";
+import ToggleButton from "../../Components/Button/ToggleButton/ToggleButton"; // Import ToggleButton
 
 export const PlayerListPage = () => {
   const [users, setUsers] = useState<UserModel[]>([]);
+  const [editedElo, setEditedElo] = useState<{ [key: string]: number }>({});
 
   // Načtení uživatelů při načtení stránky
   useEffect(() => {
@@ -21,17 +23,43 @@ export const PlayerListPage = () => {
       .catch((error) => console.error("Chyba při načítání uživatelů:", error));
   }, []);
 
-  // Funkce pro zabanování uživatele
-  const handleBanUser = (uuid: string) => {
-    // Najdeme uživatele a změníme jeho stav (lokálně)
+  // Funkce pro změnu banu uživatele
+  const handleBanUser = async (uuid: string, currentStatus: boolean) => {
+    const newStatus = !currentStatus; // Přepne stav
     setUsers((prevUsers) =>
       prevUsers.map((user) =>
-        user.uuid === uuid ? { ...user, isBanned: !user.isBanned } : user
+        user.uuid === uuid ? { ...user, isBanned: newStatus } : user
       )
     );
 
-    // Pokud chceš banování odeslat na server, můžeš přidat volání API:
-    // UserApiClient.banUser(uuid);
+    try {
+      await UserApiClient.updateUserBanStatus(uuid, newStatus);
+    } catch {
+      console.error("Chyba při odesílání změny banu");
+    }
+  };
+
+  // Funkce pro úpravu ELO v lokálním state
+  const handleEloChange = (uuid: string, newElo: number) => {
+    setEditedElo((prev) => ({ ...prev, [uuid]: newElo }));
+  };
+
+  // Funkce pro odeslání změny ELO na server
+  const handleEloBlur = async (uuid: string) => {
+    const newElo = editedElo[uuid];
+    if (newElo === undefined || newElo < 0) return; // Kontrola
+
+    setUsers((prevUsers) =>
+      prevUsers.map((user) =>
+        user.uuid === uuid ? { ...user, elo: newElo } : user
+      )
+    );
+
+    try {
+      await UserApiClient.updateUserElo(uuid, newElo);
+    } catch {
+      console.error("Chyba při aktualizaci ELO");
+    }
   };
 
   return (
@@ -62,16 +90,28 @@ export const PlayerListPage = () => {
                     />
                     {user.username}
                   </td>
-                  <td>{user.elo}</td>
                   <td>
-                    <button
-                      className={
-                        user.isBanned ? styles.banned : styles.unbanned
+                    <input
+                      type="number"
+                      min="0"
+                      value={
+                        user.uuid ? editedElo[user.uuid] ?? user.elo : user.elo
                       }
-                      onClick={() => user.uuid && handleBanUser(user.uuid)}
-                    >
-                      {user.isBanned ? "Odbanovat" : "Zabanovat"}
-                    </button>
+                      onChange={(e) =>
+                        user.uuid &&
+                        handleEloChange(user.uuid, Number(e.target.value))
+                      }
+                      onBlur={() => user.uuid && handleEloBlur(user.uuid)}
+                      className={styles.eloInput}
+                    />
+                  </td>
+                  <td>
+                    <ToggleButton
+                      isOn={!!user.isBanned}
+                      onToggle={() =>
+                        user.uuid && handleBanUser(user.uuid, !!user.isBanned)
+                      }
+                    />
                   </td>
                 </tr>
               ))

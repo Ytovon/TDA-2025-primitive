@@ -13,11 +13,11 @@ import {
   clearTokens,
   clearUUID,
 } from "../../API/tokenstorage"; // Your token storage functions
-import { useWebSocket } from "../../Context/WebSocketContext";
+import { useWebSocketMultiplayer } from "../../Context/WebSocketContextMultiplayer";
 
 export const LoadingPage = () => {
   const navigate = useNavigate();
-  const { status, startConnection } = useWebSocket();
+  const { status, startConnection } = useWebSocketMultiplayer();
 
   useEffect(() => {
     const verifyAccess = async () => {
