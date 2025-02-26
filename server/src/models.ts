@@ -69,7 +69,7 @@ Game.init(
   {
     sequelize,
     tableName: 'Games',
-    timestamps: true, // `createdAt` and `updatedAt` are automatically handled
+    timestamps: true, // createdAt and updatedAt are automatically handled
   }
 );
 
@@ -91,6 +91,8 @@ interface UserAttributes {
   updatedAt?: Date;
   isAdmin?: boolean;
   isBanned?: boolean; // Add isBanned property
+  note?: string; // Add note property
+  AvatarColor?: number; // Add AvatarColor property
 }
 
 // Define the creation attributes for the User model
@@ -138,6 +140,12 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   }
   get isBanned(): boolean | undefined {
     return this.getDataValue('isBanned');
+  }
+  get note(): string | undefined {
+    return this.getDataValue('note');
+  }
+  get AvatarColor(): number | undefined {
+    return this.getDataValue('AvatarColor');
   }
 }
 
@@ -209,6 +217,19 @@ User.init(
       allowNull: false,
       defaultValue: false,
     },
+    note: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    AvatarColor: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1,
+      validate: {
+        min: 1,
+        max: 5,
+      },
+    },
   },
   {
     sequelize,
@@ -235,7 +256,6 @@ interface MatchmakingGameAttributes {
   bitmap?: string | null;  // Allow null in addition to undefined
   endedAt: Date;
 }
-
 
 // Define creation attributes
 interface MatchmakingGameCreationAttributes extends Optional<MatchmakingGameAttributes, 'winner' | 'loser' | 'bitmap'> {}
@@ -305,7 +325,7 @@ MatchmakingGame.init(
   {
     sequelize,
     tableName: "MatchmakingGames",
-    timestamps: false, // We only store `endedAt`
+    timestamps: false, // We only store endedAt
   }
 );
 
