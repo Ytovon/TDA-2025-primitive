@@ -138,8 +138,6 @@ export const GameMultiplayer = ({ uuid = "" }) => {
 
   return (
     <div className={styles.body}>
-      <h2 className={styles.title}>{game.name}</h2>
-
       <div className={styles.gamePage}>
         <div
           style={{
@@ -186,6 +184,7 @@ export const GameMultiplayer = ({ uuid = "" }) => {
         </div>
 
         <div className={styles.gameSide}>
+          <h2 className={styles.title}>{game.name}</h2>
           <div className={styles.gameWrapper}>
             <div className={styles.gameGrid}>
               {grid.map((row, rowIndex) =>

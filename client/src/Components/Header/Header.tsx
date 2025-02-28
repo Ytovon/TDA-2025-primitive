@@ -16,6 +16,7 @@ import {
   arrowWhite,
   chevronUpWhite,
   chevronUpBlack,
+  lightbulbWhite,
 } from "../../assets/assets";
 import styles from "./Header.module.css";
 import { useDarkMode } from "../../Context/DarkModeContext";
@@ -37,6 +38,7 @@ export default function Header() {
   const [user, setUser] = useState<User>(new User("", "", "", 0, 0, 0, 0));
   const [mobileDropdown, setMobileDropdown] = useState(false);
   const [mobileUserDropdown, setmobileUserDropdown] = useState(false);
+  const [selectedColor, setSelectedColor] = useState<string>("var(--color1)");
 
   const toggleMenu = () => {
     setMenuIsOpen((prev) => !prev);
@@ -112,6 +114,20 @@ export default function Header() {
       window.removeEventListener("resize", handleResize);
     };
   }, [menuIsOpen]);
+
+  useEffect(() => {
+    if (user?.avatarColor) {
+      setSelectedColor(colorMap[user.avatarColor] || "var(--color1)");
+    }
+  }, [user]);
+
+  const colorMap: Record<number, string> = {
+    1: "var(--color1)",
+    2: "var(--color2)",
+    3: "var(--color3)",
+    4: "var(--color4)",
+    5: "var(--color5)",
+  };
 
   return (
     <header className={styles.header}>
@@ -191,7 +207,16 @@ export default function Header() {
               </div>
             </div>
             <div className={styles.dropdown}>
-              <img className={styles.userImg} src={userImg} alt="user" />
+              <div className={styles.userImgContainer}>
+                <img
+                  style={{
+                    backgroundColor: colorMap[user?.avatarColor ?? 1], // Pokud není avatarColor, použije se 1
+                  }}
+                  className={styles.userImg}
+                  src={lightbulbWhite}
+                  alt="profile Picture"
+                />
+              </div>
 
               <div
                 className={`${styles.dropdownContent} ${styles.dropdownContent2}`}
@@ -251,11 +276,16 @@ export default function Header() {
               className={`${styles.mobileLinkDropdownContainer}`}
             >
               <div className={styles.mobileUserContainer}>
-                <img
-                  className={styles.mobileUserImg}
-                  src={userImg}
-                  alt="user"
-                />
+                <div className={styles.userImgContainer}>
+                  <img
+                    style={{
+                      backgroundColor: colorMap[user?.avatarColor ?? 1], // Pokud není avatarColor, použije se 1
+                    }}
+                    className={styles.userImg}
+                    src={lightbulbWhite}
+                    alt="profile Picture"
+                  />
+                </div>
                 <div className={styles.mobileUser}>
                   <p
                     style={{ fontSize: "1.375rem" }}

@@ -17,7 +17,7 @@
 /* ****************************** */
 .title {
   color: var(--color-text-primary);
-  font-size: 3rem;
+  font-size: 3.25rem;
   top: 30px;
   left: 50%;
   transform: translate(-50%);
@@ -45,11 +45,12 @@
   width: 30%;
   height: 100vh;
   padding: 90px 0;
+  color: var(--color-text-primary);
 }
 .menuSide .menuBackground {
   width: 50%;
   box-shadow: var(--shadow-card);
-  background-color: var(--color-background-secondary);
+  background-color: var(--color-background-primary);
   border-radius: 10px;
   padding: 35px 50px;
   margin: 0px auto;
@@ -169,16 +170,6 @@
   background-color: rgba(0, 0, 0, 0);
 }
 
-.resetGame {
-  width: 2rem;
-  background-color: var(--color-background-primary);
-  cursor: pointer;
-  transition: 0.5s ease-in-out;
-}
-.resetGame:hover {
-  transform: rotate(270deg);
-}
-
 .darkModeBtn {
   aspect-ratio: 1/1;
   background-color: var(--darkmode-button);
@@ -283,6 +274,9 @@
   .body {
     overflow: auto;
   }
+  .title {
+    top: 0;
+  }
   .gamePage {
     flex-direction: column;
   }
@@ -294,6 +288,7 @@
   .gameSide {
     width: 100%;
     padding-block: 50px;
+    position: initial;
   }
   .menuTitle {
     display: none;
@@ -330,7 +325,7 @@
 }
 @media screen and (max-width: 500px) {
   .title {
-    font-size: 1.8rem;
+    font-size: 2.2rem;
   }
   .gameState {
     font-size: 22px;
@@ -348,7 +343,7 @@
 }
 @media screen and (min-width: 500px) and (max-height: 500px) {
   .title {
-    font-size: 20px;
+    font-size: 1.3rem;
   }
   .gameState {
     font-size: 18px;

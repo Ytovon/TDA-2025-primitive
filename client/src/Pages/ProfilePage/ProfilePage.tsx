@@ -38,16 +38,12 @@ export const ProfilePage = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
-  const [selectedColor, setSelectedColor] = useState("#91bedc");
+  const [selectedColor, setSelectedColor] = useState<string>("var(--color1)");
   const [note, setNote] = useState(user?.note || "");
   const noteMaxLength = 120;
 
   const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
   const navigate = useNavigate();
-
-  const handleColorChange = (color: string) => {
-    setSelectedColor(color);
-  };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -68,15 +64,40 @@ export const ProfilePage = () => {
     fetchUser();
   }, [uuid]);
 
+  useEffect(() => {
+    if (user?.avatarColor) {
+      setSelectedColor(colorMap[user.avatarColor] || "var(--color1)");
+    }
+  }, [user]);
+
   const handleSaveChanges = async () => {
     if (!uuid) return;
     try {
-      await UserApiClient.updateUser(uuid, { note }); // Odeslání nové poznámky na backend
       setUser((prev) => (prev ? { ...prev, note } : null)); // Aktualizace stavu uživatele
       setIsEditOpen(false);
     } catch (error) {
       setError("Nepodařilo se uložit změny.");
     }
+  };
+
+  const handleColorChange = async (colorIndex: number) => {
+    setSelectedColor(colorMap[colorIndex]);
+
+    try {
+      if (uuid) {
+        await UserApiClient.updateUser(uuid, { avatarColor: colorIndex }); // API volání
+      }
+    } catch (error) {
+      console.error("Nepodařilo se uložit barvu", error);
+    }
+  };
+
+  const colorMap: Record<number, string> = {
+    1: "var(--color1)",
+    2: "var(--color2)",
+    3: "var(--color3)",
+    4: "var(--color4)",
+    5: "var(--color5)",
   };
 
   if (error) return <p>⚠️ Chyba: {error}</p>;
@@ -94,7 +115,9 @@ export const ProfilePage = () => {
             <div className={styles.userInfoHeader}>
               <div className={styles.userImgContainer}>
                 <img
-                  style={{ backgroundColor: selectedColor }}
+                  style={{
+                    backgroundColor: colorMap[user?.avatarColor ?? 1], // Pokud není avatarColor, použije se 1
+                  }}
                   className={styles.userImg}
                   src={lightbulbWhite}
                   alt="profile Picture"
@@ -179,7 +202,16 @@ export const ProfilePage = () => {
               </div>
               <div className={styles.stat}>
                 <p>
-                  WR: <span className={styles.redBold}>0%</span>
+                  WR:{" "}
+                  <span className={styles.redBold}>
+                    {user.wins + user.draws + user.losses > 0
+                      ? Math.round(
+                          (user.wins / (user.wins + user.draws + user.losses)) *
+                            100
+                        ) || 0
+                      : 0}
+                    %
+                  </span>
                 </p>
               </div>
             </div>
@@ -350,31 +382,14 @@ export const ProfilePage = () => {
               />
 
               <div className={styles.changeColorContainer}>
-                <button
-                  style={{ backgroundColor: "var(--color1)" }}
-                  className={styles.changeColor}
-                  onClick={() => handleColorChange("var(--color1)")}
-                ></button>
-                <button
-                  style={{ backgroundColor: "var(--color2)" }}
-                  className={styles.changeColor}
-                  onClick={() => handleColorChange("var(--color2)")}
-                ></button>
-                <button
-                  style={{ backgroundColor: "var(--color3)" }}
-                  className={styles.changeColor}
-                  onClick={() => handleColorChange("var(--color3)")}
-                ></button>
-                <button
-                  style={{ backgroundColor: "var(--color4)" }}
-                  className={styles.changeColor}
-                  onClick={() => handleColorChange("var(--color4)")}
-                ></button>
-                <button
-                  style={{ backgroundColor: "var(--color5)" }}
-                  className={styles.changeColor}
-                  onClick={() => handleColorChange("var(--color5)")}
-                ></button>
+                {[1, 2, 3, 4, 5].map((index) => (
+                  <button
+                    key={index}
+                    style={{ backgroundColor: colorMap[index] }}
+                    className={styles.changeColor}
+                    onClick={() => handleColorChange(index)}
+                  ></button>
+                ))}
               </div>
             </div>
           </div>
