@@ -1,7 +1,7 @@
 import express from "express";
 import { register, login, refreshToken, logout, getAllUsers, getUserByUUID, googleLogin, googleCallback, forgotPassword, verifyToken, banUser, // Import the banUser function
  } from "./userController.js";
-import { isAdminMiddleware } from './AdminMiddleware.js'; // Import the admin middleware
+import { isAdminMiddleware } from './adminMiddleware.js'; // Import the admin middleware
 const router = express.Router();
 // Public routes (no authentication required)
 router.post("/register", register);

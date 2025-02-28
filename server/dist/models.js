@@ -50,7 +50,7 @@ Game.init({
 }, {
     sequelize,
     tableName: 'Games',
-    timestamps: true, // `createdAt` and `updatedAt` are automatically handled
+    timestamps: true, // createdAt and updatedAt are automatically handled
 });
 class User extends Model {
     get uuid() {
@@ -94,6 +94,12 @@ class User extends Model {
     }
     get isBanned() {
         return this.getDataValue('isBanned');
+    }
+    get note() {
+        return this.getDataValue('note');
+    }
+    get AvatarColor() {
+        return this.getDataValue('AvatarColor');
     }
 }
 User.init({
@@ -162,6 +168,19 @@ User.init({
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false,
+    },
+    note: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+    },
+    AvatarColor: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 1,
+        validate: {
+            min: 1,
+            max: 5,
+        },
     },
 }, {
     sequelize,
@@ -235,7 +254,7 @@ MatchmakingGame.init({
 }, {
     sequelize,
     tableName: "MatchmakingGames",
-    timestamps: false, // We only store `endedAt`
+    timestamps: false, // We only store endedAt
 });
 // Define relationships
 User.hasMany(MatchmakingGame, { foreignKey: "playerX", as: "gamesAsX" });

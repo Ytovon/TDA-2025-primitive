@@ -8,13 +8,13 @@ import {
   getUserByUUID,
   updateUserByUUID,
   deleteUserByUUID,
-  googleLogin,
+  googleLogin,  
   googleCallback,
   forgotPassword,
   verifyToken,
   banUser, // Import the banUser function
 } from "./userController.js";
-import { isAdminMiddleware } from './AdminMiddleware.js'; // Import the admin middleware
+import { isAdminMiddleware } from './adminMiddleware.js'; // Import the admin middleware
 
 const router = express.Router();
 
@@ -33,6 +33,8 @@ router.get("/auth/google/callback", googleCallback);
 // Protected routes (authentication required)
 router.get("", getAllUsers);
 router.get("/:uuid", getUserByUUID);
+
+
 
 // Admin route for banning users
 router.post("/ban/:uuid", isAdminMiddleware, banUser); // Use isAdminMiddleware to restrict access
