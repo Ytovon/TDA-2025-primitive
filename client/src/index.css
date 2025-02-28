@@ -26,6 +26,8 @@ button {
   --global-brightness: 1;
   --darkmode-button: #c7c7c7;
   --shadow-card: 0px 6px 37.5px 0px #948d8d78;
+  --shadow-game-blue: 0px 6px 37.5px 0px var(--color1);
+  --shadow-game-red: 0px 6px 37.5px 0px var(--color5);
   --border-card: none;
   --color-background-game: #cacaca;
   --color-border-game: #ffffff;
@@ -59,6 +61,8 @@ button {
   --global-brightness: 1.5;
   --darkmode-button: #e1e1e1;
   --shadow-card: none;
+  --shadow-game-blue: none;
+  --shadow-game-red: none;
   --border-card: #3e3e3e;
   --color-background-game: #1a1a1a;
   --color-border-game: #5b5b5b;

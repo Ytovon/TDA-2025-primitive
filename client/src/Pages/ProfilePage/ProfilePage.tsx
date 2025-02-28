@@ -39,6 +39,9 @@ export const ProfilePage = () => {
   const [error, setError] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [selectedColor, setSelectedColor] = useState("#91bedc");
+  const [note, setNote] = useState(user?.note || "");
+  const noteMaxLength = 120;
+
   const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
   const navigate = useNavigate();
 
@@ -64,6 +67,17 @@ export const ProfilePage = () => {
 
     fetchUser();
   }, [uuid]);
+
+  const handleSaveChanges = async () => {
+    if (!uuid) return;
+    try {
+      await UserApiClient.updateUser(uuid, { note }); // Odeslání nové poznámky na backend
+      setUser((prev) => (prev ? { ...prev, note } : null)); // Aktualizace stavu uživatele
+      setIsEditOpen(false);
+    } catch (error) {
+      setError("Nepodařilo se uložit změny.");
+    }
+  };
 
   if (error) return <p>⚠️ Chyba: {error}</p>;
   if (!user) return <p>⏳ Načítání...</p>;
@@ -107,7 +121,12 @@ export const ProfilePage = () => {
               <h3 className={styles.noteTitle}>Poznámka</h3>
               <textarea
                 className={styles.note}
-                disabled
+                value={note}
+                onChange={(e) => {
+                  if (e.target.value.length <= 120) {
+                    setNote(e.target.value);
+                  }
+                }}
                 placeholder="Vložte poznámku..."
               />
             </div>
@@ -229,7 +248,10 @@ export const ProfilePage = () => {
           </div>
           <div className={styles.saveChanges}>
             <Button
-              onClick={() => setIsEditOpen(false)}
+              onClick={() => {
+                handleSaveChanges();
+                setIsEditOpen(false);
+              }}
               text="Uložit změny"
               backgroundColor
               color="white"
@@ -244,12 +266,23 @@ export const ProfilePage = () => {
           <div className={styles.editInputContainer}>
             <div className={styles.editInputTitle1}>
               <h4 className={styles.editInputTitle}>Poznámka</h4>
-              <p className={styles.characterLeft}>Zbývá 120 znaků</p>
+              <p className={styles.characterLeft}>
+                <p className={styles.characterLeft}>
+                  Zbývá {noteMaxLength - note.length} znaků
+                </p>
+              </p>
             </div>
             <textarea
-              style={{ height: "45px", paddingTop: "3px" }}
-              className={styles.editInput}
-            ></textarea>
+              style={{ height: "50px" }}
+              className={styles.note}
+              value={note}
+              onChange={(e) => {
+                if (e.target.value.length <= noteMaxLength) {
+                  setNote(e.target.value);
+                }
+              }}
+              placeholder="Vložte poznámku..."
+            />
           </div>
 
           <div className={styles.editInputContainer}>
@@ -282,10 +315,14 @@ export const ProfilePage = () => {
           </div>
           <div className={styles.saveChangesResponsive}>
             <Button
-              onClick={() => setIsEditOpen(false)}
+              onClick={() => {
+                handleSaveChanges();
+                setIsEditOpen(false);
+              }}
               text="Uložit změny"
               backgroundColor
               color="white"
+              width="130px"
             />
           </div>
         </div>
@@ -377,10 +414,14 @@ export const ProfilePage = () => {
             </div>
             <div className={styles.saveChangesResponsive}>
               <Button
-                onClick={() => setIsEditOpen(false)}
+                onClick={() => {
+                  handleSaveChanges();
+                  setIsEditOpen(false);
+                }}
                 text="Uložit změny"
                 backgroundColor
                 color="white"
+                width="130px"
               />
             </div>
           </div>
@@ -391,6 +432,3 @@ export const ProfilePage = () => {
     </div>
   );
 };
-function setError(arg0: string) {
-  throw new Error("Function not implemented.");
-}
