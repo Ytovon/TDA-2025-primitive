@@ -13,6 +13,7 @@ export interface UserModel {
   isAdmin: boolean;
   isBanned?: boolean;
   note?: string;
+  avatarColor?: number;
 }
 
 export class User implements UserModel {
@@ -30,6 +31,7 @@ export class User implements UserModel {
   isAdmin: boolean;
   isBanned?: boolean;
   note?: string;
+  avatarColor?: number;
 
   constructor(
     username: string,
@@ -44,7 +46,8 @@ export class User implements UserModel {
     createdAt?: Date,
     updatedAt?: Date,
     isBanned?: boolean,
-    note?: string
+    note?: string,
+    avatarColor?: number
   ) {
     this.username = username;
     this.email = email;
@@ -59,5 +62,6 @@ export class User implements UserModel {
     this.isAdmin = isAdmin;
     this.isBanned = isBanned;
     this.note = note;
+    this.avatarColor = avatarColor;
   }
 }

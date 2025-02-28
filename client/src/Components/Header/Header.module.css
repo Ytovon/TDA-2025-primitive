@@ -290,13 +290,17 @@ header {
   color: #0070bb;
 }
 
-.userImg {
-  width: 45px;
+.userImgContainer {
   height: 45px;
+}
+
+.userImg {
+  width: 21px;
+  aspect-ratio: 1/1;
+  padding: 12px;
+  border: 2px solid var(--color-text-primary);
+  border-radius: 50px;
   cursor: pointer;
-  padding-block: 25px;
-  border-radius: 100%;
-  object-fit: cover;
 }
 
 .dropdownContent2 {

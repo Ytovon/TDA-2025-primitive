@@ -124,16 +124,11 @@ export class UserApiClient {
 
   static async updateUserBanStatus(uuid: string, isBanned: boolean) {
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/users/ban/${uuid}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ isBanned }),
-        }
-      );
+      const response = await userApiInstance.post(`/ban/${uuid}`, { isBanned });
 
-      if (!response.ok) throw new Error("Chyba při aktualizaci banu");
+      if (!response.status.toString().startsWith("2")) {
+        throw new Error("Chyba při aktualizaci banu");
+      }
     } catch (error) {
       console.error("Nepodařilo se změnit stav banu:", error);
     }
@@ -141,7 +136,7 @@ export class UserApiClient {
 
   static async updateUserElo(uuid: string, newElo: number): Promise<void> {
     return fetch(`http://localhost:5000/api/users/elo/${uuid}`, {
-      method: "PATCH",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ elo: newElo }),
     }).then((res) => {
