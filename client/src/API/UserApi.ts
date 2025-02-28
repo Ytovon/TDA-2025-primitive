@@ -149,4 +149,15 @@ export class UserApiClient {
       return res.json();
     });
   }
+
+  static async updateUser(uuid: string, data: Partial<UserModel>) {
+    const response = await fetch(`http://localhost:5000/api/users/${uuid}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    return response.ok
+      ? response.json()
+      : Promise.reject("Chyba při aktualizaci");
+  }
 }

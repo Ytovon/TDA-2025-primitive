@@ -1,36 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./GameLobby.module.css";
+import { useDarkMode } from "../../Context/DarkModeContext";
+import { Button } from "../../Components/Button/Button";
+import { ApiClient } from "../../API/GameApi";
+import { useWebSocketLobby } from "../../Context/WebSocketContextLobby";
 import {
   symbolX,
   symbolO,
   arrowBlack,
   arrowWhite,
-  resetBtnBlack,
-  resetBtnWhite,
   winnerBlue,
   winnerRed,
+  lightbulbWhite,
 } from "../../assets/assets";
-import BlinkingEyesSVG from "../../Components/Animation/lightbulb";
-import { useDarkMode } from "../../Context/DarkModeContext";
-import { Button } from "../../Components/Button/Button";
-import { useNavigate } from "react-router-dom";
-import { ApiClient } from "../../API/GameApi";
-import { Game } from "../../Model/GameModel";
-import { useWebSocketLobby } from "../../Context/WebSocketContextLobby";
 
-interface GamePageProps {
-  uuid?: string;
-}
-
-// if winner == null, then its draw... handle that correctly
-
-export const GameLobby: React.FC<GamePageProps> = ({ uuid = "" }) => {
+export const GameLobby = ({ uuid = "" }) => {
   const navigate = useNavigate();
-  const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
-  const [player, setPlayer] = useState(true); // true = hráč X, false = hráč O
-  const [winner, setWinner] = useState<string | null>("");
-
+  const { darkMode } = useDarkMode();
   const {
     isConnected,
     sendMessage,
@@ -40,309 +27,227 @@ export const GameLobby: React.FC<GamePageProps> = ({ uuid = "" }) => {
     status,
   } = useWebSocketLobby();
 
-  const [game, setGame] = useState<Game>({
-    board: [],
-    initialBoard: [],
-    createdAt: "",
+  interface Move {
+    row: number;
+    col: number;
+  }
+
+  interface CellClickMessage {
+    type: string;
+    gameId: string;
+    move: Move;
+  }
+
+  const [game, setGame] = useState({
+    board: Array.from({ length: 15 }, () => Array(15).fill("")),
+    initialBoard: Array.from({ length: 15 }, () => Array(15).fill("")),
     difficulty: "",
     gameState: "",
-    name: isConnected ? "Online multiplayer" : "Lokální multiplayer",
-    updatedAt: "",
+    name: "Hra s přítelem",
     uuid,
   });
-
-  const [refresh, setRefresh] = useState(0);
-
-  const [grid, setGrid] = useState<string[][]>(
+  const [grid, setGrid] = useState(
     Array.from({ length: 15 }, () => Array(15).fill(""))
   );
-  const [initialBoard, setInitialBoard] = useState<string[][]>(
-    Array.from({ length: 15 }, () => Array(15).fill(""))
-  );
+  const [player, setPlayer] = useState(true);
+  const [winner, setWinner] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchGame = async () => {
-      // Odebere třídu "winnerRed" z HTML elementu při načtení stránky
       document.documentElement.classList.remove("winnerRed");
-
-      const url = new URL(window.location.href);
-      const uuid: string | undefined = url.pathname.split("/").pop(); // Poslední část cesty
-
-      const fetchedGame: Game | undefined = await ApiClient.fetchSpecificGame(
-        typeof uuid == "string" ? uuid : ""
-      );
-
-      if (fetchedGame !== undefined) {
+      const fetchedGame = await ApiClient.fetchSpecificGame(uuid);
+      if (fetchedGame) {
         setGame(fetchedGame);
         setGrid(fetchedGame.board);
-        setInitialBoard(fetchedGame.board);
       }
     };
     fetchGame();
-  }, []);
+  }, [uuid]);
 
-  // handles multiplayer winner
-  useEffect(() => {
-    setWinner((prevWinner) => {
-      const newWinner =
+  useEffect(
+    () =>
+      setWinner(
         multiplayerWinner === "X"
           ? "red"
           : multiplayerWinner === "O"
           ? "blue"
-          : multiplayerWinner;
-      console.log("Setting Winner:", newWinner);
-      return newWinner;
-    });
-  }, [multiplayerWinner]);
-
+          : multiplayerWinner
+      ),
+    [multiplayerWinner]
+  );
   useEffect(() => {
-    setRefresh((prev) => prev + 1);
-  }, [winner]);
-
-  // change in board when multiplayerBoard changes... when opponent makes a move
-  useEffect(() => {
-    setGrid((prevGrid) => {
-      return JSON.stringify(prevGrid) !== JSON.stringify(multiplayerBoard)
-        ? multiplayerBoard
-        : prevGrid;
-    });
-  }, [multiplayerBoard]);
-
-  useEffect(() => {
-    let xCount = 0;
-    let oCount = 0;
-
-    // Projde každou buňku v gridu a spočítá počet X a O
-    grid.forEach((row) => {
-      row.forEach((cell) => {
-        if (cell === "X") {
-          xCount++;
-        } else if (cell === "O") {
-          oCount++;
-        }
-      });
-    });
-
-    // Nastaví, který hráč má hrát na základě počtu X a O
-    if (xCount === oCount) {
-      setPlayer(true); // Hráč X na tahu
-    } else {
-      setPlayer(false); // Hráč O na tahu
+    if (JSON.stringify(grid) !== JSON.stringify(multiplayerBoard)) {
+      setGrid(multiplayerBoard);
     }
-  }, [grid]);
+  }, [multiplayerBoard]);
+  useEffect(
+    () => setPlayer(grid.flat().filter((cell) => cell).length % 2 === 0),
+    [grid]
+  );
 
-  // Funkce pro kontrolu výhry
-  const checkWin = (row: number, col: number, symbol: string) => {
-    const directions = [
-      { dr: 0, dc: 1 }, // Vodorovně
-      { dr: 1, dc: 0 }, // Svisle
-      { dr: 1, dc: 1 }, // Diagonálně (zleva dolů)
-      { dr: 1, dc: -1 }, // Diagonálně (zprava dolů)
+  const checkWin = (row: number, col: number, symbol: string): boolean => {
+    const directions: [number, number][] = [
+      [0, 1],
+      [1, 0],
+      [1, 1],
+      [1, -1],
     ];
-
-    for (const { dr, dc } of directions) {
-      let count = 1;
-
-      // Kontrola v jednom směru
-      let r = row + dr;
-      let c = col + dc;
-      while (r >= 0 && r < 15 && c >= 0 && c < 15 && grid[r][c] === symbol) {
+    return directions.some(([dr, dc]) => {
+      let count = 1,
+        r: number,
+        c: number;
+      for (
+        [r, c] = [row + dr, col + dc];
+        grid[r]?.[c] === symbol;
+        [r, c] = [r + dr, c + dc]
+      )
         count++;
-        r += dr;
-        c += dc;
-      }
-
-      // Kontrola v opačném směru
-      r = row - dr;
-      c = col - dc;
-      while (r >= 0 && r < 15 && c >= 0 && c < 15 && grid[r][c] === symbol) {
+      for (
+        [r, c] = [row - dr, col - dc];
+        grid[r]?.[c] === symbol;
+        [r, c] = [r - dr, c - dc]
+      )
         count++;
-        r -= dr;
-        c -= dc;
-      }
-
-      // Pokud je spojeno pět symbolů, vrátí vítězství
       if (count >= 5) {
-        if (symbol === "X") setWinner("red");
-        if (symbol === "O") setWinner("blue");
-        if (symbol === "X") {
-          document.documentElement.classList.add("winnerRed");
-        }
+        console.log(`Winner detected: ${symbol === "X" ? "red" : "blue"}`);
+        setWinner(symbol === "X" ? "red" : "blue");
+        document.documentElement.classList.add("winnerRed");
         return true;
       }
-    }
-
-    return false;
+      return false;
+    });
   };
 
-  let typeStyle: React.CSSProperties = {};
-
-  if (game.difficulty.toLowerCase() === "začátečník") {
-    typeStyle = { color: "#0070BB" };
-  } else if (game.difficulty.toLowerCase() === "jednoduchá") {
-    typeStyle = { color: "#395A9A" };
-  } else if (game.difficulty.toLowerCase() === "pokročilá") {
-    typeStyle = { color: "#724479" };
-  } else if (game.difficulty.toLowerCase() === "těžká") {
-    typeStyle = { color: "#AB2E58" };
-  } else if (game.difficulty.toLowerCase() === "nejtěžší") {
-    typeStyle = { color: "#E31837" };
-  }
-
-  // Funkce pro kliknutí na buňku
-  const cellClick = (row: number, col: number) => {
-    // multiplayer
+  const cellClick = (row: number, col: number): void => {
+    if (grid[row][col] || winner) return;
     if (isConnected) {
-      sendMessage({
+      const message: CellClickMessage = {
         type: "move",
         gameId: gameID,
-        move: { row: row, col: col },
-      });
+        move: { row, col },
+      };
+      return sendMessage(message);
     }
-    // basic game
-    else {
-      if (grid[row][col] !== "" || winner) return;
-
-      const symbol = player ? "X" : "O";
-
-      setGrid((prevGrid) => {
-        const newGrid = [...prevGrid];
-        newGrid[row] = [...prevGrid[row]]; // Vytvoří kopii řádku.
-        newGrid[row][col] = symbol; // Nastaví symbol podle hráče.
-        return newGrid;
-      });
-
-      if (checkWin(row, col, symbol)) {
-        console.log(`${symbol} wins!`);
-        return;
-      }
-      setPlayer(!player);
-    }
-  };
-
-  const resetGame = () => {
-    setPlayer(true);
-    setGrid(initialBoard);
-    setWinner(null);
-    document.documentElement.classList.remove("winnerRed");
+    setGrid((prev) => {
+      const newGrid = prev.map((row) => [...row]);
+      newGrid[row][col] = player ? "X" : "O";
+      return newGrid;
+    });
+    checkWin(row, col, player ? "X" : "O") || setPlayer(!player);
   };
 
   return (
-    <body className={styles.body}>
-      <div className={styles.gamePage}>
-        <div className={styles.gameMenu}>
-          <button>
-            <Link to={game.uuid !== "" ? "/Games" : "/"}>
-              <img
-                className={styles.arrow}
-                src={darkMode ? arrowWhite : arrowBlack}
-                alt=""
-              />
-            </Link>
-          </button>
+    <div className={styles.body}>
+      <h2 className={styles.title}>{game.name}</h2>
 
-          <button onClick={resetGame}>
-            <img
-              className={styles.resetGame}
-              src={darkMode ? resetBtnWhite : resetBtnBlack}
-              alt=""
-            />
-          </button>
+      <div className={styles.gamePage}>
+        <div
+          style={{
+            boxShadow: player
+              ? "var(--shadow-game-red)"
+              : "var(--shadow-game-blue)",
+            borderRight: player
+              ? "2px solid var(--color5)"
+              : "2px solid var(--color1)",
+            borderBottom: player
+              ? "2px solid var(--color5)"
+              : "2px solid var(--color1)",
+          }}
+          className={styles.menuSide}
+        >
+          <h2 className={styles.menuTitle}>Online multiplayer</h2>
+
+          <div className={styles.menu}>
+            <div className={styles.menuBackground}>
+              <div className={styles.menuFlex}>
+                <div>
+                  <h3>Hráč1</h3>
+                  <img className={styles.userImg} src={lightbulbWhite} alt="" />
+                </div>
+                <p>vs</p>
+                <div>
+                  <h3>Hráč2</h3>
+                  <img className={styles.userImg} src={lightbulbWhite} alt="" />
+                </div>
+              </div>
+
+              <div className={styles.menuFlex}>
+                <p className={styles.eloCount}>400</p>
+                <p>ELO</p>
+                <p className={styles.eloCount}>400</p>
+              </div>
+            </div>
+
+            <div
+              className={`${styles.menuBackground} ${styles.menuFlex} ${styles.timer}`}
+            >
+              <p className={styles.time}>08:00</p>
+              <p className={styles.timeText}>
+                Zbývá <br />
+                času
+              </p>
+              <p className={styles.time}>08:00</p>
+            </div>
+          </div>
         </div>
 
-        <div key={refresh} className={styles.gameWrapper}>
-          <div className={styles.titleWrapper}>
-            <h2 className={styles.title}>{game.name}</h2>
-            <span
-              style={
-                game.difficulty !== "" ? { display: "" } : { display: "none" }
-              }
-              className={styles.line}
-            ></span>
-            <h2 style={typeStyle} className={styles.title}>
-              {game.difficulty}
-            </h2>
-          </div>
-
-          <h2 className={styles.gameState}>{game.gameState}</h2>
-
-          <div className={styles.game}>
-            <div
-              className={styles.playerWrapper}
-              style={{ opacity: player ? 1 : 0.4 }}
-            >
-              <BlinkingEyesSVG isRedPlayer={true} OnMove={player} />
-            </div>
-
+        <div className={styles.gameSide}>
+          <div className={styles.gameWrapper}>
             <div className={styles.gameGrid}>
-              {Array.isArray(grid) &&
-                grid.map((row, rowIndex) =>
-                  row.map((cell, colIndex) => (
-                    <div
-                      className={styles.cell}
-                      onClick={() => cellClick(rowIndex, colIndex)}
-                      key={`${rowIndex}-${colIndex}`}
-                    >
-                      {cell === "X" && (
-                        <img src={symbolX} alt="X" className={styles.symbol} />
-                      )}
-                      {cell === "O" && (
-                        <img src={symbolO} alt="O" className={styles.symbol} />
-                      )}
-                    </div>
-                  ))
-                )}
-            </div>
-            <div
-              className={styles.playerWrapper}
-              style={{ opacity: player ? 0.4 : 1 }}
-            >
-              <BlinkingEyesSVG isRedPlayer={false} OnMove={!player} />
+              {grid.map((row, rowIndex) =>
+                row.map((cell, colIndex) => (
+                  <div
+                    key={`${rowIndex}-${colIndex}`}
+                    className={styles.cell}
+                    onClick={() => cellClick(rowIndex, colIndex)}
+                  >
+                    {cell && (
+                      <img
+                        src={cell === "X" ? symbolX : symbolO}
+                        alt={cell}
+                        className={styles.symbol}
+                      />
+                    )}
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      <div
-        className={`${styles.winnerCardWrapper} ${
-          winner != "" ? styles.active : ""
-        }`}
-      >
-        <div className={styles.winnerCard}>
-          <div className={styles.winnerCardTextImg}>
-            <div className={styles.winnerCardText}>
+      {winner && (
+        <div
+          className={`${styles.winnerCardWrapper} ${styles.active}`}
+          style={{ display: "flex" }}
+        >
+          <div className={styles.winnerCard}>
+            <div>
               <h2 className={styles.winnerCardTitle}>Gratulujeme</h2>
               <p className={styles.winnerCardSubtitle}>
-                k výhře{" "}
-                {winner == "red" ? "hráči v červeném" : "hráči v modrém"}
+                k výhře hráči v {winner === "red" ? "červeném" : "modrém"}
               </p>
+
+              <Button
+                text="Ukončit"
+                color={winner === "red" ? "#E31837" : "#0070BB"}
+                border={winner !== "red"}
+                onClick={() => navigate(game.uuid ? "/Games" : "/")}
+                width="170px"
+                height="45px"
+              />
             </div>
+
             <img
               className={styles.winnerCardImg}
-              src={winner == "red" ? winnerRed : winnerBlue}
-            />
-          </div>
-
-          <div className={styles.winnerCardBtns}>
-            <Button
-              text="Odveta"
-              color="white"
-              backgroundColor={winner === "red" ? false : true}
-              onClick={() => resetGame()}
-            />
-
-            <Button
-              text="Ukončit"
-              color={winner == "red" ? "#E31837" : "#0070BB"}
-              border={winner == "red" ? false : true}
-              onClick={() => navigate(game.uuid !== "" ? "/Games" : "/")}
+              src={winner === "red" ? winnerRed : winnerBlue}
+              alt="winner"
             />
           </div>
         </div>
-      </div>
-      <div>
-        <p style={{ color: "white" }}>{status != "" ? status : ""}</p>
-      </div>
-    </body>
+      )}
+
+      <p style={{ color: "white" }}>{status}</p>
+    </div>
   );
 };

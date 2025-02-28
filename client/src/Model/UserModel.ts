@@ -12,6 +12,7 @@ export interface UserModel {
   updatedAt?: Date;
   isAdmin: boolean;
   isBanned?: boolean;
+  note?: string;
 }
 
 export class User implements UserModel {
@@ -28,6 +29,7 @@ export class User implements UserModel {
   updatedAt?: Date;
   isAdmin: boolean;
   isBanned?: boolean;
+  note?: string;
 
   constructor(
     username: string,
@@ -41,7 +43,8 @@ export class User implements UserModel {
     refreshToken?: string,
     createdAt?: Date,
     updatedAt?: Date,
-    isBanned?: boolean
+    isBanned?: boolean,
+    note?: string
   ) {
     this.username = username;
     this.email = email;
@@ -55,5 +58,6 @@ export class User implements UserModel {
     this.updatedAt = updatedAt;
     this.isAdmin = isAdmin;
     this.isBanned = isBanned;
+    this.note = note;
   }
 }

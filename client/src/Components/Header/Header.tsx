@@ -151,7 +151,7 @@ export default function Header() {
                   Hrát online
                 </Link>
                 <Link
-                  to="/lobby"
+                  to="/lobbyGame"
                   className={`${styles.navLink} ${styles.link}`}
                 >
                   Hrát s přítelem
@@ -349,7 +349,7 @@ export default function Header() {
                 </Link>
                 <Link
                   className={`${styles.link} ${styles.mobileLink}`}
-                  to="/lobby"
+                  to="/lobbyGame"
                 >
                   Hrát s přítelem
                 </Link>
