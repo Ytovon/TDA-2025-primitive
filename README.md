@@ -4,6 +4,10 @@ Naším cílem bylo vytvořit aplikaci, která splňuje všechna zadaná kritér
 
 Ovšem tím naše snažení neskončilo. Rozhodli jsme se přidat i několik funkcí navíc, které posouvají naši aplikaci na vyšší úroveň. Implementovali jsme například generování bitmap pro kartičky úloh, které zlepšují vizuální dojem. Dále jsme přidali oblíbený dark mode, aby si uživatelé nevypálili zorničky. Samozřejmě nesmí chybět animace žároviček. A další… 😊
 
+/* Soutěžní kolo */
+
+První dva týdny šli podle plánu, ale náš hlavní člen týmu odjel na dovolenou. Pro náš tým to znamenalo pouze jediné, nedokázali jsme pořádně propojit front-end a back-end a postupem času přestali fungovat i ty věci které již fungovali. 
+
 Děkujeme organizátorům za možnost zúčastnit se a těšíme se na zpětnou vazbu i další příležitosti k růstu.
 
 S pozdravem,
