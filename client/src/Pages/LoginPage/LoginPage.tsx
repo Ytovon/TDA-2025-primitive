@@ -182,16 +182,6 @@ export const LoginPage = () => {
             </button>
           </p>
         </form>
-
-        <div className={styles.or}>
-          <span className={styles.line}></span>
-          <p>nebo</p>
-          <span className={styles.line}></span>
-        </div>
-        <div className={styles.socialBtns}>
-          <Button text="" image={GoogleIcon} border />
-          <Button text="" image={FacebookIcon} border />
-        </div>
       </div>
     </div>
   );

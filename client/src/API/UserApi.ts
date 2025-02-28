@@ -124,7 +124,14 @@ export class UserApiClient {
 
   static async updateUserBanStatus(uuid: string, isBanned: boolean) {
     try {
+      console.log(
+        "Volám updateUserBanStatus s tokenem:",
+        userApiInstance.defaults.headers["Authorization"]
+      );
+
       const response = await userApiInstance.post(`/ban/${uuid}`, { isBanned });
+
+      console.log("User ban update");
 
       if (!response.status.toString().startsWith("2")) {
         throw new Error("Chyba při aktualizaci banu");
@@ -132,27 +139,5 @@ export class UserApiClient {
     } catch (error) {
       console.error("Nepodařilo se změnit stav banu:", error);
     }
-  }
-
-  static async updateUserElo(uuid: string, newElo: number): Promise<void> {
-    return fetch(`http://localhost:5000/api/users/elo/${uuid}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ elo: newElo }),
-    }).then((res) => {
-      if (!res.ok) throw new Error("Chyba při aktualizaci ELO");
-      return res.json();
-    });
-  }
-
-  static async updateUser(uuid: string, data: Partial<UserModel>) {
-    const response = await fetch(`http://localhost:5000/api/users/${uuid}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    return response.ok
-      ? response.json()
-      : Promise.reject("Chyba při aktualizaci");
   }
 }

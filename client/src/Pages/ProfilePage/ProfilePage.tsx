@@ -82,14 +82,6 @@ export const ProfilePage = () => {
 
   const handleColorChange = async (colorIndex: number) => {
     setSelectedColor(colorMap[colorIndex]);
-
-    try {
-      if (uuid) {
-        await UserApiClient.updateUser(uuid, { avatarColor: colorIndex }); // API volání
-      }
-    } catch (error) {
-      console.error("Nepodařilo se uložit barvu", error);
-    }
   };
 
   const colorMap: Record<number, string> = {
@@ -125,7 +117,12 @@ export const ProfilePage = () => {
               </div>
               <h1 className={styles.username}>{user.username}</h1>
               <p className={styles.joinDate}>
-                Členem od <b>16. O2. 2025</b>
+                Členem od{" "}
+                <b>
+                  {user?.createdAt
+                    ? new Date(user.createdAt).toLocaleDateString()
+                    : "Neznámé datum"}
+                </b>
               </p>
               <button
                 onClick={() => setIsEditOpen(true)}
@@ -143,6 +140,7 @@ export const ProfilePage = () => {
             <div className={styles.noteContainer}>
               <h3 className={styles.noteTitle}>Poznámka</h3>
               <textarea
+                disabled
                 className={styles.note}
                 value={note}
                 onChange={(e) => {
@@ -156,7 +154,7 @@ export const ProfilePage = () => {
           </div>
           <div className={styles.statsContainer}>
             <div className={styles.statsHeader}>
-              <h1 className={styles.statsTitle}>{user.elo}</h1>
+              <h1 className={styles.statsTitle}>{Math.round(user.elo)}</h1>
               <img className={styles.statsImg} src={eloWhite} />
             </div>
 

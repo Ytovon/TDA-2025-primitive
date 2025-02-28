@@ -1,5 +1,15 @@
-// Token Storage (localStorage example)
-export const getAccessToken = () => localStorage.getItem("access_token");
+export const getAccessTokenAsync = async (): Promise<string | null> => {
+  return new Promise<string | null>((resolve) => {
+    // Nejdřív načteme token
+    const token = localStorage.getItem("access_token");
+    console.log("Načtený access token:", token);
+
+    // Počkej 500 ms a pak teprve vrať token
+    setTimeout(() => {
+      resolve(token);
+    }, 700);
+  });
+};
 
 export const getRefreshToken = () => localStorage.getItem("refresh_token");
 

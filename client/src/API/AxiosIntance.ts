@@ -1,7 +1,7 @@
 import axios from "axios";
 import {
   getRefreshToken,
-  getAccessToken,
+  getAccessTokenAsync,
   setAccessToken,
   setRefreshToken,
   clearTokens,
@@ -28,11 +28,39 @@ const setAuthHeader = (instance: any, token: string | null) => {
 };
 
 // Attach access token on startup
-const token = getAccessToken();
-if (token) {
-  setAuthHeader(userApiInstance, token);
-  setAuthHeader(gameApiInstance, token);
-}
+const initializeAuth = async () => {
+  const token = await getAccessTokenAsync();
+  console.log("Načtený token:", token);
+  if (token) {
+    setAuthHeader(userApiInstance, token);
+    setAuthHeader(gameApiInstance, token);
+  }
+};
+
+// 💡 Volání inicializace s malým zpožděním
+setTimeout(async () => {
+  await initializeAuth();
+}, 200);
+
+// ✅ Přidání interceptoru, aby byl token vždy aktuální
+userApiInstance.interceptors.request.use(
+  async (config) => {
+    const token = await getAccessTokenAsync();
+
+    console.log("Interceptor získal token pro request:", config.url, token);
+
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    } else {
+      console.warn("Žádný access token, request může selhat!");
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 // Refresh token function
 const refreshAccessToken = async (navigate: any) => {
@@ -42,7 +70,7 @@ const refreshAccessToken = async (navigate: any) => {
 
     const response = await axios.post(
       "http://localhost:5000/api/users/refresh-token",
-      { refresh_token: refreshToken }
+      { token: refreshToken }
     );
 
     const { access_token, refresh_token } = response.data;
@@ -70,6 +98,7 @@ const responseInterceptor = (navigate: any) => async (error: any) => {
     (error.response?.status === 401 || error.response?.status === 4001) &&
     !originalRequest._retry
   ) {
+    console.log("nepovedlo se udělat request");
     originalRequest._retry = true; // Avoid infinite loops
 
     const newToken = await refreshAccessToken(navigate);

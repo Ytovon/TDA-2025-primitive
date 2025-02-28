@@ -8,7 +8,7 @@ import BlinkingEyesSVG from "../../Components/Animation/lightbulb";
 import { UserApiClient } from "../../API/UserApi";
 import {
   getRefreshToken,
-  getAccessToken,
+  getAccessTokenAsync,
   setAccessToken,
   clearTokens,
   clearUUID,
@@ -23,11 +23,13 @@ export const LoadingPage = () => {
     const verifyAccess = async () => {
       try {
         const refreshToken = getRefreshToken() ?? "";
-        const accessTokenToCheck = getAccessToken() ?? "";
+        const accessTokenToCheck = (await getAccessTokenAsync()) ?? "";
 
         const isValid: any = await UserApiClient.verifyToken(
           accessTokenToCheck
         );
+
+        console.log("Co je to isValid:", isValid);
 
         const isValidToCheck = isValid == false ? isValid : isValid.data.valid;
 
@@ -36,7 +38,7 @@ export const LoadingPage = () => {
 
           await UserApiClient.refreshToken(refreshToken);
 
-          const newAccessToken = getAccessToken() ?? "";
+          const newAccessToken = (await getAccessTokenAsync()) ?? "";
 
           console.log(
             newAccessToken == accessTokenToCheck || accessTokenToCheck == null

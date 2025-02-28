@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { getAccessToken } from "../API/tokenstorage";
+import { getAccessTokenAsync } from "../API/tokenstorage";
 
-const WEBSOCKET_URL = `ws://localhost:5001/ws?token=${getAccessToken()}`;
+const WEBSOCKET_URL = `ws://localhost:5001/ws?token=${getAccessTokenAsync()}`;
 
 interface WebSocketContextType {
   socket: WebSocket | null;
