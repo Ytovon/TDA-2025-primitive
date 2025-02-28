@@ -191,33 +191,32 @@ async function handleMessage(
         ws.send(JSON.stringify({ type: "created", gameId: newGameId }));
         break;
 
-        case "getHistory": // New case for retrieving game history
-        try {
-          const userUuid = (ws as any).user.uuid; // Extract user UUID from WebSocket connection
-          const games = await MatchmakingGame.findAll({
-            where: {
-              [Op.or]: [{ playerX: userUuid }, { playerO: userUuid }],
-            },
-            order: [["endedAt", "DESC"]],
-          });
+        case "getHistory":
+          try {
+            const userUuid = (ws as any).user.uuid; // Extract user UUID from WebSocket connection
+            const games = await MatchmakingGame.findAll({
+              where: {
+                [Op.or]: [{ playerX: userUuid }, { playerO: userUuid }],
+              },
+              order: [["endedAt", "DESC"]],
+            });
 
-          ws.send(
-            JSON.stringify({
-              type: "gameHistory",
-              games,
-            })
-          );
-        } catch (error) {
-          console.error("Error fetching game history:", error);
-          ws.send(
-            JSON.stringify({
-              type: "error",
-              message: "Failed to fetch game history",
-            })
-          );
-        }
-        break;
-
+            ws.send(
+              JSON.stringify({
+                type: "gameHistory",
+                games,
+              })
+            );
+          } catch (error) {
+            console.error("Error fetching game history:", error);
+            ws.send(
+              JSON.stringify({
+                type: "error",
+                message: "Failed to fetch game history",
+              })
+            );
+          }
+          break;
       case "joinLobby":
         const game = games[gameId];
         if (game && game.players.length === 1) {
@@ -460,6 +459,36 @@ async function handleMessage(
                     endedAt: new Date().toISOString(),
                   };
 
+                    const winnerUUID = gameData.winner === "X" ? gameData.playerX : gameData.playerO;
+                    const loserUUID = gameData.loser === "X" ? gameData.playerX : gameData.playerO;
+
+                    const winnerExists = await User.findOne({ where: { uuid: winnerUUID } });
+                    const loserExists = await User.findOne({ where: { uuid: loserUUID } });
+
+                    if (!winnerExists || !loserExists) {
+                      console.error("One or more UUIDs do not exist in the Users table:", {
+                        playerX: gameData.playerX,
+                        playerO: gameData.playerO,
+                        winner: winnerUUID,
+                        loser: loserUUID,
+                      });
+                      throw new Error("Invalid UUIDs: One or more players do not exist in the Users table.");
+                    }
+
+                    // Save correct data
+                    await MatchmakingGame.create({
+                      playerX: gameData.playerX,
+                      playerO: gameData.playerO,
+                      winner: winnerUUID,
+                      loser: loserUUID,
+                      eloChangeX: gameData.eloChangeX,
+                      eloChangeO: gameData.eloChangeO,
+                      board: gameData.board,
+                      bitmap: gameData.bitmap,
+                      endedAt: new Date(gameData.endedAt),
+                    });
+
+
                   // Notify players of the end of the game
                   gameToUpdate.players.forEach((playerWs) => {
                     playerWs.send(JSON.stringify(gameData));
@@ -603,6 +632,35 @@ async function handleMessage(
                 endedAt: new Date().toISOString(),
               };
 
+              const winnerUUID = gameData.winner === "X" ? gameData.playerX : gameData.playerO;
+              const loserUUID = gameData.loser === "X" ? gameData.playerX : gameData.playerO;
+
+              const winnerExists = await User.findOne({ where: { uuid: winnerUUID } });
+              const loserExists = await User.findOne({ where: { uuid: loserUUID } });
+
+              if (!winnerExists || !loserExists) {
+                console.error("One or more UUIDs do not exist in the Users table:", {
+                  playerX: gameData.playerX,
+                  playerO: gameData.playerO,
+                  winner: winnerUUID,
+                  loser: loserUUID,
+                });
+                throw new Error("Invalid UUIDs: One or more players do not exist in the Users table.");
+              }
+
+              // Save correct data
+              await MatchmakingGame.create({
+                playerX: gameData.playerX,
+                playerO: gameData.playerO,
+                winner: winnerUUID,
+                loser: loserUUID,
+                eloChangeX: gameData.eloChangeX,
+                eloChangeO: gameData.eloChangeO,
+                board: gameData.board,
+                bitmap: gameData.bitmap,
+                endedAt: new Date(gameData.endedAt),
+              });
+
               // Notify players of the end of the game
               gameToUpdate.players.forEach((playerWs) => {
                 playerWs.send(JSON.stringify(gameData));
@@ -681,6 +739,37 @@ async function handleMessage(
                 bitmap: BitmapGenerator.generateBitmap(newBoard),
                 endedAt: new Date().toISOString(),
               };
+
+              const winnerUUID = gameData.winner === "X" ? gameData.playerX : gameData.playerO;
+              const loserUUID = gameData.loser === "X" ? gameData.playerX : gameData.playerO;
+              
+              const winnerExists = await User.findOne({ where: { uuid: winnerUUID } });
+              const loserExists = await User.findOne({ where: { uuid: loserUUID } });
+              
+              if (!winnerExists || !loserExists) {
+                console.error("One or more UUIDs do not exist in the Users table:", {
+                  playerX: gameData.playerX,
+                  playerO: gameData.playerO,
+                  winner: winnerUUID,
+                  loser: loserUUID,
+                });
+                throw new Error("Invalid UUIDs: One or more players do not exist in the Users table.");
+              }
+              
+              // Save correct data
+              await MatchmakingGame.create({
+                playerX: gameData.playerX,
+                playerO: gameData.playerO,
+                winner: winnerUUID,
+                loser: loserUUID,
+                eloChangeX: gameData.eloChangeX,
+                eloChangeO: gameData.eloChangeO,
+                board: gameData.board,
+                bitmap: gameData.bitmap,
+                endedAt: new Date(gameData.endedAt),
+              });
+              
+               
 
               // Notify players of the draw
               gameToUpdate.players.forEach((playerWs) => {
