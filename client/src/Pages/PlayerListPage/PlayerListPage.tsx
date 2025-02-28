@@ -39,29 +39,6 @@ export const PlayerListPage = () => {
     }
   };
 
-  // Funkce pro úpravu ELO v lokálním state
-  const handleEloChange = (uuid: string, newElo: number) => {
-    setEditedElo((prev) => ({ ...prev, [uuid]: newElo }));
-  };
-
-  // Funkce pro odeslání změny ELO na server
-  const handleEloBlur = async (uuid: string) => {
-    const newElo = editedElo[uuid];
-    if (newElo === undefined || newElo < 0) return; // Kontrola
-
-    setUsers((prevUsers) =>
-      prevUsers.map((user) =>
-        user.uuid === uuid ? { ...user, elo: newElo } : user
-      )
-    );
-
-    try {
-      await UserApiClient.updateUserElo(uuid, newElo);
-    } catch {
-      console.error("Chyba při aktualizaci ELO");
-    }
-  };
-
   return (
     <div className={styles.body}>
       <Header />
@@ -95,13 +72,10 @@ export const PlayerListPage = () => {
                       type="number"
                       min="0"
                       value={
-                        user.uuid ? editedElo[user.uuid] ?? user.elo : user.elo
+                        user.uuid
+                          ? editedElo[user.uuid] ?? Math.round(user.elo)
+                          : Math.round(user.elo)
                       }
-                      onChange={(e) =>
-                        user.uuid &&
-                        handleEloChange(user.uuid, Number(e.target.value))
-                      }
-                      onBlur={() => user.uuid && handleEloBlur(user.uuid)}
                       className={styles.eloInput}
                     />
                   </td>

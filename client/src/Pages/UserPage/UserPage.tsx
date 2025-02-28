@@ -59,7 +59,12 @@ export const UserPage = () => {
             </div>
             {user && <h1 className={styles.username}>{user.username}</h1>}
             <p className={styles.joinDate}>
-              Členem od <b>16. O2. 2025</b>
+              Členem od{" "}
+              <b>
+                {user?.createdAt
+                  ? new Date(user.createdAt).toLocaleDateString()
+                  : "Neznámé datum"}
+              </b>
             </p>
             <div className={styles.setting}></div>
           </div>
@@ -69,7 +74,7 @@ export const UserPage = () => {
             <textarea
               className={styles.note}
               disabled
-              placeholder="Někde tu zapomněl na poznámku."
+              placeholder="Někomu tu chybí poznámka..."
             />
           </div>
         </div>
@@ -77,7 +82,7 @@ export const UserPage = () => {
           <div className={styles.statsHeader}>
             {user && (
               <>
-                <h1 className={styles.statsTitle}>{user.elo}</h1>
+                <h1 className={styles.statsTitle}>{Math.round(user.elo)}</h1>
                 <img className={styles.statsImg} src={eloWhite} />
               </>
             )}

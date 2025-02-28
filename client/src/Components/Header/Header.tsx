@@ -21,7 +21,7 @@ import {
 import styles from "./Header.module.css";
 import { useDarkMode } from "../../Context/DarkModeContext";
 import {
-  getAccessToken,
+  getAccessTokenAsync,
   clearTokens,
   getRefreshToken,
   setUUID,
@@ -47,7 +47,7 @@ export default function Header() {
   // Check if the user is registered on startup
   useEffect(() => {
     const verifyUserToken = async () => {
-      const token = getAccessToken();
+      const token = await getAccessTokenAsync();
       if (token && token !== "" && token !== undefined) {
         let isValid: any = await UserApiClient.verifyToken(token);
 
@@ -275,7 +275,10 @@ export default function Header() {
               onClick={handleMobileUserDropdown}
               className={`${styles.mobileLinkDropdownContainer}`}
             >
-              <div className={styles.mobileUserContainer}>
+              <div
+                style={{ display: Registered ? "flex" : "none" }}
+                className={styles.mobileUserContainer}
+              >
                 <div className={styles.userImgContainer}>
                   <img
                     style={{
@@ -291,11 +294,11 @@ export default function Header() {
                     style={{ fontSize: "1.375rem" }}
                     className={styles.mobileUsername}
                   >
-                    Jmeno
+                    {user.username}
                   </p>
                   <div className={styles.mobileUserStats}>
                     <div className={styles.mobileUserStat}>
-                      <p>560</p>
+                      <p>{user.elo}</p>
                       <img src={eloRed} alt="" />
                     </div>
                   </div>
@@ -321,6 +324,13 @@ export default function Header() {
                   className={`${styles.link} ${styles.mobileLink}`}
                 >
                   Přehled
+                </Link>
+
+                <Link
+                  to={"/users"}
+                  className={`${styles.link} ${styles.mobileLink}`}
+                >
+                  Seznam hráčů
                 </Link>
 
                 <button

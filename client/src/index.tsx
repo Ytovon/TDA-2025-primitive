@@ -54,7 +54,6 @@ const WebSocketWrapperMultiplayer: React.FC<WebSocketWrapperProps> = ({
 };
 
 root.render(
-  // <React.StrictMode>
   <DarkModeProvider>
     <Router>
       <InterceptorSetup />{" "}
@@ -107,7 +106,7 @@ root.render(
       </Routes>
     </Router>
   </DarkModeProvider>
-  // </React.StrictMode>
+  //{" "}
 );
 
 // If you want to start measuring performance in your app, pass a function

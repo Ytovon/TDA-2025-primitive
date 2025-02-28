@@ -85,7 +85,7 @@ export const LeaderboardPage = () => {
                     </td>
                     <td>
                       <div className={styles.eloContainer}>
-                        <p>{user.elo || "N/A"}</p>
+                        <p>{user.elo ? Math.round(user.elo) : "N/A"}</p>
                         <img src={eloRed} alt="ELO" />
                       </div>
                     </td>
