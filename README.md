@@ -6,7 +6,7 @@ Ovšem tím naše snažení neskončilo. Rozhodli jsme se přidat i několik fun
 
 /* Soutěžní kolo */
 
-První dva týdny šli podle plánu, ale náš hlavní člen týmu odjel na dovolenou. Pro náš tým to znamenalo pouze jediné, nedokázali jsme pořádně propojit front-end a back-end a postupem času přestali fungovat i ty věci které již fungovali. 
+První dva týdny šli podle plánu, ale náš hlavní člen týmu odjel na dovolenou. Pro náš tým to znamenalo pouze jediné, nedokázali jsme pořádně propojit front-end a back-end a postupem času přestali fungovat i ty věci, které nám již dávno fungovali (např. multiplayer). Poslední kapkou bylo to, že se nám nepovedlo udělat pull-request z developu na main! Největší problém je momentálně v lokálním úložišti prohlížeče, odkuď nám v určitém momentu nejde získávát accessToken což znemožnilo úpravu banu a dalších možností. 
 
 Děkujeme organizátorům za možnost zúčastnit se a těšíme se na zpětnou vazbu i další příležitosti k růstu.
 
