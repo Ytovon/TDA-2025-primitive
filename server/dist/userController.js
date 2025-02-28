@@ -5,10 +5,36 @@ import { Op } from "sequelize";
 import { User } from "./models.js"; // Import the User model
 import { promisify } from "util";
 import passport from "passport";
+import { MatchmakingGame } from "./models.js"; // Import MatchmakingGame model
 // Secret keys (Replace with environment variables in production)
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "your-access-token-secret";
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || "your-refresh-token-secret";
 const SALT_ROUNDS = 10;
+const getGameHistoryByUUID = async (req, res) => {
+    try {
+        const { uuid } = req.params;
+        // Validate UUID format (optional but recommended)
+        if (!uuid) {
+            res.status(400).json({ message: "UUID is required." });
+            return;
+        }
+        // Fetch games where the user was either playerX or playerO
+        const games = await MatchmakingGame.findAll({
+            where: {
+                [Op.or]: [{ playerX: uuid }, { playerO: uuid }],
+            },
+            order: [["endedAt", "DESC"]], // Show most recent games first
+        });
+        if (!games.length) {
+            res.status(404).json({ message: "No game history found for this user." });
+        }
+        res.status(200).json(games);
+    }
+    catch (err) {
+        console.error("Error retrieving game history:", err);
+        res.status(500).json({ message: "Internal server error." });
+    }
+};
 // Forgot Password
 const forgotPassword = async (req, res) => {
     try {
@@ -314,6 +340,6 @@ const googleCallback = (req, res) => {
             .json({ message: "Login successful!", accessToken, refreshToken });
     })(req, res);
 };
-export { register, login, refreshToken, logout, getAllUsers, getUserByUUID, updateUserByUUID, deleteUserByUUID, verifyToken, googleLogin, googleCallback, forgotPassword, banUser, // Export the new banUser function
- };
+export { register, login, refreshToken, logout, getAllUsers, getUserByUUID, updateUserByUUID, deleteUserByUUID, verifyToken, googleLogin, googleCallback, forgotPassword, banUser, // Export the new banUser function 
+getGameHistoryByUUID, };
 //# sourceMappingURL=userController.js.map

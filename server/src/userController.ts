@@ -6,6 +6,7 @@ import { Request, Response } from "express"; // Import Response
 import { User } from "./models.js"; // Import the User model
 import { promisify } from "util";
 import passport from "passport";
+import { MatchmakingGame } from "./models.js"; // Import MatchmakingGame model
 
 // Secret keys (Replace with environment variables in production)
 const ACCESS_TOKEN_SECRET =
@@ -13,6 +14,35 @@ const ACCESS_TOKEN_SECRET =
 const REFRESH_TOKEN_SECRET =
   process.env.REFRESH_TOKEN_SECRET || "your-refresh-token-secret";
 const SALT_ROUNDS = 10;
+
+const getGameHistoryByUUID = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { uuid } = req.params;
+
+    // Validate UUID format (optional but recommended)
+    if (!uuid) {
+      res.status(400).json({ message: "UUID is required." });
+      return;
+    }
+
+    // Fetch games where the user was either playerX or playerO
+    const games = await MatchmakingGame.findAll({
+      where: {
+        [Op.or]: [{ playerX: uuid }, { playerO: uuid }],
+      },
+      order: [["endedAt", "DESC"]], // Show most recent games first
+    });
+
+    if (!games.length) {
+      res.status(404).json({ message: "No game history found for this user." });
+    }
+
+    res.status(200).json(games);
+  } catch (err) {
+    console.error("Error retrieving game history:", err);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
 
 // Forgot Password
 const forgotPassword = async (req: Request, res: Response): Promise<void> => {
@@ -398,5 +428,6 @@ export {
   googleLogin,
   googleCallback,
   forgotPassword,
-  banUser, // Export the new banUser function
+  banUser, // Export the new banUser function 
+  getGameHistoryByUUID,
 };
