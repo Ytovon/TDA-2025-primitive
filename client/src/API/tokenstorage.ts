@@ -10,6 +10,9 @@ export const getAccessTokenAsync = async (): Promise<string | null> => {
     }, 700);
   });
 };
+export const getAccessToken = (): string | null => {
+  return localStorage.getItem("access_token");
+};
 
 export const getRefreshToken = () => localStorage.getItem("refresh_token");
 

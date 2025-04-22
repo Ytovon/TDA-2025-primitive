@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { UserApiClient } from "../../API/UserApi";
+import { useAuth } from "../../Context/AuthContext";
 import {
   lightModeLogo,
   darkModeLogo,
@@ -25,16 +26,15 @@ import {
   clearTokens,
   getRefreshToken,
   setUUID,
-  clearUUID,
-  getUUID,
 } from "../../API/tokenstorage"; // Your token storage functions
 import { User, UserModel } from "../../Model/UserModel";
+import { log } from "console";
 
 export default function Header() {
+  const { isAuthenticated, login, logout } = useAuth();
   const navigate = useNavigate();
   const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
-  const [Registered, setRegistered] = useState(false);
   const [user, setUser] = useState<User>(new User("", "", "", 0, 0, 0, 0));
   const [mobileDropdown, setMobileDropdown] = useState(false);
   const [mobileUserDropdown, setmobileUserDropdown] = useState(false);
@@ -46,38 +46,6 @@ export default function Header() {
 
   // Check if the user is registered on startup
   useEffect(() => {
-    const verifyUserToken = async () => {
-      const token = await getAccessTokenAsync();
-      if (token && token !== "" && token !== undefined) {
-        let isValid: any = await UserApiClient.verifyToken(token);
-
-        if (!isValid) {
-          // Try to refresh the token if the current token is not valid
-          const refreshToken = getRefreshToken();
-          if (refreshToken) {
-            const newAccessToken = await UserApiClient.refreshToken(
-              refreshToken
-            );
-            if (newAccessToken) {
-              isValid = await UserApiClient.verifyToken(newAccessToken);
-            }
-          }
-        }
-        if (isValid && isValid.data) {
-          const valid = isValid.data.valid;
-          const uuid = isValid.data.uuid;
-
-          setRegistered(valid);
-
-          if (valid && uuid) {
-            setUUID(uuid);
-          }
-        } else {
-          setRegistered(false);
-        }
-      }
-    };
-
     const fetchSpecificUserData = async () => {
       // wait here for half a second
       await new Promise((resolve) => setTimeout(resolve, 100));
@@ -90,8 +58,6 @@ export default function Header() {
         setUser(userData as User);
       }
     };
-
-    verifyUserToken();
     fetchSpecificUserData();
   }, []);
   const handleMobileDropdown = () => {
@@ -186,7 +152,7 @@ export default function Header() {
           </div>
 
           <Link
-            style={{ display: Registered ? "none" : "block" }}
+            style={{ display: isAuthenticated ? "none" : "block" }}
             to="/login"
             className={styles.authLink}
           >
@@ -194,7 +160,7 @@ export default function Header() {
           </Link>
 
           <div
-            style={{ display: Registered ? "flex" : "none" }}
+            style={{ display: isAuthenticated ? "flex" : "none" }}
             className={styles.user}
           >
             <div className={styles.userContainer}>
@@ -245,7 +211,7 @@ export default function Header() {
                     style={{ cursor: "pointer" }}
                     className={`${styles.navLink} ${styles.link}`}
                     onClick={() => {
-                      setRegistered(false);
+                      logout();
                       clearTokens();
                       navigate("/");
                     }}
@@ -276,7 +242,7 @@ export default function Header() {
               className={`${styles.mobileLinkDropdownContainer}`}
             >
               <div
-                style={{ display: Registered ? "flex" : "none" }}
+                style={{ display: isAuthenticated ? "flex" : "none" }}
                 className={styles.mobileUserContainer}
               >
                 <div className={styles.userImgContainer}>
@@ -335,7 +301,7 @@ export default function Header() {
 
                 <button
                   onClick={() => {
-                    setRegistered(false);
+                    logout();
                     navigate("/");
                   }}
                   className={`${styles.link} ${styles.mobileLink}`}
@@ -412,7 +378,7 @@ export default function Header() {
             </Link>
             <Link
               to="/login"
-              style={{ display: Registered ? "none" : "block" }}
+              style={{ display: isAuthenticated ? "none" : "block" }}
               onClick={() => setMenuIsOpen(false)}
               className={`${styles.mobileMenuLink} `}
             >
