@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { UserApiClient } from "../../API/UserApi";
 import { useAuth } from "../../Context/AuthContext";
 import {
   lightModeLogo,
@@ -27,15 +26,12 @@ import {
   getRefreshToken,
   setUUID,
 } from "../../API/tokenstorage"; // Your token storage functions
-import { User, UserModel } from "../../Model/UserModel";
-import { log } from "console";
 
 export default function Header() {
-  const { isAuthenticated, login, logout } = useAuth();
+  const { isAuthenticated, login, logout, user } = useAuth();
   const navigate = useNavigate();
-  const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
+  const { darkMode } = useDarkMode();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
-  const [user, setUser] = useState<User>(new User("", "", "", 0, 0, 0, 0));
   const [mobileDropdown, setMobileDropdown] = useState(false);
   const [mobileUserDropdown, setmobileUserDropdown] = useState(false);
   const [selectedColor, setSelectedColor] = useState<string>("var(--color1)");
@@ -45,21 +41,6 @@ export default function Header() {
   };
 
   // Check if the user is registered on startup
-  useEffect(() => {
-    const fetchSpecificUserData = async () => {
-      // wait here for half a second
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      const uuid = localStorage.getItem("uuid");
-      if (uuid) {
-        const userData: UserModel | string = await UserApiClient.getUserByUUID(
-          uuid
-        );
-        setUser(userData as User);
-      }
-    };
-    fetchSpecificUserData();
-  }, []);
   const handleMobileDropdown = () => {
     setMobileDropdown((prev) => !prev);
   };
@@ -194,13 +175,13 @@ export default function Header() {
                 />
                 <p>
                   <Link
-                    to={`/profile/${user.uuid}`}
+                    to={`/profile/${user?.uuid}`}
                     className={`${styles.navLink} ${styles.link}`}
                   >
                     Přehled
                   </Link>
                   <Link
-                    style={{ display: user.isAdmin ? "block" : "none" }}
+                    style={{ display: user?.isAdmin ? "block" : "none" }}
                     to="/users"
                     className={`${styles.navLink} ${styles.link}`}
                   >

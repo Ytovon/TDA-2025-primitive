@@ -1,17 +1,20 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { UserApiClient } from "../API/UserApi";
 import { getAccessToken, getRefreshToken, setUUID } from "../API/tokenstorage";
+import { User } from "../Model/UserModel";
 
 interface AuthContextType {
   isAuthenticated: boolean | null;
   logout: () => void;
   login: () => void;
+  user: User;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(false);
+  const [user, setUser] = useState<User>(new User("", "", "", 0, 0, 0, 0)); // Initialize user state
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -46,7 +49,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
+    const fetchSpecificUserData = async () => {
+      // wait here for half a second
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      const uuid = localStorage.getItem("uuid");
+      if (uuid) {
+        const userData: User | string = await UserApiClient.getUserByUUID(uuid);
+        setUser(userData as User);
+      }
+    };
+
     checkAuth();
+    console.log("isAuthenticated", isAuthenticated);
+    fetchSpecificUserData();
   }, []);
 
   // Logout function
@@ -60,7 +76,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, logout, login }}>
+    <AuthContext.Provider value={{ isAuthenticated, logout, login, user }}>
       {children}
     </AuthContext.Provider>
   );
