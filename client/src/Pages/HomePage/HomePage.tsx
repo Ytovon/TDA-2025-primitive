@@ -61,10 +61,10 @@ export default function HomePage() {
               <p className={styles.openingSubtitle}>{text}</p>
               <div className={styles.openingBtns}>
                 <Button
-                  text="Lokální multiplayer"
+                  text="Hrát online"
                   color="white"
                   backgroundColor={true}
-                  onClick={() => navigate("/game")}
+                  onClick={() => navigate("/loading")}
                 />
                 <Button
                   text="Tréninkové úlohy"

@@ -91,35 +91,11 @@ export default function Header() {
           <div className={styles.links}>
             <div className={styles.dropdown}>
               <Link
-                to="/freeplay"
+                to="/loading"
                 className={`${styles.navLink} ${styles.link}`}
               >
-                <p>Chci hrát</p>
-                <img
-                  className={styles.scrollableBtn}
-                  src={darkMode ? chevronDownWhite : chevronDownBlack}
-                  alt=""
-                />
+                Hrát online
               </Link>
-              <div className={styles.dropdownContent}>
-                <img
-                  className={styles.triangleDropdown}
-                  src={darkMode ? triangleDropdownBlack : triangleDropdownWhite}
-                  alt=""
-                />
-                <Link
-                  to="/loading"
-                  className={`${styles.navLink} ${styles.link}`}
-                >
-                  Hrát online
-                </Link>
-                <Link
-                  to="/lobbyGame"
-                  className={`${styles.navLink} ${styles.link}`}
-                >
-                  Hrát s přítelem
-                </Link>
-              </div>
             </div>
             <Link to="/games" className={`${styles.navLink} ${styles.link}`}>
               Tréninkové úlohy
@@ -144,25 +120,32 @@ export default function Header() {
             style={{ display: isAuthenticated ? "flex" : "none" }}
             className={styles.user}
           >
-            <div className={styles.userContainer}>
+            <div
+              className={styles.userContainer}
+              onClick={() => {
+                navigate(`/profile/${user?.uuid}`);
+              }}
+            >
               <p className={styles.username}>{user.username}</p>
               <div className={styles.userStats}>
                 <div className={styles.userStat}>
-                  <p>{user.elo ? Math.round(user.elo) : "..."}</p>
+                  <p>{Math.round(user.elo)}</p>
                   <img style={{ width: "19px" }} src={eloRed} alt="" />
                 </div>
               </div>
             </div>
             <div className={styles.dropdown}>
               <div className={styles.userImgContainer}>
-                <img
-                  style={{
-                    backgroundColor: colorMap[user?.avatarColor ?? 1], // Pokud není avatarColor, použije se 1
-                  }}
-                  className={styles.userImg}
-                  src={lightbulbWhite}
-                  alt="profile Picture"
-                />
+                <Link to={`/profile/${user?.uuid}`}>
+                  <img
+                    style={{
+                      backgroundColor: colorMap[user?.avatarColor ?? 1], // Pokud není avatarColor, použije se 1
+                    }}
+                    className={styles.userImg}
+                    src={lightbulbWhite}
+                    alt="profile Picture"
+                  />
+                </Link>
               </div>
 
               <div
@@ -245,7 +228,7 @@ export default function Header() {
                   </p>
                   <div className={styles.mobileUserStats}>
                     <div className={styles.mobileUserStat}>
-                      <p>{user.elo}</p>
+                      <p>{Math.round(user.elo)}</p>
                       <img src={eloRed} alt="" />
                     </div>
                   </div>
