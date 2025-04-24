@@ -16,9 +16,9 @@
 
 .status-text {
   font-size: 2rem;
-  color: var(--color-text-primary);
   text-align: center;
   margin-top: 20px;
+  width: 100%;
   color: var(--color-text-primary);
 }
 
@@ -37,7 +37,7 @@
 
 .gamePage {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-between;
   position: relative;
 }

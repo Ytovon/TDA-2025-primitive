@@ -148,7 +148,7 @@ export default function Header() {
               <p className={styles.username}>{user.username}</p>
               <div className={styles.userStats}>
                 <div className={styles.userStat}>
-                  <p>{Math.floor(user.elo)}</p>
+                  <p>{user.elo ? Math.round(user.elo) : "..."}</p>
                   <img style={{ width: "19px" }} src={eloRed} alt="" />
                 </div>
               </div>

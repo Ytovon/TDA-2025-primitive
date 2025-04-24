@@ -13,7 +13,8 @@ interface WebSocketContextType {
   gameID: string;
   multiplayerBoard: string[][];
   multiplayerWinner: string | null;
-  startConnection: () => void; // NEW FUNCTION
+  startConnection: () => void;
+  setStatus: (status: string) => void; // NEW FUNCTION
 }
 
 const WebSocketContext = createContext<WebSocketContextType | undefined>(
@@ -63,7 +64,6 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
 
       switch (data.type) {
         case "matched":
-          setStatus("Match! Game ID: " + data.gameId);
           setGameID(data.gameId);
           setOpponnentUUID(data.opponentUUID);
           setMySymbol(data.player);
@@ -113,6 +113,7 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
         multiplayerBoard,
         multiplayerWinner,
         startConnection, // Expose the function
+        setStatus, // Expose the setStatus function
       }}
     >
       {children}

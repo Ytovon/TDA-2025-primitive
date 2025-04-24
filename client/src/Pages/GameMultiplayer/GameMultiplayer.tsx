@@ -38,12 +38,16 @@ export const GameMultiplayer = () => {
     status,
     opponnentUUID,
     mySymbol,
+    setStatus,
   } = useWebSocketMultiplayer();
 
   // if user is not connected, redirect to home page
   useEffect(() => {
     if (!isConnected) navigate("/");
   }, [isConnected]);
+  useEffect(() => {
+    setStatus("");
+  }, []);
 
   useEffect(() => {
     // Fetch users when the component mounts
@@ -80,26 +84,46 @@ export const GameMultiplayer = () => {
         <div className={styles.menuSide}>
           <h2 className={styles.menuTitle}>Online multiplayer</h2>
 
-          <p className="status-text">{status}</p>
-
           <div className={styles.menu}>
             <div className={styles.menuBackground}>
               <div className={styles.menuFlex}>
                 <div>
-                  <h3>Hráč1</h3>
-                  <img className={styles.userImg} src={lightbulbWhite} alt="" />
+                  <h3>{Me?.username}</h3>
+                  <img
+                    style={{
+                      backgroundColor: Me?.avatarColor
+                        ? `#${Me.avatarColor.toString()}`
+                        : undefined,
+                    }}
+                    className={styles.userImg}
+                    src={lightbulbWhite}
+                    alt=""
+                  />
                 </div>
                 <p>vs</p>
                 <div>
-                  <h3>Hráč2</h3>
-                  <img className={styles.userImg} src={lightbulbWhite} alt="" />
+                  <h3>{Me?.username}</h3>
+                  <img
+                    style={{
+                      backgroundColor: Me?.avatarColor
+                        ? `#${Me.avatarColor.toString()}`
+                        : undefined,
+                    }}
+                    className={styles.userImg}
+                    src={lightbulbWhite}
+                    alt=""
+                  />
                 </div>
               </div>
 
               <div className={styles.menuFlex}>
-                <p className={styles.eloCount}>400</p>
+                <p className={styles.eloCount}>
+                  {Math.floor(Me?.elo ? Me.elo : 0)}
+                </p>
                 <p>ELO</p>
-                <p className={styles.eloCount}>400</p>
+                <p className={styles.eloCount}>
+                  {Math.floor(Opponent?.elo ? Opponent.elo : 0)}
+                </p>{" "}
               </div>
             </div>
 
@@ -117,6 +141,8 @@ export const GameMultiplayer = () => {
         </div>
 
         <div className={styles.gameSide}>
+          <p className="status-text">{status}</p>
+
           <div className={styles.gameWrapper}>
             <div className={styles.gameGrid}>
               {multiplayerBoard.map((row, rowIndex) =>
@@ -162,8 +188,7 @@ export const GameMultiplayer = () => {
 
               <Button
                 text="Zpět na domovskou stránku"
-                color={multiplayerWinner === "red" ? "#E31837" : "#0070BB"}
-                border={multiplayerWinner !== "red"}
+                color={multiplayerWinner === "X" ? "#E31837" : "#0070BB"}
                 width="170px"
                 height="45px"
                 onClick={() => {
@@ -174,7 +199,7 @@ export const GameMultiplayer = () => {
 
             <img
               className={styles.winnerCardImg}
-              src={multiplayerWinner === "red" ? winnerRed : winnerBlue}
+              src={multiplayerWinner === "X" ? winnerRed : winnerBlue}
               alt="winner"
             />
           </div>
