@@ -14,7 +14,6 @@ import { useParams } from "react-router-dom";
 import { UserApiClient } from "../../API/UserApi";
 import { UserModel } from "../../Model/UserModel";
 import { useDarkMode } from "../../Context/DarkModeContext";
-import { Footer } from "../../Components/Footer/Footer";
 
 export const UserPage = () => {
   const { uuid } = useParams<{ uuid: string }>(); // Získání UUID z URL

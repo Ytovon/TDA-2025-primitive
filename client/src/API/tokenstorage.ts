@@ -23,7 +23,7 @@ export const setRefreshToken = (token: string) =>
   localStorage.setItem("refresh_token", token);
 
 export const setUUID = (uuid: string) => localStorage.setItem("uuid", uuid);
-export const getUUID = (uuid: string) => localStorage.getItem("uuid");
+export const getUUID = (): string | null => localStorage.getItem("uuid");
 
 // Clear both tokens (for logout or token expiration)
 export const clearTokens = () => {

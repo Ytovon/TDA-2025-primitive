@@ -66,7 +66,7 @@ root.render(
             }
           />
           <Route
-            path="/freeplay"
+            path="/multiplayer"
             element={
               <WebSocketWrapperMultiplayer>
                 <GameMultiplayer />

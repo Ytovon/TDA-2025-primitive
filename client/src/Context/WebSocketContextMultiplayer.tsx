@@ -1,12 +1,14 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { getAccessTokenAsync } from "../API/tokenstorage";
 
-const WEBSOCKET_URL = `ws://localhost:5000/ws?token=${getAccessTokenAsync()}`;
+const WEBSOCKET_URL = `ws://localhost:5000/ws?token=${await getAccessTokenAsync()}`;
 
 interface WebSocketContextType {
   socket: WebSocket | null;
   isConnected: boolean;
   status: string;
+  opponnentUUID: string;
+  mySymbol: string;
   sendMessage: (message: any) => void;
   gameID: string;
   multiplayerBoard: string[][];
@@ -31,6 +33,9 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
   const [isConnected, setIsConnected] = useState(false);
   const [status, setStatus] = useState("...");
   const [gameID, setGameID] = useState("");
+  const [mySymbol, setMySymbol] = useState("");
+
+  const [opponnentUUID, setOpponnentUUID] = useState("");
   const [multiplayerBoard, setMultiplayerBoard] = useState<string[][]>(
     Array.from({ length: 15 }, () => Array(15).fill(""))
   );
@@ -60,7 +65,9 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
         case "matched":
           setStatus("Match! Game ID: " + data.gameId);
           setGameID(data.gameId);
-          navigate("/freeplay");
+          setOpponnentUUID(data.opponentUUID);
+          setMySymbol(data.player);
+          navigate("/multiplayer");
           break;
         case "update":
           setStatus(data.message);
@@ -96,6 +103,8 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
   return (
     <WebSocketContext.Provider
       value={{
+        mySymbol,
+        opponnentUUID,
         socket,
         isConnected,
         status,

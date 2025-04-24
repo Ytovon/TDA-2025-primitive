@@ -1,32 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import styles from "./GameMultiplayer.module.css";
-import { useDarkMode } from "../../Context/DarkModeContext";
 import { Button } from "../../Components/Button/Button";
-import { ApiClient } from "../../API/GameApi";
+import { useNavigate } from "react-router-dom";
 import { useWebSocketMultiplayer } from "../../Context/WebSocketContextMultiplayer";
 import {
   symbolX,
   symbolO,
-  arrowBlack,
-  arrowWhite,
   winnerBlue,
   winnerRed,
   lightbulbWhite,
 } from "../../assets/assets";
+import { UserApiClient } from "../../API/UserApi";
+import { User } from "../../Model/UserModel";
+import { getUUID } from "../../API/tokenstorage";
 
-export const GameMultiplayer = ({ uuid = "" }) => {
-  const navigate = useNavigate();
-  const { darkMode } = useDarkMode();
-  const {
-    isConnected,
-    sendMessage,
-    gameID,
-    multiplayerBoard,
-    multiplayerWinner,
-    status,
-  } = useWebSocketMultiplayer();
-
+export const GameMultiplayer = () => {
   interface Move {
     row: number;
     col: number;
@@ -37,117 +25,62 @@ export const GameMultiplayer = ({ uuid = "" }) => {
     gameId: string;
     move: Move;
   }
+  const [Me, setMe] = useState<User | null>(null);
+  const [Opponent, setOpponent] = useState<User | null>(null);
 
-  const [game, setGame] = useState({
-    board: Array.from({ length: 15 }, () => Array(15).fill("")),
-    initialBoard: Array.from({ length: 15 }, () => Array(15).fill("")),
-    difficulty: "",
-    gameState: "",
-    name: "Hra s přítelem",
-    uuid,
-  });
-  const [grid, setGrid] = useState(
-    Array.from({ length: 15 }, () => Array(15).fill(""))
-  );
-  const [player, setPlayer] = useState(true);
-  const [winner, setWinner] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const {
+    isConnected,
+    sendMessage,
+    gameID,
+    multiplayerBoard,
+    multiplayerWinner,
+    status,
+    opponnentUUID,
+    mySymbol,
+  } = useWebSocketMultiplayer();
+
+  // if user is not connected, redirect to home page
+  useEffect(() => {
+    if (!isConnected) navigate("/");
+  }, [isConnected]);
 
   useEffect(() => {
-    const fetchGame = async () => {
-      document.documentElement.classList.remove("winnerRed");
-      const fetchedGame = await ApiClient.fetchSpecificGame(uuid);
-      if (fetchedGame) {
-        setGame(fetchedGame);
-        setGrid(fetchedGame.board);
+    // Fetch users when the component mounts
+    const fetchUsers = async () => {
+      try {
+        const opponent = await UserApiClient.getUserByUUID(opponnentUUID);
+        const me = await UserApiClient.getUserByUUID(getUUID() as string);
+        setOpponent(opponent as User);
+        setMe(me as User);
+      } catch (error) {
+        console.error("Error fetching users:", error);
       }
     };
-    fetchGame();
-  }, [uuid]);
-
-  useEffect(
-    () =>
-      setWinner(
-        multiplayerWinner === "X"
-          ? "red"
-          : multiplayerWinner === "O"
-          ? "blue"
-          : multiplayerWinner
-      ),
-    [multiplayerWinner]
-  );
-  useEffect(() => {
-    if (JSON.stringify(grid) !== JSON.stringify(multiplayerBoard)) {
-      setGrid(multiplayerBoard);
+    if (opponnentUUID) {
+      fetchUsers();
     }
-  }, [multiplayerBoard]);
-  useEffect(
-    () => setPlayer(grid.flat().filter((cell) => cell).length % 2 === 0),
-    [grid]
-  );
-
-  const checkWin = (row: number, col: number, symbol: string): boolean => {
-    const directions: [number, number][] = [
-      [0, 1],
-      [1, 0],
-      [1, 1],
-      [1, -1],
-    ];
-    return directions.some(([dr, dc]) => {
-      let count = 1,
-        r: number,
-        c: number;
-      for (
-        [r, c] = [row + dr, col + dc];
-        grid[r]?.[c] === symbol;
-        [r, c] = [r + dr, c + dc]
-      )
-        count++;
-      for (
-        [r, c] = [row - dr, col - dc];
-        grid[r]?.[c] === symbol;
-        [r, c] = [r - dr, c - dc]
-      )
-        count++;
-      if (count >= 5) {
-        console.log(`Winner detected: ${symbol === "X" ? "red" : "blue"}`);
-        setWinner(symbol === "X" ? "red" : "blue");
-        document.documentElement.classList.add("winnerRed");
-        return true;
-      }
-      return false;
-    });
-  };
+  }, [opponnentUUID]);
 
   const cellClick = (row: number, col: number): void => {
-    if (grid[row][col] || winner) return;
+    if (multiplayerBoard[row][col] || multiplayerWinner) return;
     if (isConnected) {
       const message: CellClickMessage = {
         type: "move",
         gameId: gameID,
         move: { row, col },
       };
-      return sendMessage(message);
+      sendMessage(message);
     }
-    setGrid((prev) => {
-      const newGrid = prev.map((row) => [...row]);
-      newGrid[row][col] = player ? "X" : "O";
-      return newGrid;
-    });
-    checkWin(row, col, player ? "X" : "O") || setPlayer(!player);
   };
 
   return (
     <div className={styles.body}>
       <div className={styles.gamePage}>
-        <div
-          style={{
-            boxShadow: player
-              ? "var(--shadow-game-red)"
-              : "var(--shadow-game-blue)",
-          }}
-          className={styles.menuSide}
-        >
+        <div className={styles.menuSide}>
           <h2 className={styles.menuTitle}>Online multiplayer</h2>
+
+          <p className="status-text">{status}</p>
 
           <div className={styles.menu}>
             <div className={styles.menuBackground}>
@@ -184,10 +117,9 @@ export const GameMultiplayer = ({ uuid = "" }) => {
         </div>
 
         <div className={styles.gameSide}>
-          <h2 className={styles.title}>{game.name}</h2>
           <div className={styles.gameWrapper}>
             <div className={styles.gameGrid}>
-              {grid.map((row, rowIndex) =>
+              {multiplayerBoard.map((row, rowIndex) =>
                 row.map((cell, colIndex) => (
                   <div
                     key={`${rowIndex}-${colIndex}`}
@@ -209,38 +141,45 @@ export const GameMultiplayer = ({ uuid = "" }) => {
         </div>
       </div>
 
-      {winner && (
+      {multiplayerWinner && (
         <div
           className={`${styles.winnerCardWrapper} ${styles.active}`}
           style={{ display: "flex" }}
         >
           <div className={styles.winnerCard}>
             <div>
-              <h2 className={styles.winnerCardTitle}>Gratulujeme</h2>
+              <h2 className={styles.winnerCardTitle}>
+                {" "}
+                {multiplayerWinner === mySymbol
+                  ? `Gratulujeme!`
+                  : `Snad to výjde příště...`}
+              </h2>
               <p className={styles.winnerCardSubtitle}>
-                k výhře hráči v {winner === "red" ? "červeném" : "modrém"}
+                {multiplayerWinner === mySymbol
+                  ? `${Me?.username} vyhrál jste!`
+                  : `${Opponent?.username} vyhrál...`}
               </p>
 
               <Button
-                text="Ukončit"
-                color={winner === "red" ? "#E31837" : "#0070BB"}
-                border={winner !== "red"}
-                onClick={() => navigate(game.uuid ? "/Games" : "/")}
+                text="Zpět na domovskou stránku"
+                color={multiplayerWinner === "red" ? "#E31837" : "#0070BB"}
+                border={multiplayerWinner !== "red"}
                 width="170px"
                 height="45px"
+                onClick={() => {
+                  navigate("/");
+                }}
               />
             </div>
 
             <img
               className={styles.winnerCardImg}
-              src={winner === "red" ? winnerRed : winnerBlue}
+              src={multiplayerWinner === "red" ? winnerRed : winnerBlue}
               alt="winner"
             />
           </div>
         </div>
       )}
-
-      <p style={{ color: "white" }}>{status}</p>
     </div>
   );
 };
