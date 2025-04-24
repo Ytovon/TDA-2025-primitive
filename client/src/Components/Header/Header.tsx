@@ -20,15 +20,10 @@ import {
 } from "../../assets/assets";
 import styles from "./Header.module.css";
 import { useDarkMode } from "../../Context/DarkModeContext";
-import {
-  getAccessTokenAsync,
-  clearTokens,
-  getRefreshToken,
-  setUUID,
-} from "../../API/tokenstorage"; // Your token storage functions
+import { clearTokens } from "../../API/tokenstorage"; // Your token storage functions
 
 export default function Header() {
-  const { isAuthenticated, login, logout, user } = useAuth();
+  const { isAuthenticated, logout, user } = useAuth();
   const navigate = useNavigate();
   const { darkMode } = useDarkMode();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
@@ -250,7 +245,7 @@ export default function Header() {
                 className={styles.mobileLinkDropdown}
               >
                 <Link
-                  to={user.uuid ? `/profile/${user.uuid}` : "#"}
+                  to={user.uuid ? `/profile/${user.uuid}` : ""}
                   className={`${styles.link} ${styles.mobileLink}`}
                 >
                   Přehled

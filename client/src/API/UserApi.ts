@@ -35,19 +35,15 @@ export class UserApiClient {
   }): Promise<
     { user: UserModel; accessToken: string; refreshToken: string } | string
   > {
-    try {
-      const response = await userApiInstance.post(`/login`, credentials);
-      const { user, accessToken, refreshToken } = response.data;
+    // no try catch block here, as the error will be handled in the calling function
+    const response = await userApiInstance.post(`/login`, credentials);
+    const { user, accessToken, refreshToken } = response.data;
 
-      // Store the tokens (You can adjust this based on your storage logic)
-      setRefreshToken(refreshToken);
-      setAccessToken(accessToken);
+    // Store the tokens (You can adjust this based on your storage logic)
+    setRefreshToken(refreshToken);
+    setAccessToken(accessToken);
 
-      return { user, accessToken, refreshToken };
-    } catch (error: any) {
-      console.error("Error logging in user:", error);
-      return error.response?.data?.message || error.message;
-    }
+    return { user, accessToken, refreshToken };
   }
 
   // Refresh access token
@@ -103,9 +99,37 @@ export class UserApiClient {
   static async getUserByUUID(uuid: string): Promise<UserModel | string> {
     try {
       const response = await userApiInstance.get(`/${uuid}`);
+      console.log("API response:", response.data); // Přidej výpis do konzole
       return response.data;
     } catch (error: any) {
       console.error("Error fetching user by UUID:", error);
+      return error.response?.data?.message || error.message;
+    }
+  }
+
+  // Update user by UUID
+  static async updateUserByUUID(
+    uuid: string,
+    userData: Partial<
+      Pick<
+        UserModel,
+        | "username"
+        | "email"
+        | "password"
+        | "elo"
+        | "wins"
+        | "draws"
+        | "losses"
+        | "AvatarColor"
+        | "note"
+      >
+    >
+  ): Promise<UserModel | string> {
+    try {
+      const response = await userApiInstance.put(`/${uuid}`, userData);
+      return response.data;
+    } catch (error: any) {
+      console.error("Error updating user by UUID:", error);
       return error.response?.data?.message || error.message;
     }
   }

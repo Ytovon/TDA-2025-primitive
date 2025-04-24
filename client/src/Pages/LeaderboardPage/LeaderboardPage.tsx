@@ -54,7 +54,22 @@ export const LeaderboardPage = () => {
         <p className={styles.leaderboardText}>Probojuj se na vrchol!</p>
 
         {loading ? (
-          <p>Načítání...</p>
+          <table className={styles.leaderboardLoading}>
+            <thead>
+              <tr>
+                <th>Pozice</th>
+                <th>Uživatel</th>
+                <th>ELO</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{""}</td>
+                <td>{""}</td>
+                <td>{""}</td>
+              </tr>
+            </tbody>
+          </table>
         ) : (
           <table className={styles.leaderboard}>
             <thead>

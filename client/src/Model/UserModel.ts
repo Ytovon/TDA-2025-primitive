@@ -13,7 +13,7 @@ export interface UserModel {
   isAdmin: boolean;
   isBanned?: boolean;
   note?: string;
-  avatarColor?: number;
+  AvatarColor?: number;
 }
 
 export class User implements UserModel {

@@ -26,7 +26,6 @@ import {
   handshakeBlack,
 } from "../../assets/assets";
 import { useDarkMode } from "../../Context/DarkModeContext";
-import { Link, useNavigate } from "react-router-dom";
 import { Footer } from "../../Components/Footer/Footer";
 import { useParams } from "react-router-dom";
 import { UserApiClient } from "../../API/UserApi";
@@ -34,16 +33,14 @@ import { UserModel } from "../../Model/UserModel";
 
 export const ProfilePage = () => {
   const { uuid } = useParams<{ uuid: string }>(); // Získání UUID z URL
-  const [user, setUser] = useState<UserModel | null>(null);
+  const [user, setUser] = useState<UserModel | null>();
+  const [tmpUser, setTmpUser] = useState<UserModel | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
-  const [selectedColor, setSelectedColor] = useState<string>("var(--color1)");
-  const [note, setNote] = useState(user?.note || "");
   const noteMaxLength = 120;
 
   const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -64,24 +61,47 @@ export const ProfilePage = () => {
     fetchUser();
   }, [uuid]);
 
-  useEffect(() => {
-    if (user?.avatarColor) {
-      setSelectedColor(colorMap[user.avatarColor] || "var(--color1)");
-    }
-  }, [user]);
-
   const handleSaveChanges = async () => {
     if (!uuid) return;
     try {
-      setUser((prev) => (prev ? { ...prev, note } : null)); // Aktualizace stavu uživatele
+      await UserApiClient.updateUserByUUID(user?.uuid ?? "", {
+        username: tmpUser?.username ?? "",
+        email: tmpUser?.email ?? "",
+        password: tmpUser?.password ?? "",
+        AvatarColor: tmpUser?.AvatarColor ?? 1,
+        note: tmpUser?.note ?? "",
+      });
+
+      setUser(tmpUser);
       setIsEditOpen(false);
     } catch (error) {
       setError("Nepodařilo se uložit změny.");
     }
   };
 
+  const openEditMode = () => {
+    setIsEditOpen(true);
+    setTmpUser(user ?? null);
+  };
+
+  const handlePasswordChange = async (newPassword: string) => {
+    setTmpUser((prev) => (prev ? { ...prev, password: newPassword } : null)); // Aktualizace stavu uživatele
+  };
+  const handleEmailChange = async (newEmail: string) => {
+    setTmpUser((prev) => (prev ? { ...prev, email: newEmail } : null)); // Aktualizace stavu uživatele
+  };
+  const handleUsernameChange = async (newUsername: string) => {
+    setTmpUser((prev) => (prev ? { ...prev, username: newUsername } : null)); // Aktualizace stavu uživatele
+  };
   const handleColorChange = async (colorIndex: number) => {
-    setSelectedColor(colorMap[colorIndex]);
+    setTmpUser((prev) => (prev ? { ...prev, AvatarColor: colorIndex } : null)); // Aktualizace stavu uživatele
+  };
+
+  const handleNoteUpdate = async (note: string) => {
+    if (tmpUser) {
+      console.log("Updating note in tmpUser:", note);
+      setTmpUser({ ...tmpUser, note });
+    }
   };
 
   const colorMap: Record<number, string> = {
@@ -92,8 +112,6 @@ export const ProfilePage = () => {
     5: "var(--color5)",
   };
 
-  if (error) return <p>⚠️ Chyba: {error}</p>;
-  if (!user) return <p>⏳ Načítání...</p>;
   return (
     <div className={styles.ProfilePage}>
       <Header />
@@ -105,17 +123,29 @@ export const ProfilePage = () => {
         <div className={styles.userInfoContainer}>
           <div className={styles.userInfo}>
             <div className={styles.userInfoHeader}>
-              <div className={styles.userImgContainer}>
+              <div
+                className={styles.userImgContainer}
+                style={{
+                  backgroundColor: colorMap[user?.AvatarColor ?? 1],
+                }}
+              >
                 <img
                   style={{
-                    backgroundColor: colorMap[user?.avatarColor ?? 1], // Pokud není avatarColor, použije se 1
+                    backgroundColor: colorMap[user?.AvatarColor ?? 1],
                   }}
                   className={styles.userImg}
                   src={lightbulbWhite}
                   alt="profile Picture"
                 />
               </div>
-              <h1 className={styles.username}>{user.username}</h1>
+              <h1
+                className={styles.username}
+                style={{
+                  backgroundColor: colorMap[user?.AvatarColor ?? 1],
+                }}
+              >
+                {user?.username}
+              </h1>
               <p className={styles.joinDate}>
                 Členem od{" "}
                 <b>
@@ -125,8 +155,11 @@ export const ProfilePage = () => {
                 </b>
               </p>
               <button
-                onClick={() => setIsEditOpen(true)}
+                onClick={() => openEditMode()}
                 className={styles.setting}
+                style={{
+                  backgroundColor: colorMap[user?.AvatarColor ?? 1],
+                }}
               >
                 <p className={styles.settingText}>Upravit</p>
                 <img
@@ -142,19 +175,16 @@ export const ProfilePage = () => {
               <textarea
                 disabled
                 className={styles.note}
-                value={note}
-                onChange={(e) => {
-                  if (e.target.value.length <= 120) {
-                    setNote(e.target.value);
-                  }
-                }}
-                placeholder="Vložte poznámku..."
+                value={user?.note}
+                placeholder="Text poznámky..."
               />
             </div>
           </div>
           <div className={styles.statsContainer}>
             <div className={styles.statsHeader}>
-              <h1 className={styles.statsTitle}>{Math.round(user.elo)}</h1>
+              <h1 className={styles.statsTitle}>
+                {user?.elo ? Math.round(user?.elo) : ""}
+              </h1>
               <img className={styles.statsImg} src={eloWhite} />
             </div>
 
@@ -164,7 +194,9 @@ export const ProfilePage = () => {
                 <p>
                   Hry:{" "}
                   <span className={styles.redBold}>
-                    {user.losses + user.wins + user.draws}
+                    {(user?.losses ?? 0) +
+                      (user?.wins ?? 0) +
+                      (user?.draws ?? 0)}
                   </span>
                 </p>
               </div>
@@ -174,7 +206,7 @@ export const ProfilePage = () => {
                   src={darkMode ? statsTrophyWhite : statsTrophy}
                 />
                 <p>
-                  Výhry: <span className={styles.redBold}>{user.wins}</span>
+                  Výhry: <span className={styles.redBold}>{user?.wins}</span>
                 </p>
               </div>
               <div className={styles.stat}>
@@ -184,7 +216,7 @@ export const ProfilePage = () => {
                   alt=""
                 />
                 <p>
-                  Remíza: <span className={styles.redBold}>{user.draws}</span>
+                  Remíza: <span className={styles.redBold}>{user?.draws}</span>
                 </p>
               </div>
 
@@ -195,16 +227,22 @@ export const ProfilePage = () => {
                   src={darkMode ? statsTrophyWhite : statsTrophy}
                 />
                 <p>
-                  Prohry: <span className={styles.redBold}>{user.losses}</span>
+                  Prohry: <span className={styles.redBold}>{user?.losses}</span>
                 </p>
               </div>
               <div className={styles.stat}>
                 <p>
                   WR:{" "}
                   <span className={styles.redBold}>
-                    {user.wins + user.draws + user.losses > 0
+                    {(user?.losses ?? 0) +
+                      (user?.wins ?? 0) +
+                      (user?.draws ?? 0) >
+                    0
                       ? Math.round(
-                          (user.wins / (user.wins + user.draws + user.losses)) *
+                          ((user?.wins ?? 0) /
+                            ((user?.losses ?? 0) +
+                              (user?.wins ?? 0) +
+                              (user?.draws ?? 0))) *
                             100
                         ) || 0
                       : 0}
@@ -298,20 +336,18 @@ export const ProfilePage = () => {
               <h4 className={styles.editInputTitle}>Poznámka</h4>
               <p className={styles.characterLeft}>
                 <p className={styles.characterLeft}>
-                  Zbývá {noteMaxLength - note.length} znaků
+                  Zbývá {noteMaxLength - (user?.note ?? "").length} znaků
                 </p>
               </p>
             </div>
             <textarea
               style={{ height: "50px" }}
               className={styles.note}
-              value={note}
-              onChange={(e) => {
-                if (e.target.value.length <= noteMaxLength) {
-                  setNote(e.target.value);
-                }
-              }}
+              value={tmpUser?.note}
               placeholder="Vložte poznámku..."
+              onChange={(e) => {
+                handleNoteUpdate(e.target.value);
+              }}
             />
           </div>
 
@@ -321,7 +357,8 @@ export const ProfilePage = () => {
               className={styles.editInput}
               type="text"
               placeholder="Uživatelské jméno"
-              value={user.username}
+              value={tmpUser?.username}
+              onChange={(e) => handleUsernameChange(e.target.value)}
             />
           </div>
 
@@ -331,7 +368,8 @@ export const ProfilePage = () => {
               className={styles.editInput}
               type="email"
               placeholder="example@email.com"
-              value={user.email}
+              value={user?.email}
+              onChange={(e) => handleEmailChange(e.target.value)}
             />
           </div>
 
@@ -340,7 +378,7 @@ export const ProfilePage = () => {
             <input
               className={styles.editInput}
               type="password"
-              value={"nevimk"}
+              onChange={(e) => handlePasswordChange(e.target.value)}
             />
           </div>
           <div className={styles.saveChangesResponsive}>
@@ -373,7 +411,7 @@ export const ProfilePage = () => {
               style={{ backgroundColor: "#00000000" }}
             >
               <img
-                style={{ backgroundColor: selectedColor }}
+                style={{ backgroundColor: colorMap[tmpUser?.AvatarColor ?? 1] }}
                 className={styles.userImgEdit}
                 src={lightbulbWhite}
                 alt=""

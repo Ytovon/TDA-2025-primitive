@@ -14,27 +14,39 @@ import { useParams } from "react-router-dom";
 import { UserApiClient } from "../../API/UserApi";
 import { UserModel } from "../../Model/UserModel";
 import { useDarkMode } from "../../Context/DarkModeContext";
+import { useNavigate } from "react-router-dom";
+import { getUUID } from "../../API/tokenstorage";
 
 export const UserPage = () => {
   const { uuid } = useParams<{ uuid: string }>(); // Získání UUID z URL
   const [user, setUser] = useState<UserModel | null>(null);
-  const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
-  const [selectedColor, setSelectedColor] = useState("#91bedc");
-  const [error, setError] = useState<string | null>(null);
+  const { darkMode } = useDarkMode();
+
+  const navigate = useNavigate();
+
+  const colorMap: Record<number, string> = {
+    1: "var(--color1)",
+    2: "var(--color2)",
+    3: "var(--color3)",
+    4: "var(--color4)",
+    5: "var(--color5)",
+  };
 
   useEffect(() => {
+    if (uuid == getUUID()) {
+      navigate("/Profile/" + uuid);
+      return;
+    }
     const fetchUser = async () => {
       if (!uuid) return;
 
       try {
-        const userData = await UserApiClient.getUserByUUID(uuid);
-        if (typeof userData === "string") {
-          setError(userData); // Pokud API vrátí chybovou zprávu
-        } else {
-          setUser(userData); // Nastavení získaného uživatele do stavu
-        }
+        const userData: UserModel | string = await UserApiClient.getUserByUUID(
+          uuid
+        );
+        typeof userData !== "string" && setUser(userData);
       } catch (err) {
-        setError("Nepodařilo se načíst uživatele.");
+        console.error("Nepodařilo se načíst uživatele.", err);
       }
     };
 
@@ -48,15 +60,25 @@ export const UserPage = () => {
       <div className={styles.userInfoContainer}>
         <div className={styles.userInfo}>
           <div className={styles.userInfoHeader}>
-            <div className={styles.userImgContainer}>
+            <div
+              className={styles.userImgContainer}
+              style={{ backgroundColor: colorMap[user?.AvatarColor ?? 1] }}
+            >
               <img
-                style={{ backgroundColor: selectedColor }}
+                style={{ backgroundColor: colorMap[user?.AvatarColor ?? 1] }}
                 className={styles.userImg}
                 src={lightbulbWhite}
                 alt="profile Picture"
               />
             </div>
-            {user && <h1 className={styles.username}>{user.username}</h1>}
+            {user && (
+              <h1
+                className={styles.username}
+                style={{ backgroundColor: colorMap[user?.AvatarColor ?? 1] }}
+              >
+                {user.username}{" "}
+              </h1>
+            )}
             <p className={styles.joinDate}>
               Členem od{" "}
               <b>
@@ -65,7 +87,10 @@ export const UserPage = () => {
                   : "Neznámé datum"}
               </b>
             </p>
-            <div className={styles.setting}></div>
+            <div
+              className={styles.setting}
+              style={{ backgroundColor: colorMap[user?.AvatarColor ?? 1] }}
+            ></div>
           </div>
 
           <div className={styles.noteContainer}>
@@ -74,6 +99,7 @@ export const UserPage = () => {
               className={styles.note}
               disabled
               placeholder="Někomu tu chybí poznámka..."
+              value={user?.note ? user.note : ""}
             />
           </div>
         </div>

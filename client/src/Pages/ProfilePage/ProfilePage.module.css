@@ -98,7 +98,7 @@
   cursor: pointer;
   width: 25px;
   height: 25px;
-  transition: 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out;
 }
 .settingBtn:hover {
   transform: rotate(45deg);

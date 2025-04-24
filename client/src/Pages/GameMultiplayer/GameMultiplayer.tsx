@@ -89,30 +89,12 @@ export const GameMultiplayer = () => {
               <div className={styles.menuFlex}>
                 <div>
                   <h3>{Me?.username}</h3>
-                  <img
-                    style={{
-                      backgroundColor: Me?.avatarColor
-                        ? `#${Me.avatarColor.toString()}`
-                        : undefined,
-                    }}
-                    className={styles.userImg}
-                    src={lightbulbWhite}
-                    alt=""
-                  />
+                  <img className={styles.userImg} src={lightbulbWhite} alt="" />
                 </div>
                 <p>vs</p>
                 <div>
                   <h3>{Me?.username}</h3>
-                  <img
-                    style={{
-                      backgroundColor: Me?.avatarColor
-                        ? `#${Me.avatarColor.toString()}`
-                        : undefined,
-                    }}
-                    className={styles.userImg}
-                    src={lightbulbWhite}
-                    alt=""
-                  />
+                  <img className={styles.userImg} src={lightbulbWhite} alt="" />
                 </div>
               </div>
 
@@ -141,8 +123,6 @@ export const GameMultiplayer = () => {
         </div>
 
         <div className={styles.gameSide}>
-          <p className="status-text">{status}</p>
-
           <div className={styles.gameWrapper}>
             <div className={styles.gameGrid}>
               {multiplayerBoard.map((row, rowIndex) =>
