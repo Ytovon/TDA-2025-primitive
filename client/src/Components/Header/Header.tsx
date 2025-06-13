@@ -11,7 +11,6 @@ import {
   triangleDropdownBlack,
   triangleDropdownWhite,
   eloRed,
-  userImg,
   arrowBlack,
   arrowWhite,
   chevronUpWhite,
@@ -20,80 +19,20 @@ import {
 } from "../../assets/assets";
 import styles from "./Header.module.css";
 import { useDarkMode } from "../../Context/DarkModeContext";
-import {
-  getAccessTokenAsync,
-  clearTokens,
-  getRefreshToken,
-  setUUID,
-  clearUUID,
-  getUUID,
-} from "../../API/tokenstorage"; // Your token storage functions
-import { User, UserModel } from "../../Model/UserModel";
+import { useAuth } from "../../Context/AuthContext";
 
 export default function Header() {
+  const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
-  const [Registered, setRegistered] = useState(false);
-  const [user, setUser] = useState<User>(new User("", "", "", 0, 0, 0, 0));
   const [mobileDropdown, setMobileDropdown] = useState(false);
   const [mobileUserDropdown, setmobileUserDropdown] = useState(false);
-  const [selectedColor, setSelectedColor] = useState<string>("var(--color1)");
 
   const toggleMenu = () => {
     setMenuIsOpen((prev) => !prev);
   };
 
-  // Check if the user is registered on startup
-  useEffect(() => {
-    const verifyUserToken = async () => {
-      const token = await getAccessTokenAsync();
-      if (token && token !== "" && token !== undefined) {
-        let isValid: any = await UserApiClient.verifyToken(token);
-
-        if (!isValid) {
-          // Try to refresh the token if the current token is not valid
-          const refreshToken = getRefreshToken();
-          if (refreshToken) {
-            const newAccessToken = await UserApiClient.refreshToken(
-              refreshToken
-            );
-            if (newAccessToken) {
-              isValid = await UserApiClient.verifyToken(newAccessToken);
-            }
-          }
-        }
-        if (isValid && isValid.data) {
-          const valid = isValid.data.valid;
-          const uuid = isValid.data.uuid;
-
-          setRegistered(valid);
-
-          if (valid && uuid) {
-            setUUID(uuid);
-          }
-        } else {
-          setRegistered(false);
-        }
-      }
-    };
-
-    const fetchSpecificUserData = async () => {
-      // wait here for half a second
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      const uuid = localStorage.getItem("uuid");
-      if (uuid) {
-        const userData: UserModel | string = await UserApiClient.getUserByUUID(
-          uuid
-        );
-        setUser(userData as User);
-      }
-    };
-
-    verifyUserToken();
-    fetchSpecificUserData();
-  }, []);
   const handleMobileDropdown = () => {
     setMobileDropdown((prev) => !prev);
   };
@@ -114,12 +53,6 @@ export default function Header() {
       window.removeEventListener("resize", handleResize);
     };
   }, [menuIsOpen]);
-
-  useEffect(() => {
-    if (user?.avatarColor) {
-      setSelectedColor(colorMap[user.avatarColor] || "var(--color1)");
-    }
-  }, [user]);
 
   const colorMap: Record<number, string> = {
     1: "var(--color1)",
@@ -186,7 +119,7 @@ export default function Header() {
           </div>
 
           <Link
-            style={{ display: Registered ? "none" : "block" }}
+            style={{ display: isAuthenticated ? "none" : "block" }}
             to="/login"
             className={styles.authLink}
           >
@@ -194,14 +127,14 @@ export default function Header() {
           </Link>
 
           <div
-            style={{ display: Registered ? "flex" : "none" }}
+            style={{ display: isAuthenticated ? "flex" : "none" }}
             className={styles.user}
           >
             <div className={styles.userContainer}>
-              <p className={styles.username}>{user.username}</p>
+              <p className={styles.username}>{user?.username || "..."}</p>
               <div className={styles.userStats}>
                 <div className={styles.userStat}>
-                  <p>{Math.floor(user.elo)}</p>
+                  <p>{Math.floor(user?.elo || 0)}</p>
                   <img style={{ width: "19px" }} src={eloRed} alt="" />
                 </div>
               </div>
@@ -228,13 +161,13 @@ export default function Header() {
                 />
                 <p>
                   <Link
-                    to={`/profile/${user.uuid}`}
+                    to={`/profile/${user?.uuid}`}
                     className={`${styles.navLink} ${styles.link}`}
                   >
                     Přehled
                   </Link>
                   <Link
-                    style={{ display: user.isAdmin ? "block" : "none" }}
+                    style={{ display: user?.isAdmin ? "block" : "none" }}
                     to="/users"
                     className={`${styles.navLink} ${styles.link}`}
                   >
@@ -245,8 +178,7 @@ export default function Header() {
                     style={{ cursor: "pointer" }}
                     className={`${styles.navLink} ${styles.link}`}
                     onClick={() => {
-                      setRegistered(false);
-                      clearTokens();
+                      logout();
                       navigate("/");
                     }}
                   >
@@ -276,7 +208,7 @@ export default function Header() {
               className={`${styles.mobileLinkDropdownContainer}`}
             >
               <div
-                style={{ display: Registered ? "flex" : "none" }}
+                style={{ display: isAuthenticated ? "flex" : "none" }}
                 className={styles.mobileUserContainer}
               >
                 <div className={styles.userImgContainer}>
@@ -294,11 +226,11 @@ export default function Header() {
                     style={{ fontSize: "1.375rem" }}
                     className={styles.mobileUsername}
                   >
-                    {user.username}
+                    {user?.username}
                   </p>
                   <div className={styles.mobileUserStats}>
                     <div className={styles.mobileUserStat}>
-                      <p>{user.elo}</p>
+                      <p>{user?.elo}</p>
                       <img src={eloRed} alt="" />
                     </div>
                   </div>
@@ -320,7 +252,7 @@ export default function Header() {
                 className={styles.mobileLinkDropdown}
               >
                 <Link
-                  to={user.uuid ? `/profile/${user.uuid}` : "#"}
+                  to={user?.uuid ? `/profile/${user.uuid}` : "#"}
                   className={`${styles.link} ${styles.mobileLink}`}
                 >
                   Přehled
@@ -335,7 +267,7 @@ export default function Header() {
 
                 <button
                   onClick={() => {
-                    setRegistered(false);
+                    logout();
                     navigate("/");
                   }}
                   className={`${styles.link} ${styles.mobileLink}`}
@@ -412,7 +344,7 @@ export default function Header() {
             </Link>
             <Link
               to="/login"
-              style={{ display: Registered ? "none" : "block" }}
+              style={{ display: isAuthenticated ? "none" : "block" }}
               onClick={() => setMenuIsOpen(false)}
               className={`${styles.mobileMenuLink} `}
             >

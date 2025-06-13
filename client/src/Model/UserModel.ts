@@ -14,6 +14,7 @@ export interface UserModel {
   isBanned?: boolean;
   note?: string;
   avatarColor?: number;
+  lastLogin?: string; // <== přidej tohle, pokud to potřebuješ
 }
 
 export class User implements UserModel {
@@ -32,6 +33,7 @@ export class User implements UserModel {
   isBanned?: boolean;
   note?: string;
   avatarColor?: number;
+  lastLogin?: string;
 
   constructor(
     username: string,
@@ -47,7 +49,8 @@ export class User implements UserModel {
     updatedAt?: Date,
     isBanned?: boolean,
     note?: string,
-    avatarColor?: number
+    avatarColor?: number,
+    lastLogin?: string // <== přidej tohle, pokud to potřebuješ
   ) {
     this.username = username;
     this.email = email;
@@ -63,5 +66,6 @@ export class User implements UserModel {
     this.isBanned = isBanned;
     this.note = note;
     this.avatarColor = avatarColor;
+    this.lastLogin = lastLogin;
   }
 }

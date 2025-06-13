@@ -17,14 +17,11 @@
 /* ****************************** */
 .title {
   color: var(--color-text-primary);
-  font-size: 3.25rem;
-  top: 30px;
-  left: 50%;
-  transform: translate(-50%);
+  font-size: 3rem;
   text-align: center;
   height: min-content;
-  position: absolute;
   z-index: 100;
+  margin-bottom: 2rem;
 }
 
 .gamePage {
@@ -43,7 +40,6 @@
 .menuSide {
   background-color: var(--color-background-light);
   width: 30%;
-  height: 100vh;
   padding: 90px 0;
   color: var(--color-text-primary);
 }
@@ -274,16 +270,14 @@
   .body {
     overflow: auto;
   }
-  .title {
-    top: 0;
-  }
   .gamePage {
-    flex-direction: column;
+    flex-direction: row;
   }
   .menuSide {
     width: 100%;
     height: fit-content;
     padding-block: 90px 50px;
+    width: 50%;
   }
   .gameSide {
     width: 100%;
@@ -294,7 +288,6 @@
     display: none;
   }
   .title {
-    top: 20px;
     font-size: 2.25rem;
   }
   .game {

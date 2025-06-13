@@ -26,9 +26,9 @@ interface GamePageProps {
 
 export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
   const navigate = useNavigate();
-  const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
+  const { darkMode } = useDarkMode();
   const [player, setPlayer] = useState(true); // true = hráč X, false = hráč O
-  const [winner, setWinner] = useState<string | null>("");
+  const [winner, setWinner] = useState<string | null>(null);
 
   const [game, setGame] = useState<Game>({
     board: [],
@@ -255,7 +255,7 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
 
       <div
         className={`${styles.winnerCardWrapper} ${
-          winner != "" ? styles.active : ""
+          winner != null ? styles.active : ""
         }`}
       >
         <div className={styles.winnerCard}>

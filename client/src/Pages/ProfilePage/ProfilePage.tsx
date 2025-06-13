@@ -5,16 +5,11 @@ import { Button } from "../../Components/Button/Button";
 import {
   historyRotateBlack,
   historyRotateWhite,
-  lightbulbBlue,
   lightbulbWhite,
   lightModeButton,
-  modraZarovkaO,
   moon,
-  moonAdaptive,
   eloWhite,
-  eloRed,
   settingFullWhite,
-  settingsButton,
   statsGames,
   statsTrophy,
   statsTrophyWhite,
@@ -25,55 +20,49 @@ import {
   handshakeWhite,
   handshakeBlack,
 } from "../../assets/assets";
+import { UserModel } from "../../Model/UserModel";
+import { UserApiClient } from "../../API/UserApi";
 import { useDarkMode } from "../../Context/DarkModeContext";
 import { Link, useNavigate } from "react-router-dom";
 import { Footer } from "../../Components/Footer/Footer";
 import { useParams } from "react-router-dom";
-import { UserApiClient } from "../../API/UserApi";
-import { UserModel } from "../../Model/UserModel";
+import { useAuth } from "../../Context/AuthContext";
 
 export const ProfilePage = () => {
+  const { user, setGlobalUser } = useAuth();
   const { uuid } = useParams<{ uuid: string }>(); // Získání UUID z URL
-  const [user, setUser] = useState<UserModel | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
-  const [selectedColor, setSelectedColor] = useState<string>("var(--color1)");
+  const [selectedColor, setSelectedColor] = useState<number>(1);
   const [note, setNote] = useState(user?.note || "");
   const noteMaxLength = 120;
 
   const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      if (!uuid) return;
-
-      try {
-        const userData = await UserApiClient.getUserByUUID(uuid);
-        if (typeof userData === "string") {
-          setError(userData); // Pokud API vrátí chybovou zprávu
-        } else {
-          setUser(userData); // Nastavení získaného uživatele do stavu
-        }
-      } catch (err) {
-        setError("Nepodařilo se načíst uživatele.");
-      }
-    };
-
-    fetchUser();
-  }, [uuid]);
-
-  useEffect(() => {
-    if (user?.avatarColor) {
-      setSelectedColor(colorMap[user.avatarColor] || "var(--color1)");
-    }
-  }, [user]);
 
   const handleSaveChanges = async () => {
     if (!uuid) return;
     try {
-      setUser((prev) => (prev ? { ...prev, note } : null)); // Aktualizace stavu uživatele
+      setGlobalUser({
+        uuid: user?.uuid ?? "",
+        username: user?.username ?? "",
+        email: user?.email ?? "",
+        password: user?.password ?? "",
+        isAdmin: user?.isAdmin ?? false,
+        elo: user?.elo ?? 0,
+        wins: user?.wins ?? 0,
+        draws: user?.draws ?? 0,
+        losses: user?.losses ?? 0,
+        lastLogin: user?.lastLogin ?? "",
+        avatarColor: selectedColor ?? 1,
+        note: user?.note ?? "",
+      });
+
+      await UserApiClient.updateUserByUUID(
+        user?.uuid ?? "",
+        user as Partial<UserModel>
+      );
+
       setIsEditOpen(false);
     } catch (error) {
       setError("Nepodařilo se uložit změny.");
@@ -81,7 +70,7 @@ export const ProfilePage = () => {
   };
 
   const handleColorChange = async (colorIndex: number) => {
-    setSelectedColor(colorMap[colorIndex]);
+    setSelectedColor(colorIndex);
   };
 
   const colorMap: Record<number, string> = {
@@ -105,7 +94,12 @@ export const ProfilePage = () => {
         <div className={styles.userInfoContainer}>
           <div className={styles.userInfo}>
             <div className={styles.userInfoHeader}>
-              <div className={styles.userImgContainer}>
+              <div
+                className={styles.userImgContainer}
+                style={{
+                  backgroundColor: colorMap[user?.avatarColor ?? 1], // Pokud není avatarColor, použije se 1
+                }}
+              >
                 <img
                   style={{
                     backgroundColor: colorMap[user?.avatarColor ?? 1], // Pokud není avatarColor, použije se 1
@@ -115,7 +109,14 @@ export const ProfilePage = () => {
                   alt="profile Picture"
                 />
               </div>
-              <h1 className={styles.username}>{user.username}</h1>
+              <h1
+                className={styles.username}
+                style={{
+                  backgroundColor: colorMap[user?.avatarColor ?? 1], // Pokud není avatarColor, použije se 1
+                }}
+              >
+                {user.username}
+              </h1>
               <p className={styles.joinDate}>
                 Členem od{" "}
                 <b>
@@ -127,6 +128,9 @@ export const ProfilePage = () => {
               <button
                 onClick={() => setIsEditOpen(true)}
                 className={styles.setting}
+                style={{
+                  backgroundColor: colorMap[user?.avatarColor ?? 1], // Pokud není avatarColor, použije se 1
+                }}
               >
                 <p className={styles.settingText}>Upravit</p>
                 <img
@@ -373,7 +377,7 @@ export const ProfilePage = () => {
               style={{ backgroundColor: "#00000000" }}
             >
               <img
-                style={{ backgroundColor: selectedColor }}
+                style={{ backgroundColor: colorMap[selectedColor] }}
                 className={styles.userImgEdit}
                 src={lightbulbWhite}
                 alt=""

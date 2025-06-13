@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { getAccessTokenAsync } from "../API/tokenstorage";
 
-const WEBSOCKET_URL = `ws://localhost:5000/ws?token=${getAccessTokenAsync()}`;
+const WEBSOCKET_URL = `ws://localhost:5000/ws?token=${await getAccessTokenAsync()}`;
 
 interface WebSocketContextType {
   socket: WebSocket | null;
@@ -11,7 +11,7 @@ interface WebSocketContextType {
   gameID: string;
   multiplayerBoard: string[][];
   multiplayerWinner: string | null;
-  startConnection: () => void; // NEW FUNCTION
+  startConnection: () => void; // NEWFUNCTION
 }
 
 const WebSocketContext = createContext<WebSocketContextType | undefined>(
@@ -42,6 +42,9 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
 
     const ws = new WebSocket(WEBSOCKET_URL);
     setSocket(ws);
+
+    console.log("snazim se zapnout ws");
+    console.log(WEBSOCKET_URL);
 
     ws.onopen = () => {
       console.log("Connected to WebSocket");

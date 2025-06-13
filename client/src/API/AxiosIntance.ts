@@ -30,7 +30,6 @@ const setAuthHeader = (instance: any, token: string | null) => {
 // Attach access token on startup
 const initializeAuth = async () => {
   const token = await getAccessTokenAsync();
-  console.log("Načtený token:", token);
   if (token) {
     setAuthHeader(userApiInstance, token);
     setAuthHeader(gameApiInstance, token);
@@ -46,8 +45,6 @@ setTimeout(async () => {
 userApiInstance.interceptors.request.use(
   async (config) => {
     const token = await getAccessTokenAsync();
-
-    console.log("Interceptor získal token pro request:", config.url, token);
 
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;

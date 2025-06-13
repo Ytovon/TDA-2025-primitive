@@ -8,8 +8,6 @@ import { useWebSocketMultiplayer } from "../../Context/WebSocketContextMultiplay
 import {
   symbolX,
   symbolO,
-  arrowBlack,
-  arrowWhite,
   winnerBlue,
   winnerRed,
   lightbulbWhite,
@@ -43,7 +41,7 @@ export const GameMultiplayer = ({ uuid = "" }) => {
     initialBoard: Array.from({ length: 15 }, () => Array(15).fill("")),
     difficulty: "",
     gameState: "",
-    name: "Hra s přítelem",
+    name: "Online multiplayer",
     uuid,
   });
   const [grid, setGrid] = useState(
@@ -147,7 +145,7 @@ export const GameMultiplayer = ({ uuid = "" }) => {
           }}
           className={styles.menuSide}
         >
-          <h2 className={styles.menuTitle}>Online multiplayer</h2>
+          <h2 className={styles.title}>{game.name}</h2>
 
           <div className={styles.menu}>
             <div className={styles.menuBackground}>
@@ -184,7 +182,6 @@ export const GameMultiplayer = ({ uuid = "" }) => {
         </div>
 
         <div className={styles.gameSide}>
-          <h2 className={styles.title}>{game.name}</h2>
           <div className={styles.gameWrapper}>
             <div className={styles.gameGrid}>
               {grid.map((row, rowIndex) =>
@@ -239,8 +236,6 @@ export const GameMultiplayer = ({ uuid = "" }) => {
           </div>
         </div>
       )}
-
-      <p style={{ color: "white" }}>{status}</p>
     </div>
   );
 };

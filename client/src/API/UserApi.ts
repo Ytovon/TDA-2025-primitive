@@ -39,7 +39,6 @@ export class UserApiClient {
       const response = await userApiInstance.post(`/login`, credentials);
       const { user, accessToken, refreshToken } = response.data;
 
-      // Store the tokens (You can adjust this based on your storage logic)
       setRefreshToken(refreshToken);
       setAccessToken(accessToken);
 
@@ -69,12 +68,18 @@ export class UserApiClient {
     }
   }
 
-  static async verifyToken(token: string): Promise<boolean> {
+  static async verifyToken(
+    token: string
+  ): Promise<{ valid: boolean; uuid: string | null }> {
     try {
-      return await userApiInstance.post(`/verify-token`, { token });
+      const response = await userApiInstance.post(`/verify-token`, { token });
+      return {
+        valid: response.data.valid,
+        uuid: response.data.uuid || null,
+      };
     } catch (error: any) {
       console.error("Error verifying token:", error);
-      return false;
+      return { valid: false, uuid: null };
     }
   }
 
@@ -106,6 +111,20 @@ export class UserApiClient {
       return response.data;
     } catch (error: any) {
       console.error("Error fetching user by UUID:", error);
+      return error.response?.data?.message || error.message;
+    }
+  }
+
+  // Update user by UUID
+  static async updateUserByUUID(
+    uuid: string,
+    userData: Partial<UserModel>
+  ): Promise<UserModel | string> {
+    try {
+      const response = await userApiInstance.put(`/${uuid}`, userData);
+      return response.data;
+    } catch (error: any) {
+      console.error("Error updating user by UUID:", error);
       return error.response?.data?.message || error.message;
     }
   }

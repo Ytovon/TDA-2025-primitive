@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import styles from "./LoginPage.module.css";
 import Header from "../../Components/Header/Header";
-import { Button } from "../../Components/Button/Button";
-import { FacebookIcon, GoogleIcon } from "../../assets/assets";
 import { UserApiClient } from "../../API/UserApi";
 import { UserModel } from "../../Model/UserModel";
-import { setAccessToken, setRefreshToken } from "../../API/tokenstorage"; // Your token storage functions
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../Context/AuthContext";
 
 export const LoginPage = () => {
+  const { validate } = useAuth();
+
   const navigate = useNavigate();
   const [isRegistered, setIsRegistered] = useState(true);
   const [formData, setFormData] = useState<Partial<UserModel>>({
@@ -75,7 +75,7 @@ export const LoginPage = () => {
     }
   };
 
-  const login = async () => {
+  const loginOnClick = async () => {
     if (formData.username === "" || formData.password === "") {
       setError("Vyplňte všechny údaje");
     } else {
@@ -89,23 +89,13 @@ export const LoginPage = () => {
         password: user.password,
       });
 
-      // kontrola backend chyb
-      if (response.status === 404) {
-        setError("Uživatel neexistuje");
-      } else if (response.status === 500) {
-        setError("Heslo v db chybí");
-      } else if (response.status === 200) {
-        setError("Přihlášení úspěšné");
-      } else if (response.status === 401) {
-        setError("Špatné heslo");
-      }
+      setError(response);
 
       if (
         response.accessToken !== undefined &&
         response.refreshToken !== undefined
       ) {
-        setAccessToken(response.accessToken);
-        setRefreshToken(response.refreshToken);
+        validate();
         navigate("/");
       }
     }
@@ -116,9 +106,9 @@ export const LoginPage = () => {
 
     if (!isRegistered) {
       await register();
-      await login();
+      await loginOnClick();
     } else {
-      await login();
+      await loginOnClick();
     }
   };
 
@@ -134,7 +124,7 @@ export const LoginPage = () => {
         <h1 className={styles.pageTitle}>
           {isRegistered ? "Přihlásit se" : "Registrace"}
         </h1>
-        <p className={styles.message} style={{ color: "red" }}>
+        <p className={error.length == 0 ? styles.none : styles.message}>
           {error}
         </p>
         <form className={styles.form} onSubmit={handleSubmit}>
