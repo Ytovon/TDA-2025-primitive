@@ -309,21 +309,24 @@ export const ProfilePage = () => {
               {userHistory?.map((game, index) => (
                 <tr key={index}>
                   <td>
-                    <Link to={`/profile/${usersData[game.playerO]?.uuid}`}>
-                      {" "}
-                      {usersData[game.playerO]
-                        ? usersData[game.playerO].username
-                        : "?"}
-                    </Link>
+                    {game.winner && usersData[game.winner] ? (
+                      <Link to={`/profile/${usersData[game.winner].uuid}`}>
+                        {usersData[game.winner].username}
+                      </Link>
+                    ) : (
+                      <span>Remíza</span>
+                    )}
                   </td>
                   <td>
-                    <Link to={`/profile/${usersData[game.playerX]?.uuid}`}>
-                      {usersData[game.playerX]
-                        ? usersData[game.playerX].username
-                        : "?"}
-                    </Link>
+                    {game.loser && usersData[game.loser] ? (
+                      <Link to={`/profile/${usersData[game.loser].uuid}`}>
+                        {usersData[game.loser].username}
+                      </Link>
+                    ) : (
+                      <span>Remíza</span>
+                    )}
                   </td>
-                  <td>{new Date(game.endedAt).toLocaleDateString("cs-CZ")}</td>
+                  <td>{new Date(game.endedAt).toLocaleString("cs-CZ")}</td>
                   <td>
                     <a
                       href=""
