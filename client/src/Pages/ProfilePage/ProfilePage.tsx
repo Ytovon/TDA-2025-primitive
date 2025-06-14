@@ -3,6 +3,14 @@ import styles from "./ProfilePage.module.css";
 import Header from "../../Components/Header/Header";
 import { Button } from "../../Components/Button/Button";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faUser,
+  faUserSlash,
+  faCalendar,
+  faLayerGroup,
+  faEye,
+} from "@fortawesome/free-solid-svg-icons";
 import {
   historyRotateBlack,
   historyRotateWhite,
@@ -28,16 +36,25 @@ import { Footer } from "../../Components/Footer/Footer";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
 import { MatchmakingGame } from "../../Model/MatchmakingGameModel";
-import BlinkingEyesSVG from "../../Components/Animation/lightbulb";
 
 export const ProfilePage = () => {
+  const emptyUser: UserModel = {
+    username: "",
+    email: "",
+    password: "",
+    elo: 0,
+    wins: 0,
+    draws: 0,
+    losses: 0,
+    isAdmin: false,
+  };
+
   const { user, setGlobalUser } = useAuth();
+  const [userToDisplay, setUserToDisplay] = useState<UserModel>(emptyUser);
   const { uuid } = useParams<{ uuid: string }>(); // Získání UUID z URL
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
-  const [selectedColor, setSelectedColor] = useState<number>(1);
-  const [note, setNote] = useState(user?.note || "");
   const noteMaxLength = 120;
 
   const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
@@ -45,73 +62,59 @@ export const ProfilePage = () => {
     null
   );
   const [usersData, setUsersData] = useState<Record<string, UserModel>>({});
-
   const [modalImage, setModalImage] = useState<string>("");
 
   useEffect(() => {
-    // Define async function inside useEffect
-    const fetchData = async () => {
-      if (!user?.uuid) return; // guard if user or uuid missing
+    const fetchAllData = async () => {
+      if (!uuid) return;
 
       try {
-        // Fetch game history
-        const history = await UserApiClient.getGameHistoryByUUID(user.uuid);
-        setUserHistory(history);
+        const userToDisplay =
+          uuid !== user?.uuid ? await UserApiClient.getUserByUUID(uuid) : user;
 
-        // Extract unique UUIDs from the history (playerX and playerO)
-        const uuids: string[] = [
-          ...new Set([
-            ...history.map((game) => game.playerX),
-            ...history.map((game) => game.playerO),
-          ]),
-        ];
+        // Zajisti, že userToDisplay je objekt, ne string
+        if (typeof userToDisplay !== "string" && userToDisplay?.uuid) {
+          setUserToDisplay(userToDisplay);
 
-        // Fetch user data for the unique UUIDs
-        const usersData: Record<string, UserModel> =
-          await UserApiClient.getUsersByUUIDs(uuids);
+          const history = await UserApiClient.getGameHistoryByUUID(
+            userToDisplay.uuid
+          );
+          setUserHistory(history);
 
-        console.log(usersData["7ca29102-9fb5-463d-b380-cfef63e0533f"]);
+          const uniqueUUIDs = [
+            ...new Set([
+              ...history.map((game) => game.playerX),
+              ...history.map((game) => game.playerO),
+            ]),
+          ];
 
-        setUsersData(usersData);
+          const usersData = await UserApiClient.getUsersByUUIDs(uniqueUUIDs);
+          setUsersData(usersData);
+        }
       } catch (error: any) {
-        console.error("Error loading user history or users data:", error);
+        console.error("Error loading user or game data:", error);
       }
     };
-
-    fetchData();
-  }, [user]);
+    fetchAllData();
+  }, [user, uuid]);
 
   const handleSaveChanges = async () => {
     if (!uuid) return;
     try {
       setGlobalUser({
-        uuid: user?.uuid ?? "",
-        username: user?.username ?? "",
-        email: user?.email ?? "",
-        password: user?.password ?? "",
-        isAdmin: user?.isAdmin ?? false,
-        elo: user?.elo ?? 0,
-        wins: user?.wins ?? 0,
-        draws: user?.draws ?? 0,
-        losses: user?.losses ?? 0,
-        lastLogin: user?.lastLogin ?? "",
-        avatarColor: selectedColor ?? 1,
-        note: user?.note ?? "",
+        ...(userToDisplay ?? {}),
+        updatedAt: new Date(),
       });
 
       await UserApiClient.updateUserByUUID(
-        user?.uuid ?? "",
-        user as Partial<UserModel>
+        userToDisplay?.uuid ?? "",
+        userToDisplay as Partial<UserModel>
       );
 
       setIsEditOpen(false);
     } catch (error) {
       setError("Nepodařilo se uložit změny.");
     }
-  };
-
-  const handleColorChange = async (colorIndex: number) => {
-    setSelectedColor(colorIndex);
   };
 
   const colorMap: Record<number, string> = {
@@ -122,13 +125,6 @@ export const ProfilePage = () => {
     5: "var(--color5)",
   };
 
-  if (!user)
-    return (
-      <div className="loading">
-        <p>Stránku pro Vás načítáme...</p>
-        <BlinkingEyesSVG isRedPlayer={true} OnMove={true} />
-      </div>
-    );
   return (
     <div className={styles.ProfilePage}>
       <Header />
@@ -167,12 +163,12 @@ export const ProfilePage = () => {
               <div
                 className={styles.userImgContainer}
                 style={{
-                  backgroundColor: colorMap[user?.avatarColor ?? 1], // Pokud není avatarColor, použije se 1
+                  backgroundColor: colorMap[userToDisplay?.AvatarColor ?? 1], // Pokud není AvatarColor, použije se 1
                 }}
               >
                 <img
                   style={{
-                    backgroundColor: colorMap[user?.avatarColor ?? 1], // Pokud není avatarColor, použije se 1
+                    backgroundColor: colorMap[userToDisplay?.AvatarColor ?? 1], // Pokud není AvatarColor, použije se 1
                   }}
                   className={styles.userImg}
                   src={lightbulbWhite}
@@ -182,33 +178,39 @@ export const ProfilePage = () => {
               <h1
                 className={styles.username}
                 style={{
-                  backgroundColor: colorMap[user?.avatarColor ?? 1], // Pokud není avatarColor, použije se 1
+                  backgroundColor: colorMap[userToDisplay?.AvatarColor ?? 1], // Pokud není AvatarColor, použije se 1
                 }}
               >
-                {user.username}
+                {userToDisplay.username}
               </h1>
               <p className={styles.joinDate}>
                 Členem od{" "}
                 <b>
-                  {user?.createdAt
-                    ? new Date(user.createdAt).toLocaleDateString("cs-CZ")
+                  {userToDisplay?.createdAt
+                    ? new Date(userToDisplay.createdAt).toLocaleDateString(
+                        "cs-CZ"
+                      )
                     : "Neznámé datum"}
                 </b>
               </p>
-              <button
-                onClick={() => setIsEditOpen(true)}
-                className={styles.setting}
-                style={{
-                  backgroundColor: colorMap[user?.avatarColor ?? 1], // Pokud není avatarColor, použije se 1
-                }}
-              >
-                <p className={styles.settingText}>Upravit</p>
-                <img
-                  className={styles.settingBtn}
-                  src={settingFullWhite}
-                  alt="setting"
-                />
-              </button>
+              {user && uuid === (user.uuid ?? "") ? (
+                <button
+                  onClick={() => setIsEditOpen(true)}
+                  className={styles.setting}
+                  style={{
+                    backgroundColor: colorMap[userToDisplay?.AvatarColor ?? 1], // Pokud není AvatarColor, použije se 1
+                  }}
+                >
+                  <p className={styles.settingText}>Upravit</p>
+                  <img
+                    className={styles.settingBtn}
+                    src={settingFullWhite}
+                    alt="setting"
+                  />
+                </button>
+              ) : (
+                <button className={styles.setting}></button>
+              )}
             </div>
 
             <div className={styles.noteContainer}>
@@ -216,19 +218,16 @@ export const ProfilePage = () => {
               <textarea
                 disabled
                 className={styles.note}
-                value={note}
-                onChange={(e) => {
-                  if (e.target.value.length <= 120) {
-                    setNote(e.target.value);
-                  }
-                }}
+                value={userToDisplay.note}
                 placeholder="Vložte poznámku..."
               />
             </div>
           </div>
           <div className={styles.statsContainer}>
             <div className={styles.statsHeader}>
-              <h1 className={styles.statsTitle}>{Math.round(user.elo)}</h1>
+              <h1 className={styles.statsTitle}>
+                {Math.floor(userToDisplay.elo)}
+              </h1>
               <img className={styles.statsImg} src={eloWhite} />
             </div>
 
@@ -238,7 +237,9 @@ export const ProfilePage = () => {
                 <p>
                   Hry:{" "}
                   <span className={styles.redBold}>
-                    {user.losses + user.wins + user.draws}
+                    {userToDisplay.losses +
+                      userToDisplay.wins +
+                      userToDisplay.draws}
                   </span>
                 </p>
               </div>
@@ -248,7 +249,8 @@ export const ProfilePage = () => {
                   src={darkMode ? statsTrophyWhite : statsTrophy}
                 />
                 <p>
-                  Výhry: <span className={styles.redBold}>{user.wins}</span>
+                  Výhry:{" "}
+                  <span className={styles.redBold}>{userToDisplay.wins}</span>
                 </p>
               </div>
               <div className={styles.stat}>
@@ -258,7 +260,8 @@ export const ProfilePage = () => {
                   alt=""
                 />
                 <p>
-                  Remíza: <span className={styles.redBold}>{user.draws}</span>
+                  Remíza:{" "}
+                  <span className={styles.redBold}>{userToDisplay.draws}</span>
                 </p>
               </div>
 
@@ -269,16 +272,23 @@ export const ProfilePage = () => {
                   src={darkMode ? statsTrophyWhite : statsTrophy}
                 />
                 <p>
-                  Prohry: <span className={styles.redBold}>{user.losses}</span>
+                  Prohry:{" "}
+                  <span className={styles.redBold}>{userToDisplay.losses}</span>
                 </p>
               </div>
               <div className={styles.stat}>
                 <p>
                   WR:{" "}
                   <span className={styles.redBold}>
-                    {user.wins + user.draws + user.losses > 0
+                    {userToDisplay.wins +
+                      userToDisplay.draws +
+                      userToDisplay.losses >
+                    0
                       ? Math.round(
-                          (user.wins / (user.wins + user.draws + user.losses)) *
+                          (userToDisplay.wins /
+                            (userToDisplay.wins +
+                              userToDisplay.draws +
+                              userToDisplay.losses)) *
                             100
                         ) || 0
                       : 0}
@@ -298,12 +308,22 @@ export const ProfilePage = () => {
             />
           </div>
           <table className={styles.gameHistoryTable}>
-            <tr className={styles.gameHistoryHeading}>
-              <td>Vítěz</td>
-              <td>Poražený</td>
-              <td>Datum</td>
-              <td>Herní plocha</td>
-            </tr>
+            <thead className={styles.gameHistoryHeading}>
+              <tr>
+                <th>
+                  <FontAwesomeIcon icon={faUser} /> Vítěz
+                </th>
+                <th>
+                  <FontAwesomeIcon icon={faUserSlash} /> Poražený
+                </th>
+                <th>
+                  <FontAwesomeIcon icon={faCalendar} /> Datum
+                </th>
+                <th>
+                  <FontAwesomeIcon icon={faLayerGroup} /> Herní plocha
+                </th>
+              </tr>
+            </thead>
 
             <tbody>
               {userHistory?.map((game, index) => (
@@ -314,7 +334,7 @@ export const ProfilePage = () => {
                         {usersData[game.winner].username}
                       </Link>
                     ) : (
-                      <span>Remíza</span>
+                      <span>-</span>
                     )}
                   </td>
                   <td>
@@ -323,20 +343,28 @@ export const ProfilePage = () => {
                         {usersData[game.loser].username}
                       </Link>
                     ) : (
-                      <span>Remíza</span>
+                      <span>-</span>
                     )}
                   </td>
-                  <td>{new Date(game.endedAt).toLocaleString("cs-CZ")}</td>
                   <td>
-                    <a
-                      href=""
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setModalImage(`data:image/png;base64,${game.bitmap}`);
-                      }}
-                    >
+                    {new Date(game.endedAt).toLocaleString("cs-CZ", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                    })}
+                  </td>
+                  <td
+                    style={{ cursor: "pointer" }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setModalImage(`data:image/png;base64,${game.bitmap}`);
+                    }}
+                  >
+                    <a href="">
                       {" "}
-                      Náhled
+                      <FontAwesomeIcon icon={faEye} />
                     </a>
                   </td>
                 </tr>
@@ -390,10 +418,7 @@ export const ProfilePage = () => {
           </div>
           <div className={styles.saveChanges}>
             <Button
-              onClick={() => {
-                handleSaveChanges();
-                setIsEditOpen(false);
-              }}
+              onClick={async () => await handleSaveChanges()}
               text="Uložit změny"
               backgroundColor
               color="white"
@@ -410,17 +435,21 @@ export const ProfilePage = () => {
               <h4 className={styles.editInputTitle}>Poznámka</h4>
               <p className={styles.characterLeft}>
                 <p className={styles.characterLeft}>
-                  Zbývá {noteMaxLength - note.length} znaků
+                  Zbývá {noteMaxLength - (userToDisplay.note?.length ?? 0)}{" "}
+                  znaků
                 </p>
               </p>
             </div>
             <textarea
               style={{ height: "50px" }}
               className={styles.note}
-              value={note}
+              value={userToDisplay.note}
               onChange={(e) => {
                 if (e.target.value.length <= noteMaxLength) {
-                  setNote(e.target.value);
+                  setUserToDisplay({
+                    ...userToDisplay,
+                    note: e.target.value,
+                  });
                 }
               }}
               placeholder="Vložte poznámku..."
@@ -433,7 +462,7 @@ export const ProfilePage = () => {
               className={styles.editInput}
               type="text"
               placeholder="Uživatelské jméno"
-              value={user.username}
+              value={userToDisplay.username}
             />
           </div>
 
@@ -443,7 +472,7 @@ export const ProfilePage = () => {
               className={styles.editInput}
               type="email"
               placeholder="example@email.com"
-              value={user.email}
+              value={userToDisplay.email}
             />
           </div>
 
@@ -453,18 +482,6 @@ export const ProfilePage = () => {
               className={styles.editInput}
               type="password"
               value={"nevimk"}
-            />
-          </div>
-          <div className={styles.saveChangesResponsive}>
-            <Button
-              onClick={() => {
-                handleSaveChanges();
-                setIsEditOpen(false);
-              }}
-              text="Uložit změny"
-              backgroundColor
-              color="white"
-              width="130px"
             />
           </div>
         </div>
@@ -485,7 +502,9 @@ export const ProfilePage = () => {
               style={{ backgroundColor: "#00000000" }}
             >
               <img
-                style={{ backgroundColor: colorMap[selectedColor] }}
+                style={{
+                  backgroundColor: colorMap[userToDisplay.AvatarColor ?? 1],
+                }}
                 className={styles.userImgEdit}
                 src={lightbulbWhite}
                 alt=""
@@ -497,7 +516,9 @@ export const ProfilePage = () => {
                     key={index}
                     style={{ backgroundColor: colorMap[index] }}
                     className={styles.changeColor}
-                    onClick={() => handleColorChange(index)}
+                    onClick={() =>
+                      setUserToDisplay({ ...userToDisplay, AvatarColor: index })
+                    }
                   ></button>
                 ))}
               </div>
@@ -536,18 +557,6 @@ export const ProfilePage = () => {
                 />
                 <p>Tmavý</p>
               </button>
-            </div>
-            <div className={styles.saveChangesResponsive}>
-              <Button
-                onClick={() => {
-                  handleSaveChanges();
-                  setIsEditOpen(false);
-                }}
-                text="Uložit změny"
-                backgroundColor
-                color="white"
-                width="130px"
-              />
             </div>
           </div>
         </div>

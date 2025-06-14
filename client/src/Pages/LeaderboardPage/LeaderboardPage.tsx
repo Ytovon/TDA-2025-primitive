@@ -54,7 +54,16 @@ export const LeaderboardPage = () => {
         <p className={styles.leaderboardText}>Probojuj se na vrchol!</p>
 
         {loading ? (
-          <p>Načítání...</p>
+          <div className={styles.skeleton}>
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className={styles.skeletonRow}>
+                <div
+                  className={styles.skeletonCell}
+                  style={{ width: "10%" }}
+                ></div>{" "}
+              </div>
+            ))}
+          </div>
         ) : (
           <table className={styles.leaderboard}>
             <thead>

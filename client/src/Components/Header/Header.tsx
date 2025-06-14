@@ -75,38 +75,9 @@ export default function Header() {
           </Link>
 
           <div className={styles.links}>
-            <div className={styles.dropdown}>
-              <Link
-                to="/freeplay"
-                className={`${styles.navLink} ${styles.link}`}
-              >
-                <p>Chci hrát</p>
-                <img
-                  className={styles.scrollableBtn}
-                  src={darkMode ? chevronDownWhite : chevronDownBlack}
-                  alt=""
-                />
-              </Link>
-              <div className={styles.dropdownContent}>
-                <img
-                  className={styles.triangleDropdown}
-                  src={darkMode ? triangleDropdownBlack : triangleDropdownWhite}
-                  alt=""
-                />
-                <Link
-                  to="/loading"
-                  className={`${styles.navLink} ${styles.link}`}
-                >
-                  Hrát online
-                </Link>
-                <Link
-                  to="/lobbyGame"
-                  className={`${styles.navLink} ${styles.link}`}
-                >
-                  Hrát s přítelem
-                </Link>
-              </div>
-            </div>
+            <Link to="/loading" className={`${styles.navLink} ${styles.link}`}>
+              Hrát online
+            </Link>
             <Link to="/games" className={`${styles.navLink} ${styles.link}`}>
               Tréninkové úlohy
             </Link>
@@ -141,14 +112,16 @@ export default function Header() {
             </div>
             <div className={styles.dropdown}>
               <div className={styles.userImgContainer}>
-                <img
-                  style={{
-                    backgroundColor: colorMap[user?.avatarColor ?? 1], // Pokud není avatarColor, použije se 1
-                  }}
-                  className={styles.userImg}
-                  src={lightbulbWhite}
-                  alt="profile Picture"
-                />
+                <Link to={`/profile/${user?.uuid}`}>
+                  <img
+                    style={{
+                      backgroundColor: colorMap[user?.AvatarColor ?? 1], // Pokud není avatarColor, použije se 1
+                    }}
+                    className={styles.userImg}
+                    src={lightbulbWhite}
+                    alt="profile Picture"
+                  />
+                </Link>
               </div>
 
               <div
@@ -214,7 +187,7 @@ export default function Header() {
                 <div className={styles.userImgContainer}>
                   <img
                     style={{
-                      backgroundColor: colorMap[user?.avatarColor ?? 1], // Pokud není avatarColor, použije se 1
+                      backgroundColor: colorMap[user?.AvatarColor ?? 1], // Pokud není avatarColor, použije se 1
                     }}
                     className={styles.userImg}
                     src={lightbulbWhite}

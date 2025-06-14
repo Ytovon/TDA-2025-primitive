@@ -32,6 +32,7 @@
   border-radius: 20px;
   background-color: var(--color-background-primary);
   box-shadow: var(--shadow-card);
+  border: 2px solid var(--color-background-light); /* jemný průhledný světlý okraj */
 }
 
 .userInfoHeader {
@@ -142,6 +143,7 @@
   background-color: var(--color-background-light);
   border-radius: 20px;
   box-shadow: var(--shadow-card);
+  border: 2px solid var(--color-background-light); /* jemný průhledný světlý okraj */
 }
 
 .statsHeader {
@@ -194,6 +196,7 @@
   background-color: var(--color-background-light);
   color: var(--color-text-primary);
   box-shadow: var(--shadow-card);
+  border: 2px solid var(--color-background-light); /* jemný průhledný světlý okraj */
 
   a {
     color: var(--color-text-primary);
@@ -220,16 +223,26 @@
   border-collapse: collapse;
   border-radius: 20px;
 
+  thead {
+    background-color: var(--color-background-primary);
+    text-align: center;
+
+    td {
+      padding-block: 8px;
+    }
+  }
+
   .gameHistoryHeading {
     font-weight: bold;
   }
-  :nth-child(1) {
-    background-color: var(--color-background-primary);
-  }
 
   tr {
-    height: 32px;
+    height: 2rem;
     text-align: center;
+
+    &:nth-child(even) {
+      background-color: var(--color-border-filtration);
+    }
   }
 }
 

@@ -13,7 +13,7 @@ export interface UserModel {
   isAdmin: boolean;
   isBanned?: boolean;
   note?: string;
-  avatarColor?: number;
+  AvatarColor?: number;
   lastLogin?: string; // <== přidej tohle, pokud to potřebuješ
 }
 
@@ -32,7 +32,7 @@ export class User implements UserModel {
   isAdmin: boolean;
   isBanned?: boolean;
   note?: string;
-  avatarColor?: number;
+  AvatarColor?: number;
   lastLogin?: string;
 
   constructor(
@@ -49,7 +49,7 @@ export class User implements UserModel {
     updatedAt?: Date,
     isBanned?: boolean,
     note?: string,
-    avatarColor?: number,
+    AvatarColor?: number,
     lastLogin?: string // <== přidej tohle, pokud to potřebuješ
   ) {
     this.username = username;
@@ -65,7 +65,7 @@ export class User implements UserModel {
     this.isAdmin = isAdmin;
     this.isBanned = isBanned;
     this.note = note;
-    this.avatarColor = avatarColor;
+    this.AvatarColor = AvatarColor;
     this.lastLogin = lastLogin;
   }
 }

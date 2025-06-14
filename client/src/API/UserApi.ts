@@ -110,6 +110,7 @@ export class UserApiClient {
   static async getUserByUUID(uuid: string): Promise<UserModel | string> {
     try {
       const response = await userApiInstance.get(`/${uuid}`);
+      console.log(response.data);
       return response.data;
     } catch (error: any) {
       console.error("Error fetching user by UUID:", error);

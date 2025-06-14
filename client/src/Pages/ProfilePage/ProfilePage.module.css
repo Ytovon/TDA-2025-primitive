@@ -34,6 +34,7 @@
   border-radius: 20px;
   background-color: var(--color-background-primary);
   box-shadow: var(--shadow-card);
+  border: 2px solid var(--color-background-light); /* jemný průhledný světlý okraj */
 }
 
 .userInfoHeader {
@@ -140,6 +141,7 @@
   background-color: var(--color-background-light);
   border-radius: 20px;
   box-shadow: var(--shadow-card);
+  border: 2px solid var(--color-background-light); /* jemný průhledný světlý okraj */
 }
 
 .statsHeader {
@@ -192,6 +194,7 @@
   background-color: var(--color-background-light);
   color: var(--color-text-primary);
   box-shadow: var(--shadow-card);
+  border: 2px solid var(--color-background-light); /* jemný průhledný světlý okraj */
 }
 .gameHistory a {
   color: var(--color-text-primary);
@@ -216,15 +219,22 @@
   border-collapse: collapse;
   border-radius: 20px;
 }
+.gameHistoryTable thead {
+  background-color: var(--color-background-primary);
+  text-align: center;
+}
+.gameHistoryTable thead td {
+  padding-block: 8px;
+}
 .gameHistoryTable .gameHistoryHeading {
   font-weight: bold;
 }
-.gameHistoryTable :nth-child(1) {
-  background-color: var(--color-background-primary);
-}
 .gameHistoryTable tr {
-  height: 32px;
+  height: 2rem;
   text-align: center;
+}
+.gameHistoryTable tr:nth-child(even) {
+  background-color: var(--color-border-filtration);
 }
 
 .edit {
