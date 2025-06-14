@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styles from "./GameMultiplayer.module.css";
-import { useDarkMode } from "../../Context/DarkModeContext";
 import { Button } from "../../Components/Button/Button";
 import { ApiClient } from "../../API/GameApi";
 import { useWebSocketMultiplayer } from "../../Context/WebSocketContextMultiplayer";
@@ -12,17 +11,19 @@ import {
   winnerRed,
   lightbulbWhite,
 } from "../../assets/assets";
+import { UserModel } from "../../Model/UserModel";
+import { useAuth } from "../../Context/AuthContext";
+import { UserApiClient } from "../../API/UserApi";
 
 export const GameMultiplayer = ({ uuid = "" }) => {
   const navigate = useNavigate();
-  const { darkMode } = useDarkMode();
   const {
     isConnected,
     sendMessage,
     gameID,
     multiplayerBoard,
     multiplayerWinner,
-    status,
+    opponnentUUID,
   } = useWebSocketMultiplayer();
 
   interface Move {
@@ -50,6 +51,9 @@ export const GameMultiplayer = ({ uuid = "" }) => {
   const [player, setPlayer] = useState(true);
   const [winner, setWinner] = useState<string | null>(null);
 
+  const { user } = useAuth();
+  const [opponent, setOpponent] = useState<UserModel | string>("");
+
   useEffect(() => {
     const fetchGame = async () => {
       document.documentElement.classList.remove("winnerRed");
@@ -61,6 +65,16 @@ export const GameMultiplayer = ({ uuid = "" }) => {
     };
     fetchGame();
   }, [uuid]);
+
+  useEffect(() => {
+    const fetchOpponent = async () => {
+      const fetchedOpponent: UserModel | string =
+        await UserApiClient.getUserByUUID(opponnentUUID || "");
+
+      setOpponent(fetchedOpponent);
+    };
+    fetchOpponent();
+  }, [opponnentUUID]);
 
   useEffect(
     () =>
@@ -151,20 +165,31 @@ export const GameMultiplayer = ({ uuid = "" }) => {
             <div className={styles.menuBackground}>
               <div className={styles.menuFlex}>
                 <div>
-                  <h3>Hráč1</h3>
+                  <h3>{user?.username || "..."}</h3>
                   <img className={styles.userImg} src={lightbulbWhite} alt="" />
                 </div>
                 <p>vs</p>
                 <div>
-                  <h3>Hráč2</h3>
+                  <h3>
+                    {typeof opponent === "object" && "username" in opponent
+                      ? opponent.username
+                      : "..."}
+                  </h3>
                   <img className={styles.userImg} src={lightbulbWhite} alt="" />
                 </div>
               </div>
 
               <div className={styles.menuFlex}>
-                <p className={styles.eloCount}>400</p>
+                <p className={styles.eloCount}>
+                  {Math.floor(user?.elo || 0) || "..."}
+                </p>
                 <p>ELO</p>
-                <p className={styles.eloCount}>400</p>
+                <p className={styles.eloCount}>
+                  {" "}
+                  {typeof opponent === "object" && "username" in opponent
+                    ? Math.floor(opponent.elo)
+                    : "..."}
+                </p>
               </div>
             </div>
 

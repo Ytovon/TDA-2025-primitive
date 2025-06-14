@@ -8,6 +8,8 @@ import {
   clearUUID,
 } from "../API/tokenstorage"; // Your token storage functions
 
+import { MatchmakingGame } from "../Model/MatchmakingGameModel";
+
 export class UserApiClient {
   // Register new user
   static async registerUser(
@@ -115,6 +117,27 @@ export class UserApiClient {
     }
   }
 
+  static async getUsersByUUIDs(
+    uuids: string[]
+  ): Promise<Record<string, UserModel>> {
+    if (uuids.length === 0) {
+      throw new Error("At least one UUID must be provided.");
+    }
+
+    try {
+      const response = await userApiInstance.post(`/batch/`, {
+        uuids: uuids,
+      });
+      console.log(response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error("Error fetching users by UUIDs:", error);
+      throw new Error(
+        error.response?.data?.message || "Failed to fetch users by UUIDs."
+      );
+    }
+  }
+
   // Update user by UUID
   static async updateUserByUUID(
     uuid: string,
@@ -138,6 +161,21 @@ export class UserApiClient {
     } catch (error: any) {
       console.error("Error fetching all users:", error);
       return error.response?.data?.message || error.message;
+    }
+  }
+
+  static async getGameHistoryByUUID(uuid: string): Promise<MatchmakingGame[]> {
+    if (!uuid) throw new Error("UUID is required.");
+
+    try {
+      const response = await userApiInstance.get<MatchmakingGame[]>(
+        `${uuid}/history`
+      );
+      return response.data;
+    } catch (error: any) {
+      throw new Error(
+        error.response?.data?.message || "Failed to fetch game history."
+      );
     }
   }
 

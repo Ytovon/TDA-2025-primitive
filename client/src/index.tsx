@@ -19,7 +19,6 @@ import { useNavigate } from "react-router-dom";
 import { ProfilePage } from "./Pages/ProfilePage/ProfilePage";
 import { LobbyPage } from "./Pages/LobbyPage/LobbyPage";
 import { PlayerListPage } from "./Pages/PlayerListPage/PlayerListPage";
-import { UserPage } from "./Pages/UserPage/UserPage";
 import { AuthProvider } from "./Context/AuthContext";
 
 const root = ReactDOM.createRoot(
@@ -42,9 +41,9 @@ const WebSocketWrapperMultiplayer: React.FC<WebSocketWrapperProps> = ({
 };
 
 root.render(
-  <AuthProvider>
-    <DarkModeProvider>
-      <Router>
+  <Router>
+    <AuthProvider>
+      <DarkModeProvider>
         <InterceptorSetup />{" "}
         {/* Add the InterceptorSetup component inside Router */}
         <Routes>
@@ -55,7 +54,6 @@ root.render(
           <Route path="/Profile/:uuid" element={<ProfilePage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/users" element={<PlayerListPage />} />
-          <Route path="/users/:uuid" element={<UserPage />} />
           <Route path="/Games" element={<CardsPage />} />
           <Route path="/freeplay/:uuid" element={<GamePage />} />
           <Route
@@ -78,10 +76,9 @@ root.render(
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
-      </Router>
-    </DarkModeProvider>
-  </AuthProvider>
-
+      </DarkModeProvider>
+    </AuthProvider>
+  </Router>
   //{" "}
 );
 

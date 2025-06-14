@@ -95,7 +95,7 @@ export const LoginPage = () => {
         response.accessToken !== undefined &&
         response.refreshToken !== undefined
       ) {
-        validate();
+        validate(false);
         navigate("/");
       }
     }

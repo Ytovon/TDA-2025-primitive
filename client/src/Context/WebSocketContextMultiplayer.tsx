@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useState } from "react";
 import { getAccessTokenAsync } from "../API/tokenstorage";
+import { useAuth } from "./AuthContext";
+import { UserApiClient } from "../API/UserApi";
+import { UserModel } from "../Model/UserModel";
 
 const WEBSOCKET_URL = `ws://localhost:5000/ws?token=${await getAccessTokenAsync()}`;
 
@@ -11,7 +14,8 @@ interface WebSocketContextType {
   gameID: string;
   multiplayerBoard: string[][];
   multiplayerWinner: string | null;
-  startConnection: () => void; // NEWFUNCTION
+  opponnentUUID: string | null;
+  startConnection: () => void; //
 }
 
 const WebSocketContext = createContext<WebSocketContextType | undefined>(
@@ -34,7 +38,9 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
   const [multiplayerBoard, setMultiplayerBoard] = useState<string[][]>(
     Array.from({ length: 15 }, () => Array(15).fill(""))
   );
+  const { user, setGlobalUser } = useAuth();
   const [multiplayerWinner, setWinner] = useState<string | null>(null);
+  const [opponnentUUID, setOpponnentUUID] = useState<string | null>(null);
 
   // Function to start WebSocket connection (only called when needed)
   const startConnection = () => {
@@ -42,9 +48,6 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
 
     const ws = new WebSocket(WEBSOCKET_URL);
     setSocket(ws);
-
-    console.log("snazim se zapnout ws");
-    console.log(WEBSOCKET_URL);
 
     ws.onopen = () => {
       console.log("Connected to WebSocket");
@@ -55,7 +58,7 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
       }, 1000);
     };
 
-    ws.onmessage = (event) => {
+    ws.onmessage = async (event) => {
       const data = JSON.parse(event.data);
       console.log("Received message:", data);
 
@@ -64,6 +67,7 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
           setStatus("Match! Game ID: " + data.gameId);
           setGameID(data.gameId);
           navigate("/freeplay");
+          setOpponnentUUID(data.opponnentUUID);
           break;
         case "update":
           setStatus(data.message);
@@ -72,6 +76,11 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
         case "end":
           setStatus(data.message);
           setWinner(data.winner);
+
+          // update context data to sync ui
+          const userToUpdate: UserModel | string =
+            await UserApiClient.getUserByUUID(user?.uuid || "");
+          userToUpdate instanceof Object && setGlobalUser(userToUpdate);
           break;
         default:
           setStatus(data.message);
@@ -106,6 +115,7 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
         gameID,
         multiplayerBoard,
         multiplayerWinner,
+        opponnentUUID,
         startConnection, // Expose the function
       }}
     >

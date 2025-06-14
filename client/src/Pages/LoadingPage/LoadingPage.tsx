@@ -10,7 +10,7 @@ export const LoadingPage = () => {
   const { validate, isAuthenticated } = useAuth();
 
   useEffect(() => {
-    validate();
+    validate(true);
     if (isAuthenticated === true) {
       startConnection();
     }
@@ -19,7 +19,6 @@ export const LoadingPage = () => {
   return (
     <div>
       <Header />
-
       <div className={styles.container}>
         <p className={styles.status}>{status}</p>
         <BlinkingEyesSVG isRedPlayer={true} OnMove={true} />

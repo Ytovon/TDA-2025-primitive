@@ -43,7 +43,7 @@ export const LeaderboardPage = () => {
   console.log("Current users state:", users); // Zobrazí obsah users po změně stavu
 
   const handleRowClick = (uuid: string) => {
-    navigate(`/users/${uuid}`);
+    navigate(`/profile/${uuid}`);
   };
   return (
     <div className={styles.body}>

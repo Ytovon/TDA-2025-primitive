@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./ProfilePage.module.css";
 import Header from "../../Components/Header/Header";
 import { Button } from "../../Components/Button/Button";
+import { Link } from "react-router-dom";
 import {
   historyRotateBlack,
   historyRotateWhite,
@@ -23,10 +24,11 @@ import {
 import { UserModel } from "../../Model/UserModel";
 import { UserApiClient } from "../../API/UserApi";
 import { useDarkMode } from "../../Context/DarkModeContext";
-import { Link, useNavigate } from "react-router-dom";
 import { Footer } from "../../Components/Footer/Footer";
 import { useParams } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
+import { MatchmakingGame } from "../../Model/MatchmakingGameModel";
+import BlinkingEyesSVG from "../../Components/Animation/lightbulb";
 
 export const ProfilePage = () => {
   const { user, setGlobalUser } = useAuth();
@@ -39,6 +41,45 @@ export const ProfilePage = () => {
   const noteMaxLength = 120;
 
   const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
+  const [userHistory, setUserHistory] = useState<MatchmakingGame[] | null>(
+    null
+  );
+  const [usersData, setUsersData] = useState<Record<string, UserModel>>({});
+
+  const [modalImage, setModalImage] = useState<string>("");
+
+  useEffect(() => {
+    // Define async function inside useEffect
+    const fetchData = async () => {
+      if (!user?.uuid) return; // guard if user or uuid missing
+
+      try {
+        // Fetch game history
+        const history = await UserApiClient.getGameHistoryByUUID(user.uuid);
+        setUserHistory(history);
+
+        // Extract unique UUIDs from the history (playerX and playerO)
+        const uuids: string[] = [
+          ...new Set([
+            ...history.map((game) => game.playerX),
+            ...history.map((game) => game.playerO),
+          ]),
+        ];
+
+        // Fetch user data for the unique UUIDs
+        const usersData: Record<string, UserModel> =
+          await UserApiClient.getUsersByUUIDs(uuids);
+
+        console.log(usersData["7ca29102-9fb5-463d-b380-cfef63e0533f"]);
+
+        setUsersData(usersData);
+      } catch (error: any) {
+        console.error("Error loading user history or users data:", error);
+      }
+    };
+
+    fetchData();
+  }, [user]);
 
   const handleSaveChanges = async () => {
     if (!uuid) return;
@@ -81,11 +122,40 @@ export const ProfilePage = () => {
     5: "var(--color5)",
   };
 
-  if (error) return <p>⚠️ Chyba: {error}</p>;
-  if (!user) return <p>⏳ Načítání...</p>;
+  if (!user)
+    return (
+      <div className="loading">
+        <p>Stránku pro Vás načítáme...</p>
+        <BlinkingEyesSVG isRedPlayer={true} OnMove={true} />
+      </div>
+    );
   return (
     <div className={styles.ProfilePage}>
       <Header />
+
+      {modalImage && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0,0,0,0.7)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+          }}
+          onClick={() => setModalImage("")}
+        >
+          <img
+            src={modalImage}
+            alt="Zvětšený obrázek"
+            style={{ maxWidth: "90%", maxHeight: "90%", borderRadius: "8px" }}
+          />
+        </div>
+      )}
 
       <div
         style={{ filter: isEditOpen ? "opacity(0.2)" : "opacity(1)" }}
@@ -121,7 +191,7 @@ export const ProfilePage = () => {
                 Členem od{" "}
                 <b>
                   {user?.createdAt
-                    ? new Date(user.createdAt).toLocaleDateString()
+                    ? new Date(user.createdAt).toLocaleDateString("cs-CZ")
                     : "Neznámé datum"}
                 </b>
               </p>
@@ -228,12 +298,47 @@ export const ProfilePage = () => {
             />
           </div>
           <table className={styles.gameHistoryTable}>
-            <tr>
-              <td>Hráči</td>
-              <td>Výsledek</td>
-              <td>Doba trvání</td>
+            <tr className={styles.gameHistoryHeading}>
+              <td>Vítěz</td>
+              <td>Poražený</td>
               <td>Datum</td>
+              <td>Herní plocha</td>
             </tr>
+
+            <tbody>
+              {userHistory?.map((game, index) => (
+                <tr key={index}>
+                  <td>
+                    <Link to={`/profile/${usersData[game.playerO]?.uuid}`}>
+                      {" "}
+                      {usersData[game.playerO]
+                        ? usersData[game.playerO].username
+                        : "?"}
+                    </Link>
+                  </td>
+                  <td>
+                    <Link to={`/profile/${usersData[game.playerX]?.uuid}`}>
+                      {usersData[game.playerX]
+                        ? usersData[game.playerX].username
+                        : "?"}
+                    </Link>
+                  </td>
+                  <td>{new Date(game.endedAt).toLocaleDateString("cs-CZ")}</td>
+                  <td>
+                    <a
+                      href=""
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setModalImage(`data:image/png;base64,${game.bitmap}`);
+                      }}
+                    >
+                      {" "}
+                      Náhled
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
       </div>
