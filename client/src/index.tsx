@@ -14,8 +14,6 @@ import HomePage from "./Pages/HomePage/HomePage";
 import { EditorPage } from "./Pages/EditorPage/EditorPage";
 import { LoginPage } from "./Pages/LoginPage/LoginPage";
 import { LeaderboardPage } from "./Pages/LeaderboardPage/LeaderboardPage";
-import { LoadingPage } from "./Pages/LoadingPage/LoadingPage";
-import { useNavigate } from "react-router-dom";
 import { ProfilePage } from "./Pages/ProfilePage/ProfilePage";
 import { LobbyPage } from "./Pages/LobbyPage/LobbyPage";
 import { PlayerListPage } from "./Pages/PlayerListPage/PlayerListPage";
@@ -25,60 +23,32 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
-interface WebSocketWrapperProps {
-  children: ReactNode; // Typing 'children' properly as ReactNode
-}
-
-const WebSocketWrapperMultiplayer: React.FC<WebSocketWrapperProps> = ({
-  children,
-}) => {
-  const navigate = useNavigate(); // Get navigate hook here
-  return (
-    <WebSocketProviderMultiplayer navigate={navigate}>
-      {children}
-    </WebSocketProviderMultiplayer>
-  );
-};
-
 root.render(
-  <Router>
-    <AuthProvider>
-      <DarkModeProvider>
-        <InterceptorSetup />{" "}
-        {/* Add the InterceptorSetup component inside Router */}
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/EditorPage" element={<EditorPage />} />
-          <Route path="/EditorPage/:uuid" element={<EditorPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/Profile/:uuid" element={<ProfilePage />} />
-          <Route path="/leaderboard" element={<LeaderboardPage />} />
-          <Route path="/users" element={<PlayerListPage />} />
-          <Route path="/Games" element={<CardsPage />} />
-          <Route path="/freeplay/:uuid" element={<GamePage />} />
-          <Route
-            path="/loading"
-            element={
-              <WebSocketWrapperMultiplayer>
-                <LoadingPage />{" "}
-              </WebSocketWrapperMultiplayer>
-            }
-          />
-          <Route
-            path="/freeplay"
-            element={
-              <WebSocketWrapperMultiplayer>
-                <GameMultiplayer />
-              </WebSocketWrapperMultiplayer>
-            }
-          />
-          <Route path="/lobby" element={<LobbyPage />} />
+  <AuthProvider>
+    <WebSocketProviderMultiplayer>
+      <Router>
+        <DarkModeProvider>
+          <InterceptorSetup />{" "}
+          {/* Add the InterceptorSetup component inside Router */}
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/EditorPage" element={<EditorPage />} />
+            <Route path="/EditorPage/:uuid" element={<EditorPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/Profile/:uuid" element={<ProfilePage />} />
+            <Route path="/leaderboard" element={<LeaderboardPage />} />
+            <Route path="/users" element={<PlayerListPage />} />
+            <Route path="/Games" element={<CardsPage />} />
+            <Route path="/freeplay/:uuid" element={<GamePage />} />
+            <Route path="/freeplay" element={<GameMultiplayer />} />
+            <Route path="/lobby" element={<LobbyPage />} />
 
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </DarkModeProvider>
-    </AuthProvider>
-  </Router>
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </DarkModeProvider>
+      </Router>
+    </WebSocketProviderMultiplayer>
+  </AuthProvider>
   //{" "}
 );
 

@@ -19,12 +19,18 @@ import {
 } from "../../assets/assets";
 import styles from "./Header.module.css";
 import { useDarkMode } from "../../Context/DarkModeContext";
+import { useWebSocketMultiplayer } from "../../Context/WebSocketContextMultiplayer";
 import { useAuth } from "../../Context/AuthContext";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock } from "@fortawesome/free-solid-svg-icons";
+
 export default function Header() {
-  const { user, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated, validate } = useAuth();
+  const { status, startConnection, timer, waitingForMatch, isConnected } =
+    useWebSocketMultiplayer();
   const navigate = useNavigate();
-  const { darkMode, enableDarkMode, disableDarkMode } = useDarkMode();
+  const { darkMode } = useDarkMode();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [mobileDropdown, setMobileDropdown] = useState(false);
   const [mobileUserDropdown, setmobileUserDropdown] = useState(false);
@@ -41,6 +47,13 @@ export default function Header() {
     setmobileUserDropdown((prev) => !prev);
   };
 
+  const StartGameSearch = () => {
+    validate(true);
+    if (isAuthenticated === true) {
+      startConnection();
+    }
+  };
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth > 1050 && menuIsOpen) {
@@ -53,6 +66,12 @@ export default function Header() {
       window.removeEventListener("resize", handleResize);
     };
   }, [menuIsOpen]);
+
+  useEffect(() => {
+    if (waitingForMatch == false && isConnected) {
+      navigate("/freeplay");
+    }
+  }, [waitingForMatch]);
 
   const colorMap: Record<number, string> = {
     1: "var(--color1)",
@@ -75,9 +94,13 @@ export default function Header() {
           </Link>
 
           <div className={styles.links}>
-            <Link to="/loading" className={`${styles.navLink} ${styles.link}`}>
+            <p
+              className={`${styles.navLink} ${styles.link}`}
+              onClick={StartGameSearch}
+            >
               Hrát online
-            </Link>
+            </p>
+
             <Link to="/games" className={`${styles.navLink} ${styles.link}`}>
               Tréninkové úlohy
             </Link>
@@ -169,6 +192,19 @@ export default function Header() {
               alt=""
             />
           </button>
+        </div>
+      </div>
+
+      <div
+        style={waitingForMatch ? { display: "flex" } : { display: "none" }}
+        className={styles.timerContainer}
+      >
+        <p className={styles.status}>{status}</p>
+        <div className={styles.timer}>
+          {" "}
+          <FontAwesomeIcon icon={faClock} className={styles.clockIcon} />
+          {String(Math.floor(timer / 60)).padStart(2, "0")}:
+          {String(timer % 60).padStart(2, "0")}
         </div>
       </div>
       <div className={styles.mobileMenuWrapper}>

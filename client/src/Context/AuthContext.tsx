@@ -8,7 +8,6 @@ import React, {
 import { User, UserModel } from "../Model/UserModel";
 import { UserApiClient } from "../API/UserApi";
 import { getAccessTokenAsync, getRefreshToken } from "../API/tokenstorage";
-import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
   user: UserModel | null;
@@ -31,7 +30,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     localStorage.getItem("uuid")
   );
   const [isAuthenticated, setAuthenticated] = useState<boolean>(false);
-  const navigate = useNavigate();
 
   // Validace tokenu při startu app nebo volání validate
   const validate = async (forceLogin: boolean) => {
@@ -59,7 +57,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const userData = await UserApiClient.getUserByUUID(response.uuid || "");
       setUser(userData as UserModel);
     } else {
-      forceLogin && navigate("/login");
       logout();
     }
   };

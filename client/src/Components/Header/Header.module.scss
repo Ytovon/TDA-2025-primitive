@@ -2,6 +2,26 @@
   --header-height: 80px;
 }
 
+.timerContainer {
+  color: var(--color-text-primary);
+  display: flex;
+  gap: 1rem;
+  position: absolute;
+  right: 4rem;
+  padding: 1rem 2rem;
+  font-weight: normal;
+  background-color: var(--color-background-light);
+  border-radius: 0 0 5px 5px;
+  box-shadow: var(--color-background-primary) 3px 3px 1px;
+
+  .timer {
+    font-weight: bold;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+}
+
 header {
   position: fixed;
   width: 100%;
@@ -70,6 +90,7 @@ header {
   display: flex;
   gap: 5px;
   align-items: center;
+  cursor: pointer;
 }
 
 .scrollableBtn {

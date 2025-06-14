@@ -13,6 +13,8 @@ import {
   landingImageWhite,
   landingImageBlack,
 } from "../../assets/assets";
+import { useAuth } from "../../Context/AuthContext";
+import { useWebSocketMultiplayer } from "../../Context/WebSocketContextMultiplayer";
 
 const headerText = [
   { heading: "Moudro dne", text: "Prošvihnete 100 % tahů, které neuděláte." },
@@ -64,7 +66,6 @@ export default function HomePage() {
                   text="Online multiplayer"
                   color="white"
                   backgroundColor={true}
-                  onClick={() => navigate("/loading")}
                 />
                 <Button
                   text="Tréninkové úlohy"
@@ -109,15 +110,14 @@ export default function HomePage() {
                   Přinášíme ti <b>moderní a kvalitní</b> digitalizovanou podobu
                   piškvorek, kterou si můžeš užít kdykoliv a kdekoliv. <br />
                   <br />
-                  Zahraj si s kamarádem v režimu <b>lokálního multiplayeru</b>,
-                  který věrně zachovává atmosféru klasické hry na papíře, a
-                  zároveň nabízí pohodlí digitálního prostředí.
+                  Zahraj si proti profi hráčům z celé republiky za pomocí našeho
+                  online multiplayeru, jenž tě přenese na novou úroveň hraní.
+                  Staň se tím nejlepším, kterého naše platforma potká!
                 </p>
                 <Button
                   text="Jdu do toho"
                   backgroundColor={false}
                   color="white"
-                  onClick={() => navigate("/game")}
                 />
               </div>
             </div>
