@@ -12,12 +12,68 @@
 :root {
   --gameCellSize: 5.2vh;
   --gameCellSizeClamped: clamp(18px, var(--gameCellSize), 48px);
+  --toggleButtonSize: 1.4rem;
 }
 
-/* ****************************** */
+.toggleButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: var(--toggleButtonSize);
+  cursor: pointer;
+  z-index: 10;
+}
+
+.toggleButtonHidden {
+  display: none;
+  position: absolute;
+  color: var(--color-text-primary);
+  left: 0;
+  top: 0;
+  cursor: pointer;
+  font-size: var(--toggleButtonSize);
+}
+
+// sidebar minimalized
+.minimized {
+  .toggleButtonHidden {
+    display: block;
+    left: 1rem;
+    top: 10px;
+    z-index: 100;
+  }
+  .menuSide {
+    width: 0;
+
+    .sideContent {
+      transition: opacity 1s ease;
+    }
+  }
+}
+
+.menuSide {
+  height: 100vh;
+  width: 320px;
+  background-color: #1f1f1f;
+  padding: 20px;
+  transition: width 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+
+  .sideContent {
+    opacity: 1;
+  }
+}
+
 .title {
   color: var(--color-text-primary);
-  font-size: 3rem;
+  font-size: 2.5rem;
   text-align: center;
   height: min-content;
   z-index: 100;
@@ -28,7 +84,20 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  position: relative;
+}
+.message {
+  gap: 8px;
+  align-items: center;
+  transform: translateX(-50%);
+  color: var(--color-text-primary);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+  position: absolute;
+  top: 50px;
+  left: 50%;
+  background-color: var(--color5);
 }
 
 .menu {
@@ -39,7 +108,7 @@
 
 .menuSide {
   background-color: var(--color-background-light);
-  width: 30%;
+  width: 40%;
   padding: 90px 0;
   color: var(--color-text-primary);
 
@@ -58,10 +127,16 @@
     margin-bottom: 50px;
   }
 
+  .menuUsernames {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .menuFlex {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-block: 0.5rem 12px;
 
     div {
       display: flex;
@@ -81,7 +156,7 @@
 
     .eloCount {
       font-size: 1.5rem;
-      font-weight: 500;
+      font-weight: bold;
     }
   }
 
@@ -91,7 +166,6 @@
     padding: 13px;
     border: 3px solid var(--color-text-inverted);
     border-radius: 12px;
-    background-color: var(--color1);
   }
 
   .timer {
@@ -110,7 +184,7 @@
 }
 
 .gameSide {
-  width: 70%;
+  width: 100%;
   position: relative;
   padding-top: 120px;
   display: flex;
@@ -119,6 +193,7 @@
 
 .gameWrapper {
   width: fit-content;
+  position: relative;
 }
 
 .game {
@@ -293,21 +368,11 @@
     overflow: auto;
   }
 
-  .gamePage {
-    flex-direction: row;
-  }
-
   .menuSide {
     width: 100%;
     height: fit-content;
     padding-block: 90px 50px;
     width: 50%;
-  }
-
-  .gameSide {
-    width: 100%;
-    padding-block: 50px;
-    position: initial;
   }
 
   .menuTitle {

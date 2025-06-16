@@ -30,24 +30,37 @@ export class UserApiClient {
     }
   }
 
-  // Login user
   static async loginUser(credentials: {
     usernameOrEmail: string;
     password: string;
-  }): Promise<
-    { user: UserModel; accessToken: string; refreshToken: string } | string
-  > {
+  }): Promise<{
+    status: number;
+    message: string;
+    user?: UserModel;
+    accessToken?: string;
+    refreshToken?: string;
+  }> {
     try {
       const response = await userApiInstance.post(`/login`, credentials);
+
       const { user, accessToken, refreshToken } = response.data;
 
       setRefreshToken(refreshToken);
       setAccessToken(accessToken);
 
-      return { user, accessToken, refreshToken };
+      return {
+        status: response.status,
+        message: "Přihlášení úspěšné",
+        user,
+        accessToken,
+        refreshToken,
+      };
     } catch (error: any) {
       console.error("Error logging in user:", error);
-      return error.response?.data?.message || error.message;
+      return {
+        status: error.response?.status || 500,
+        message: error.response?.data?.message || error.message,
+      };
     }
   }
 

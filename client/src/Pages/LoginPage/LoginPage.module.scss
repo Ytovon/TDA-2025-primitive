@@ -1,3 +1,10 @@
+.formWrappper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
 .formContainer {
   display: flex;
   flex-direction: column;
@@ -15,7 +22,23 @@
 }
 
 .message {
-  color: red;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  position: absolute;
+  top: 22%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--color-text-primary);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  transition: opacity 0.3s ease;
+  opacity: 1;
+}
+
+.hidden {
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .form {

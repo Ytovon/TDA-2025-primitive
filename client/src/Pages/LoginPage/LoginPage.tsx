@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./LoginPage.module.css";
 import Header from "../../Components/Header/Header";
 import { UserApiClient } from "../../API/UserApi";
@@ -6,17 +6,31 @@ import { UserModel } from "../../Model/UserModel";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCircleExclamation,
+  faCircleCheck,
+} from "@fortawesome/free-solid-svg-icons";
+
 export const LoginPage = () => {
   const { validate } = useAuth();
 
   const navigate = useNavigate();
-  const [isRegistered, setIsRegistered] = useState(true);
+  const [isOnLoginPage, setIsOnLoginPage] = useState(true);
+  const [success, setSuccess] = useState<boolean>(false);
+  const [isVisible, setIsVisible] = useState(false);
+
   const [formData, setFormData] = useState<Partial<UserModel>>({
     username: "",
     email: "",
     password: "",
   });
   const [error, setError] = useState("");
+
+  interface Response {
+    message: string;
+    success: boolean;
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -25,6 +39,17 @@ export const LoginPage = () => {
     });
   };
 
+  useEffect(() => {
+    if (error) {
+      setIsVisible(true);
+      const timeout = setTimeout(() => {
+        setIsVisible(false);
+        setError("");
+      }, 3000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [error]);
   const validatePassword = (password: string): string | null => {
     if (password.length < 8) {
       return "Heslo musí mít alespoň 8 znaků.";
@@ -44,134 +69,210 @@ export const LoginPage = () => {
     return null; // Heslo je platné
   };
 
-  const register = async () => {
-    if (!formData.username || !formData.password || !formData.email) {
-      setError("Vyplňte všechny údaje");
-      return;
-    }
-
-    const passwordError = validatePassword(formData.password!);
-    if (passwordError) {
-      setError(passwordError);
-      return;
-    }
-
-    const newUser = {
-      username: formData.username,
-      email: formData.email,
-      password: formData.password,
-    };
-
-    const response = await UserApiClient.registerUser(newUser);
-
-    if (response.status === 409) {
-      setError("Uživatel s tímto jménem nebo emailem již existuje");
+  const handleLoginMessages = (response: any): Response => {
+    if (response.status === 400) {
+      return {
+        message: "Vyplňte prosím všechna pole",
+        success: false,
+      };
+    } else if (response.status === 401) {
+      return {
+        message: "Nesprávné heslo",
+        success: false,
+      };
+    } else if (response.status === 404) {
+      return {
+        message: "Uživatel nenalezen",
+        success: false,
+      };
     } else if (response.status === 500) {
-      setError("Chyba serveru");
+      return {
+        message: "Uživatelské heslo jsme nebyli schopni dohledat",
+        success: false,
+      };
     } else if (response.status === 200) {
-      setError("Registrace úspěšná");
+      return {
+        message: "Přihlášení úspěšné",
+        success: true,
+      };
     } else {
-      setError(response.message);
+      return {
+        message: response.message || "Neznámá chyba",
+        success: false,
+      };
     }
   };
 
-  const loginOnClick = async () => {
-    if (formData.username === "" || formData.password === "") {
-      setError("Vyplňte všechny údaje");
-    } else {
-      const user = {
-        username: formData.username || "",
-        password: formData.password || "",
+  const handleRegisterMessages = (response: any): Response => {
+    if (response.status === 409) {
+      return {
+        message: "Uživatel s tímto jménem nebo emailem již existuje",
+        success: false,
       };
-
-      const response: any = await UserApiClient.loginUser({
-        usernameOrEmail: user.username,
-        password: user.password,
-      });
-
-      setError(response);
-
-      if (
-        response.accessToken !== undefined &&
-        response.refreshToken !== undefined
-      ) {
-        validate(false);
-        navigate("/");
-      }
+    } else if (response.status === 400) {
+      return {
+        message: "Vyplnte všechna pole",
+        success: false,
+      };
+    } else if (response.status === 201) {
+      return {
+        message: "Registrace proběhla úspěšně",
+        success: true,
+      };
+    } else {
+      return {
+        message: response.message || "Neznámá chyba",
+        success: false,
+      };
     }
+  };
+
+  const register = async (): Promise<boolean> => {
+    const passwordError = validatePassword(formData.password!);
+    if (passwordError) {
+      setError(passwordError);
+      return false;
+    }
+
+    const newUser = {
+      username: formData.username || "",
+      email: formData.email || "",
+      password: formData.password || "",
+    };
+
+    const apiResponse = await UserApiClient.registerUser(newUser);
+    const response: Response = handleRegisterMessages(apiResponse);
+
+    console.log(response.success);
+
+    setError(response.message);
+    setSuccess(response.success);
+    return response.success;
+  };
+
+  const loginOnClick = async () => {
+    const user = {
+      username: formData.username || "",
+      password: formData.password || "",
+    };
+
+    const response: any = await UserApiClient.loginUser({
+      usernameOrEmail: user.username,
+      password: user.password,
+    });
+
+    const loginResponse: Response = handleLoginMessages(response);
+
+    if (
+      response.accessToken !== undefined &&
+      response.refreshToken !== undefined
+    ) {
+      checkAndNavigate();
+    }
+    setSuccess(loginResponse.success);
+    setError(loginResponse.message);
+  };
+
+  const checkAndNavigate = () => {
+    validate();
+    const timeout = setTimeout(() => {
+      navigate("/");
+    }, 3000);
+    return () => clearTimeout(timeout);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("hehelhfef");
 
-    if (!isRegistered) {
-      await register();
-      await loginOnClick();
-    } else {
-      await loginOnClick();
+    if (!isOnLoginPage) {
+      // if on register... call register fn
+      const success = await register();
+
+      if (success == true) {
+        checkAndNavigate();
+      }
+      return;
     }
+    await loginOnClick();
   };
 
   const handleIsRegistered = () => {
-    setIsRegistered((prev) => !prev);
+    setIsOnLoginPage((prev) => !prev);
+    setError("");
+    setIsVisible(false);
   };
 
   return (
     <div>
       <Header />
-
-      <div className={styles.formContainer}>
-        <h1 className={styles.pageTitle}>
-          {isRegistered ? "Přihlásit se" : "Registrace"}
-        </h1>
-        <p className={error.length == 0 ? styles.none : styles.message}>
-          {error}
-        </p>
-        <form className={styles.form} onSubmit={handleSubmit}>
-          <input
-            className={styles.input}
-            type="text"
-            name="username"
-            placeholder={
-              isRegistered
-                ? "Uživatelské jméno nebo email"
-                : "Uživatelské jméno"
-            }
-            value={formData.username}
-            onChange={handleChange}
+      {
+        <div
+          className={`${styles.message} ${!isVisible ? styles.hidden : ""}`}
+          style={{
+            backgroundColor: success ? "var(--color1)" : "var(--color5)",
+          }}
+        >
+          <FontAwesomeIcon
+            icon={success ? faCircleCheck : faCircleExclamation}
           />
-          <input
-            className={styles.input}
-            style={{ display: isRegistered ? "none" : "block" }}
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          <input
-            className={styles.input}
-            type="password"
-            name="password"
-            placeholder="Heslo"
-            value={formData.password}
-            onChange={handleChange}
-          />
+          <p>{error}</p>
+        </div>
+      }
 
-          <button className={styles.submitBtn} type="submit">
-            {isRegistered ? "Přihlásit se" : "Založit účet"}
-          </button>
+      <div className={styles.formWrappper}>
+        <div className={styles.formContainer}>
+          <h1 className={styles.pageTitle}>
+            {isOnLoginPage ? "Přihlásit se" : "Registrace"}
+          </h1>
 
-          <p>
-            {isRegistered ? "Účet nemáte?" : "Máte účet?"}{" "}
-            <button
-              className={styles.link}
-              onClick={() => handleIsRegistered()}
-            >
-              {isRegistered ? "Zaregistrujte se" : "Přihlásit se"}
+          <form className={styles.form} onSubmit={handleSubmit}>
+            <input
+              className={styles.input}
+              type="text"
+              name="username"
+              placeholder={
+                isOnLoginPage
+                  ? "Uživatelské jméno nebo email"
+                  : "Uživatelské jméno"
+              }
+              value={formData.username}
+              onChange={handleChange}
+            />
+            <input
+              className={styles.input}
+              style={{ display: isOnLoginPage ? "none" : "block" }}
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+            <input
+              className={styles.input}
+              type="password"
+              name="password"
+              placeholder="Heslo"
+              value={formData.password}
+              onChange={handleChange}
+            />
+
+            <button className={styles.submitBtn} type="submit">
+              {isOnLoginPage ? "Přihlásit se" : "Založit účet"}
             </button>
-          </p>
-        </form>
+
+            <p>
+              {isOnLoginPage ? "Účet nemáte?" : "Máte účet?"}{" "}
+              <button
+                type="button"
+                className={styles.link}
+                onClick={() => handleIsRegistered()}
+              >
+                {isOnLoginPage ? "Zaregistrujte se" : "Přihlásit se"}
+              </button>
+            </p>
+          </form>
+        </div>
       </div>
     </div>
   );

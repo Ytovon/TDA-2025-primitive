@@ -1,7 +1,8 @@
 import React from "react";
+import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./HomePage.module.css";
-import Header from "../../Components/Header/Header";
+import Header, { HeaderHandle } from "../../Components/Header/Header";
 import { Footer } from "../../Components/Footer/Footer";
 import { Button } from "../../Components/Button/Button";
 import { useDarkMode } from "../../Context/DarkModeContext";
@@ -13,8 +14,6 @@ import {
   landingImageWhite,
   landingImageBlack,
 } from "../../assets/assets";
-import { useAuth } from "../../Context/AuthContext";
-import { useWebSocketMultiplayer } from "../../Context/WebSocketContextMultiplayer";
 
 const headerText = [
   { heading: "Moudro dne", text: "Prošvihnete 100 % tahů, které neuděláte." },
@@ -51,10 +50,15 @@ export default function HomePage() {
   const { darkMode } = useDarkMode();
   const randomInt = Math.floor(Math.random() * headerText.length);
   const { heading, text } = headerText[randomInt];
+  const headerRef = useRef<HeaderHandle>(null);
+
+  const triggerSearch = () => {
+    headerRef.current?.StartGameSearch();
+  };
 
   return (
     <div>
-      <Header />
+      <Header ref={headerRef} />
       <div className={styles.body}>
         <div className={styles.homePageWrapper}>
           <section className={`${styles.homePageOpening} ${styles.section}`}>
@@ -66,6 +70,7 @@ export default function HomePage() {
                   text="Online multiplayer"
                   color="white"
                   backgroundColor={true}
+                  onClick={triggerSearch}
                 />
                 <Button
                   text="Tréninkové úlohy"
@@ -118,6 +123,7 @@ export default function HomePage() {
                   text="Jdu do toho"
                   backgroundColor={false}
                   color="white"
+                  onClick={triggerSearch}
                 />
               </div>
             </div>

@@ -38,9 +38,8 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
 }) => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const socketRef = useRef<WebSocket | null>(null);
-
   const [isConnected, setIsConnected] = useState(false);
-  const [status, setStatus] = useState("...");
+  const [status, setStatus] = useState("");
   const [gameID, setGameID] = useState("");
   const [multiplayerBoard, setMultiplayerBoard] = useState<string[][]>(
     Array.from({ length: 15 }, () => Array(15).fill(""))
@@ -53,16 +52,42 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
   const waitingRef = useRef(false);
 
   const [timer, setTimer] = useState<number>(0);
+  const [minutesLeft, setMinutesLeft] = useState<number>(0);
 
-  // Synchronizuj waitingRef s waitingForMatch stavem
-  useEffect(() => {
-    console.log("waitingForMatch changed to:", waitingForMatch);
-  }, [waitingForMatch]);
+  const messages: string[] = [
+    "Ještě vteřinku...",
+    "Opravdu chcete hrát, že?",
+    "To by si zašloužilo free ELO",
+    "Trpělivost růže přináší.",
+    "Ještě chvíli, nevzdávej to!",
+    "Čekání není pro slabé.",
+    "Drž nervy, už to bude",
+    "Netrpělivost kazí ELO.",
+    "Zůstaň v klidu, hráči se shánějí.",
+    "Chvíli počkej, stojí to za to.",
+  ];
 
   // Synchronizuj socketRef s socket stavem
   useEffect(() => {
     socketRef.current = socket;
   }, [socket]);
+
+  useEffect(() => {
+    if (waitingForMatch || !socket || status === "") return;
+
+    const timeout = setTimeout(() => {
+      setStatus("");
+    }, 3000);
+
+    return () => clearTimeout(timeout);
+  }, [status, waitingForMatch, socket]);
+
+  useEffect(() => {
+    if (timer / 30 > minutesLeft && timer > 31 && waitingForMatch) {
+      setMinutesLeft((prev) => prev + 1);
+      setStatus(messages[Math.floor(Math.random() * messages.length)]);
+    }
+  }, [timer, minutesLeft, waitingForMatch]);
 
   // Časovač pro čekání na soupeře
   useEffect(() => {
@@ -72,8 +97,9 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
         setTimer((prev) => prev + 1);
       }, 1000);
     } else {
-      setTimer(0);
+      if (interval) clearInterval(interval);
     }
+    setStatus("");
 
     return () => {
       if (interval) clearInterval(interval);

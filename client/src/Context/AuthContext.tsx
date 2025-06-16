@@ -7,14 +7,18 @@ import React, {
 } from "react";
 import { User, UserModel } from "../Model/UserModel";
 import { UserApiClient } from "../API/UserApi";
-import { getAccessTokenAsync, getRefreshToken } from "../API/tokenstorage";
+import {
+  getAccessTokenAsync,
+  getRefreshToken,
+  clearTokens,
+} from "../API/tokenstorage";
 
 interface AuthContextType {
   user: UserModel | null;
   uuid: string | null;
   isAuthenticated: boolean;
   setGlobalUser: (userData: UserModel) => void;
-  validate: (forceLogin: boolean) => Promise<void>;
+  validate: () => Promise<void>;
   logout: () => void;
 }
 
@@ -32,7 +36,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setAuthenticated] = useState<boolean>(false);
 
   // Validace tokenu při startu app nebo volání validate
-  const validate = async (forceLogin: boolean) => {
+  const validate = async (): Promise<void> => {
     const token = await getAccessTokenAsync();
     if (!token) {
       logout();
@@ -66,6 +70,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     localStorage.removeItem("uuid");
     setUser(null);
     setUUID(null);
+    clearTokens();
     setAuthenticated(false);
   };
 
@@ -75,7 +80,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Validace tokenu při mountu provideru
   useEffect(() => {
-    validate(false);
+    validate();
   }, []);
 
   return (

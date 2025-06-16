@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./GameMultiplayer.module.css";
 import { Button } from "../../Components/Button/Button";
@@ -15,6 +15,13 @@ import { UserModel } from "../../Model/UserModel";
 import { useAuth } from "../../Context/AuthContext";
 import { UserApiClient } from "../../API/UserApi";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCircleExclamation,
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
+
 export const GameMultiplayer = ({ uuid = "" }) => {
   const navigate = useNavigate();
   const {
@@ -24,7 +31,22 @@ export const GameMultiplayer = ({ uuid = "" }) => {
     multiplayerBoard,
     multiplayerWinner,
     opponnentUUID,
+    status,
   } = useWebSocketMultiplayer();
+
+  const colorMap: Record<number, string> = {
+    1: "var(--color1)",
+    2: "var(--color2)",
+    3: "var(--color3)",
+    4: "var(--color4)",
+    5: "var(--color5)",
+  };
+
+  const [timeX, setTimeX] = useState(8 * 60); // 8 minut v sekundách
+  const [timeO, setTimeO] = useState(8 * 60);
+  const [isMinimized, setIsMinimized] = useState(false);
+
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   interface Move {
     row: number;
@@ -92,10 +114,36 @@ export const GameMultiplayer = ({ uuid = "" }) => {
       setGrid(multiplayerBoard);
     }
   }, [multiplayerBoard]);
+
   useEffect(
     () => setPlayer(grid.flat().filter((cell) => cell).length % 2 === 0),
     [grid]
   );
+
+  // Start nebo restart timeru podle aktivního hráče
+  useEffect(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+
+    intervalRef.current = setInterval(() => {
+      if (player) {
+        setTimeX((t) => (t > 0 ? t - 1 : 0));
+      } else {
+        setTimeO((t) => (t > 0 ? t - 1 : 0));
+      }
+    }, 1000);
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [player]);
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0");
+    const s = (seconds % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
+  };
 
   const checkWin = (row: number, col: number, symbol: string): boolean => {
     const directions: [number, number][] = [
@@ -150,63 +198,112 @@ export const GameMultiplayer = ({ uuid = "" }) => {
 
   return (
     <div className={styles.body}>
-      <div className={styles.gamePage}>
-        <div
-          style={{
-            boxShadow: player
-              ? "var(--shadow-game-red)"
-              : "var(--shadow-game-blue)",
-          }}
-          className={styles.menuSide}
+      <div
+        className={`${styles.gamePage} ${isMinimized ? styles.minimized : ""}`}
+      >
+        <button
+          className={styles.toggleButtonHidden}
+          onClick={() => setIsMinimized((prev) => !prev)}
         >
-          <h2 className={styles.title}>{game.name}</h2>
+          {" "}
+          <FontAwesomeIcon
+            icon={isMinimized ? faChevronRight : faChevronLeft}
+          />
+        </button>
+        {/* MENU SIDE */}
+        <div
+          className={`${styles.menuSide} ${
+            isMinimized ? styles.minimized : ""
+          }`}
+        >
+          <button
+            className={styles.toggleButton}
+            onClick={() => setIsMinimized((prev) => !prev)}
+          >
+            <FontAwesomeIcon
+              icon={isMinimized ? faChevronRight : faChevronLeft}
+            />
+          </button>
 
-          <div className={styles.menu}>
-            <div className={styles.menuBackground}>
-              <div className={styles.menuFlex}>
-                <div>
-                  <h3>{user?.username || "..."}</h3>
-                  <img className={styles.userImg} src={lightbulbWhite} alt="" />
+          {!isMinimized && (
+            <div className={styles.sideContent}>
+              <h2 className={styles.title}>{game.name}</h2>
+              <div className={styles.menu}>
+                <div className={styles.menuBackground}>
+                  <div className={styles.menuUsernames}>
+                    <h3>{user?.username || "..."}</h3>
+                    <h3>
+                      {typeof opponent === "object" && "username" in opponent
+                        ? opponent.username
+                        : "..."}
+                    </h3>
+                  </div>
+                  <div className={styles.menuFlex}>
+                    <div>
+                      <img
+                        className={styles.userImg}
+                        src={lightbulbWhite}
+                        style={{
+                          backgroundColor: colorMap[user?.AvatarColor ?? 1],
+                        }}
+                        alt=""
+                      />
+                    </div>
+                    <p>vs</p>
+                    <div>
+                      <img
+                        className={styles.userImg}
+                        style={{
+                          backgroundColor: colorMap[user?.AvatarColor ?? 1],
+                        }}
+                        src={lightbulbWhite}
+                        alt=""
+                      />
+                    </div>
+                  </div>
+
+                  <div className={styles.menuFlex}>
+                    <p className={styles.eloCount}>
+                      {Math.floor(user?.elo || 0) || "..."}
+                    </p>
+                    <p>ELO</p>
+                    <p className={styles.eloCount}>
+                      {typeof opponent === "object" && "username" in opponent
+                        ? Math.floor(opponent.elo)
+                        : "..."}
+                    </p>
+                  </div>
                 </div>
-                <p>vs</p>
-                <div>
-                  <h3>
-                    {typeof opponent === "object" && "username" in opponent
-                      ? opponent.username
-                      : "..."}
-                  </h3>
-                  <img className={styles.userImg} src={lightbulbWhite} alt="" />
+
+                <div
+                  className={`${styles.menuBackground} ${styles.menuFlex} ${styles.timer}`}
+                >
+                  <p className={styles.time}>{formatTime(timeX)}</p>
+                  <p className={styles.timeText}>
+                    Zbývá <br />
+                    času
+                  </p>
+                  <p className={styles.time}>{formatTime(timeO)}</p>
                 </div>
               </div>
-
-              <div className={styles.menuFlex}>
-                <p className={styles.eloCount}>
-                  {Math.floor(user?.elo || 0) || "..."}
-                </p>
-                <p>ELO</p>
-                <p className={styles.eloCount}>
-                  {" "}
-                  {typeof opponent === "object" && "username" in opponent
-                    ? Math.floor(opponent.elo)
-                    : "..."}
-                </p>
-              </div>
             </div>
-
-            <div
-              className={`${styles.menuBackground} ${styles.menuFlex} ${styles.timer}`}
-            >
-              <p className={styles.time}>08:00</p>
-              <p className={styles.timeText}>
-                Zbývá <br />
-                času
-              </p>
-              <p className={styles.time}>08:00</p>
-            </div>
-          </div>
+          )}
         </div>
 
+        {/* GAME SIDE */}
         <div className={styles.gameSide}>
+          <div
+            className={styles.message}
+            style={
+              status != "" && status != undefined
+                ? { opacity: 1, display: "flex" }
+                : {}
+            }
+          >
+            <FontAwesomeIcon icon={faCircleExclamation} />
+            <p>{status}</p>
+          </div>
+
           <div className={styles.gameWrapper}>
             <div className={styles.gameGrid}>
               {grid.map((row, rowIndex) =>

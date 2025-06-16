@@ -17,6 +17,7 @@ import { Button } from "../../Components/Button/Button";
 import { useNavigate } from "react-router-dom";
 import { ApiClient } from "../../API/GameApi";
 import { Game } from "../../Model/GameModel";
+import Header from "../../Components/Header/Header";
 
 interface GamePageProps {
   uuid?: string;
@@ -179,6 +180,8 @@ export const GamePage: React.FC<GamePageProps> = ({ uuid = "" }) => {
 
   return (
     <body className={styles.body}>
+      <Header displayFull={false} />
+
       <div className={styles.gamePage}>
         <div className={styles.gameMenu}>
           <button>

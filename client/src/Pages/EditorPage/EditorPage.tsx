@@ -20,6 +20,7 @@ import { Button } from "../../Components/Button/Button";
 import { useDarkMode } from "../../Context/DarkModeContext";
 import { Link, useNavigate } from "react-router-dom";
 import { validate } from "uuid";
+import Header from "../../Components/Header/Header";
 
 interface EditorPageProps {
   uuid?: string;
@@ -193,6 +194,8 @@ export const EditorPage: React.FC<EditorPageProps> = ({ uuid = "" }) => {
 
   return (
     <div className={styles.body}>
+      <Header displayFull={false} />
+
       <Link to="/Games">
         <img
           className={styles.arrow}
