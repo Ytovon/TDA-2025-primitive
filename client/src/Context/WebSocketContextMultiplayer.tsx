@@ -27,6 +27,7 @@ interface WebSocketContextType {
   startConnection: () => void;
   waitingForMatch: boolean;
   timer: number;
+  setIsConnected: React.Dispatch<React.SetStateAction<boolean>>; // <--- přidat!
 }
 
 interface WebSocketProviderProps {
@@ -73,6 +74,20 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
   }, [socket]);
 
   useEffect(() => {
+    if (!isConnected) {
+      setWaitingForMatch(false);
+      waitingRef.current = false;
+      setSocket(null);
+      setStatus("");
+      setGameID("");
+      setMultiplayerBoard(Array.from({ length: 15 }, () => Array(15).fill("")));
+      setWinner(null);
+      setOpponnentUUID(null);
+      setTimer(0);
+    }
+  }, [isConnected]);
+
+  useEffect(() => {
     if (waitingForMatch || !socket || status === "") return;
 
     const timeout = setTimeout(() => {
@@ -88,6 +103,10 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
       setStatus(messages[Math.floor(Math.random() * messages.length)]);
     }
   }, [timer, minutesLeft, waitingForMatch]);
+
+  useEffect(() => {
+    console.log("connected " + isConnected);
+  }, [isConnected]);
 
   // Časovač pro čekání na soupeře
   useEffect(() => {
@@ -146,7 +165,7 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
           setOpponnentUUID(data.opponnentUUID);
 
           setTimeout(() => {
-            setWaitingForMatch(false); // Zruší čekání, synchronizuje waitingRef
+            setWaitingForMatch(false);
           }, 3000);
           break;
 
@@ -203,6 +222,7 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
         startConnection,
         waitingForMatch,
         timer,
+        setIsConnected,
       }}
     >
       {children}

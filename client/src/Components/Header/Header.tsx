@@ -88,7 +88,7 @@ const Header = forwardRef<HeaderHandle, HeaderProps>(
     }, [menuIsOpen]);
 
     useEffect(() => {
-      if (waitingForMatch === false && isConnected) {
+      if (waitingForMatch === false && isConnected !== false) {
         navigate("/freeplay");
       }
     }, [waitingForMatch]);

@@ -14,8 +14,8 @@ import {
 import { UserModel } from "../../Model/UserModel";
 import { useAuth } from "../../Context/AuthContext";
 import { UserApiClient } from "../../API/UserApi";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useLocation } from "react-router-dom";
 import {
   faCircleExclamation,
   faChevronLeft,
@@ -32,6 +32,7 @@ export const GameMultiplayer = ({ uuid = "" }) => {
     multiplayerWinner,
     opponnentUUID,
     status,
+    setIsConnected,
   } = useWebSocketMultiplayer();
 
   const colorMap: Record<number, string> = {
@@ -75,6 +76,10 @@ export const GameMultiplayer = ({ uuid = "" }) => {
 
   const { user } = useAuth();
   const [opponent, setOpponent] = useState<UserModel | string>("");
+
+  useEffect(() => {
+    setIsConnected(false);
+  }, [useLocation()]);
 
   useEffect(() => {
     const fetchGame = async () => {
