@@ -120,17 +120,7 @@ const updateGame = async (req: Request, res: Response): Promise<void> => {
       updatedAt: new Date(),
     });
 
-    res.json({
-      game,
-    });
     res.status(201).json(game);
-
-    // // Create a response object and parse the board field back into an object if necessary
-    // res.json({
-    //   status: "success",
-    //   message: "Game updated successfully.",
-    //   game: game,
-    // });
   } catch (error) {
     res.status(500).json({ message: "Failed to update game", error });
   }

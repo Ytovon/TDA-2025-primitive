@@ -1,5 +1,5 @@
-import { DataTypes, Model, Optional } from 'sequelize';
-import { sequelize } from './database.js';
+import { DataTypes, Model, Optional } from "sequelize";
+import { sequelize } from "./database.js";
 
 // Define the attributes for the Game model
 interface GameAttributes {
@@ -14,10 +14,17 @@ interface GameAttributes {
 }
 
 // Define the creation attributes for the Game model
-interface GameCreationAttributes extends Optional<GameAttributes, 'uuid' | 'bitmap' | 'createdAt' | 'updatedAt'> {}
+interface GameCreationAttributes
+  extends Optional<
+    GameAttributes,
+    "uuid" | "bitmap" | "createdAt" | "updatedAt"
+  > {}
 
 // Define the Game model
-class Game extends Model<GameAttributes, GameCreationAttributes> implements GameAttributes {
+class Game
+  extends Model<GameAttributes, GameCreationAttributes>
+  implements GameAttributes
+{
   public uuid!: string;
   public name!: string;
   public difficulty!: string;
@@ -46,12 +53,15 @@ Game.init(
     board: {
       type: DataTypes.JSON, // Store the board as a JSON array
       allowNull: false,
-      defaultValue: () => Array(15).fill(null).map(() => Array(15).fill(null)), // Ensures unique rows
+      defaultValue: () =>
+        Array(15)
+          .fill(null)
+          .map(() => Array(15).fill(null)), // Ensures unique rows
     },
     gameState: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: 'ongoing',
+      defaultValue: "ongoing",
     },
     bitmap: {
       type: DataTypes.TEXT, // Store the bitmap as a string
@@ -68,7 +78,7 @@ Game.init(
   },
   {
     sequelize,
-    tableName: 'Games',
+    tableName: "Games",
     timestamps: true, // createdAt and updatedAt are automatically handled
   }
 );
@@ -96,56 +106,60 @@ interface UserAttributes {
 }
 
 // Define the creation attributes for the User model
-interface UserCreationAttributes extends Optional<UserAttributes, 'uuid' | 'createdAt' | 'updatedAt'> {}
+interface UserCreationAttributes
+  extends Optional<UserAttributes, "uuid" | "createdAt" | "updatedAt"> {}
 
-class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+class User
+  extends Model<UserAttributes, UserCreationAttributes>
+  implements UserAttributes
+{
   get uuid(): string {
-    return this.getDataValue('uuid');
+    return this.getDataValue("uuid");
   }
   get username(): string {
-    return this.getDataValue('username');
+    return this.getDataValue("username");
   }
   get email(): string {
-    return this.getDataValue('email');
+    return this.getDataValue("email");
   }
   get password(): string | undefined {
-    return this.getDataValue('password');
+    return this.getDataValue("password");
   }
   get googleId(): string | undefined {
-    return this.getDataValue('googleId');
+    return this.getDataValue("googleId");
   }
   get elo(): number {
-    return this.getDataValue('elo');
+    return this.getDataValue("elo");
   }
   get wins(): number {
-    return this.getDataValue('wins');
+    return this.getDataValue("wins");
   }
   get draws(): number {
-    return this.getDataValue('draws');
+    return this.getDataValue("draws");
   }
   get losses(): number {
-    return this.getDataValue('losses');
+    return this.getDataValue("losses");
   }
   get refreshToken(): string | undefined {
-    return this.getDataValue('refreshToken');
+    return this.getDataValue("refreshToken");
   }
   get createdAt(): Date | undefined {
-    return this.getDataValue('createdAt');
+    return this.getDataValue("createdAt");
   }
   get updatedAt(): Date | undefined {
-    return this.getDataValue('updatedAt');
+    return this.getDataValue("updatedAt");
   }
   get isAdmin(): boolean | undefined {
-    return this.getDataValue('isAdmin');
+    return this.getDataValue("isAdmin");
   }
   get isBanned(): boolean | undefined {
-    return this.getDataValue('isBanned');
+    return this.getDataValue("isBanned");
   }
   get note(): string | undefined {
-    return this.getDataValue('note');
+    return this.getDataValue("note");
   }
   get AvatarColor(): number | undefined {
-    return this.getDataValue('AvatarColor');
+    return this.getDataValue("AvatarColor");
   }
 }
 
@@ -246,6 +260,7 @@ User.init(
 
 // Define Matchmaking Game attributes
 interface MatchmakingGameAttributes {
+  uuid: string;
   playerX: string;
   playerO: string;
   winner?: string | null;
@@ -253,16 +268,22 @@ interface MatchmakingGameAttributes {
   eloChangeX: number;
   eloChangeO: number;
   board: string[][];
-  bitmap?: string | null;  // Allow null in addition to undefined
+  bitmap?: string | null; // Allow null in addition to undefined
   endedAt: Date;
 }
 
-// Define creation attributes
-interface MatchmakingGameCreationAttributes extends Optional<MatchmakingGameAttributes, 'winner' | 'loser' | 'bitmap'> {}
+interface MatchmakingGameCreationAttributes
+  extends Optional<
+    MatchmakingGameAttributes,
+    "uuid" | "winner" | "loser" | "bitmap"
+  > {}
 
 // Define the MatchmakingGame model
-class MatchmakingGame extends Model<MatchmakingGameAttributes, MatchmakingGameCreationAttributes> 
-  implements MatchmakingGameAttributes {
+class MatchmakingGame
+  extends Model<MatchmakingGameAttributes, MatchmakingGameCreationAttributes>
+  implements MatchmakingGameAttributes
+{
+  public uuid!: string;
   public playerX!: string;
   public playerO!: string;
   public winner!: string | null;
@@ -276,22 +297,24 @@ class MatchmakingGame extends Model<MatchmakingGameAttributes, MatchmakingGameCr
 
 MatchmakingGame.init(
   {
+    uuid: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
     playerX: {
       type: DataTypes.UUID,
       allowNull: false,
-      primaryKey: true,
       references: { model: "Users", key: "uuid" },
     },
     playerO: {
       type: DataTypes.UUID,
       allowNull: false,
-      primaryKey: true,
       references: { model: "Users", key: "uuid" },
     },
     endedAt: {
       type: DataTypes.DATE,
       allowNull: false,
-      primaryKey: true,
     },
     winner: {
       type: DataTypes.UUID,

@@ -24,7 +24,8 @@ function initializeWebSocket(server) {
         if (!token && gameId) {
             const game = games[gameId];
             // Check if the game exists and was created within the last 5 minutes
-            if (game && Date.now() - game.lastActivity <= 300000) { // 5 minutes = 300,000 ms
+            if (game && Date.now() - game.lastActivity <= 300000) {
+                // 5 minutes = 300,000 ms
                 // Attach guest data to WebSocket connection
                 ws.user = {
                     uuid: `guest-${Math.random().toString(36).substring(2, 8)}`, // Generate a random guest ID
@@ -213,24 +214,26 @@ async function handleMessage(ws, message) {
                             type: "matched",
                             gameId: newGameId,
                             player: "X",
+                            opponnentUUID: player2.user.uuid,
                         }));
                         player2.ws.send(JSON.stringify({
                             type: "matched",
                             gameId: newGameId,
                             player: "O",
+                            opponnentUUID: player1.user.uuid,
                         }));
                     }
                     else {
                         ws.send(JSON.stringify({
                             type: "waiting",
-                            message: "Waiting for an opponent with a closer ELO...",
+                            message: "Čekání na protihráče s bližším ELO...",
                         }));
                     }
                 }
                 else {
                     ws.send(JSON.stringify({
                         type: "waiting",
-                        message: "Waiting for an opponent...",
+                        message: "Čekání na protihráče...",
                     }));
                 }
                 break;
@@ -238,12 +241,11 @@ async function handleMessage(ws, message) {
                 const gameToUpdate = games[gameId];
                 if (gameToUpdate && gameToUpdate.players.includes(ws)) {
                     const newBoard = JSON.parse(JSON.stringify(gameToUpdate.board));
-                    console.log("hraju!");
                     // Check if the cell is already occupied
                     if (newBoard[move.row][move.col] !== "") {
                         ws.send(JSON.stringify({
                             type: "error",
-                            message: "Cell already occupied",
+                            message: "Tato buňka je již zabrána!",
                         }));
                         return;
                     }
@@ -252,7 +254,7 @@ async function handleMessage(ws, message) {
                     const playerSymbol = playerIndex === 0 ? "X" : "O";
                     // Ensure it's the player's turn
                     if (playerSymbol !== gameToUpdate.currentPlayer) {
-                        ws.send(JSON.stringify({ type: "error", message: "Not your turn" }));
+                        ws.send(JSON.stringify({ type: "error", message: "Nejsi na řadě..." }));
                         return;
                     }
                     // Stop the clock for the player who just moved
@@ -338,10 +340,18 @@ async function handleMessage(ws, message) {
                                     bitmap: BitmapGenerator.generateBitmap(gameToUpdate.board),
                                     endedAt: new Date().toISOString(),
                                 };
-                                const winnerUUID = gameData.winner === "X" ? gameData.playerX : gameData.playerO;
-                                const loserUUID = gameData.loser === "X" ? gameData.playerX : gameData.playerO;
-                                const winnerExists = await User.findOne({ where: { uuid: winnerUUID } });
-                                const loserExists = await User.findOne({ where: { uuid: loserUUID } });
+                                const winnerUUID = gameData.winner === "X"
+                                    ? gameData.playerX
+                                    : gameData.playerO;
+                                const loserUUID = gameData.loser === "X"
+                                    ? gameData.playerX
+                                    : gameData.playerO;
+                                const winnerExists = await User.findOne({
+                                    where: { uuid: winnerUUID },
+                                });
+                                const loserExists = await User.findOne({
+                                    where: { uuid: loserUUID },
+                                });
                                 if (!winnerExists || !loserExists) {
                                     console.error("One or more UUIDs do not exist in the Users table:", {
                                         playerX: gameData.playerX,
@@ -440,6 +450,9 @@ async function handleMessage(ws, message) {
                                 elo: loserWs.user.elo,
                                 losses: loserWs.user.losses,
                             });
+                            console.log("users: " +
+                                gameToUpdate.players[0].user.uuid +
+                                gameToUpdate.players[1].user.uuid);
                             // Save updated stats to the database
                             await User.update({
                                 elo: winnerWs.user.elo,
@@ -468,8 +481,12 @@ async function handleMessage(ws, message) {
                             };
                             const winnerUUID = gameData.winner === "X" ? gameData.playerX : gameData.playerO;
                             const loserUUID = gameData.loser === "X" ? gameData.playerX : gameData.playerO;
-                            const winnerExists = await User.findOne({ where: { uuid: winnerUUID } });
-                            const loserExists = await User.findOne({ where: { uuid: loserUUID } });
+                            const winnerExists = await User.findOne({
+                                where: { uuid: winnerUUID },
+                            });
+                            const loserExists = await User.findOne({
+                                where: { uuid: loserUUID },
+                            });
                             if (!winnerExists || !loserExists) {
                                 console.error("One or more UUIDs do not exist in the Users table:", {
                                     playerX: gameData.playerX,
@@ -556,8 +573,12 @@ async function handleMessage(ws, message) {
                             };
                             const winnerUUID = gameData.winner === "X" ? gameData.playerX : gameData.playerO;
                             const loserUUID = gameData.loser === "X" ? gameData.playerX : gameData.playerO;
-                            const winnerExists = await User.findOne({ where: { uuid: winnerUUID } });
-                            const loserExists = await User.findOne({ where: { uuid: loserUUID } });
+                            const winnerExists = await User.findOne({
+                                where: { uuid: winnerUUID },
+                            });
+                            const loserExists = await User.findOne({
+                                where: { uuid: loserUUID },
+                            });
                             if (!winnerExists || !loserExists) {
                                 console.error("One or more UUIDs do not exist in the Users table:", {
                                     playerX: gameData.playerX,
@@ -635,7 +656,8 @@ function cleanupAbandonedGames() {
     const now = Date.now();
     Object.keys(games).forEach((gameId) => {
         const game = games[gameId];
-        if (game.lastActivity && now - game.lastActivity > 300000) { // 5 minutes = 300,000 ms
+        if (game.lastActivity && now - game.lastActivity > 300000) {
+            // 5 minutes = 300,000 ms
             console.log(`Cleaning up abandoned game: ${gameId}`);
             game.players.forEach((playerWs) => {
                 if (playerWs.readyState === WebSocket.OPEN) {

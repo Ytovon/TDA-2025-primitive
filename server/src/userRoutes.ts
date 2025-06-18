@@ -7,15 +7,15 @@ import {
   getAllUsers,
   getUserByUUID,
   updateUserByUUID,
-  deleteUserByUUID,
-  googleLogin,  
+  googleLogin,
   googleCallback,
   forgotPassword,
   verifyToken,
   banUser,
-  getGameHistoryByUUID // Import the new function
+  getUsersByUUIDs,
+  getGameHistoryByUUID, // Import the new function
 } from "./userController.js";
-import { isAdminMiddleware } from './adminMiddleware.js';
+import { isAdminMiddleware } from "./adminMiddleware.js";
 
 const router = express.Router();
 
@@ -33,7 +33,9 @@ router.get("/auth/google/callback", googleCallback);
 
 // Protected routes (authentication required)
 router.get("", getAllUsers);
+router.put("/:uuid", updateUserByUUID);
 router.get("/:uuid", getUserByUUID);
+router.post("/batch", getUsersByUUIDs);
 router.get("/:uuid/history", getGameHistoryByUUID); // Add this line
 
 // Admin route for banning users

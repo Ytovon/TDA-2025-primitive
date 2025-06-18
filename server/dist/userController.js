@@ -27,6 +27,7 @@ const getGameHistoryByUUID = async (req, res) => {
         });
         if (!games.length) {
             res.status(404).json({ message: "No game history found for this user." });
+            return;
         }
         res.status(200).json(games);
     }
@@ -86,7 +87,7 @@ const register = async (req, res) => {
             return;
         }
         const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-        await User.create({
+        const newUser = await User.create({
             username,
             email,
             password: hashedPassword,
@@ -95,7 +96,24 @@ const register = async (req, res) => {
             draws: 0,
             losses: 0,
         });
-        res.status(201).json({ message: "User registered successfully!" });
+        // Create JWT tokens
+        const accessToken = jwt.sign({ uuid: newUser.uuid, username: newUser.username }, ACCESS_TOKEN_SECRET, { expiresIn: "1h" });
+        const refreshToken = jwt.sign({ uuid: newUser.uuid, username: newUser.username }, REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
+        await newUser.update({ refreshToken });
+        res.status(201).json({
+            message: "User registered successfully!",
+            user: {
+                uuid: newUser.uuid,
+                username: newUser.username,
+                email: newUser.email,
+                elo: newUser.elo,
+                wins: newUser.wins,
+                draws: newUser.draws,
+                losses: newUser.losses,
+            },
+            accessToken,
+            refreshToken,
+        });
     }
     catch (err) {
         console.error("Error during user registration:", err);
@@ -251,16 +269,41 @@ const getUserByUUID = async (req, res) => {
         res.status(500).json({ message: "Internal server error." });
     }
 };
+const getUsersByUUIDs = async (req, res) => {
+    try {
+        let uuids = req.body.uuids;
+        if (!Array.isArray(uuids) || uuids.length === 0) {
+            res.status(400).json({ message: "Array of UUIDs is required." });
+            return;
+        }
+        const uniqueUUIDs = [...new Set(uuids)];
+        const users = await User.findAll({
+            where: {
+                uuid: uniqueUUIDs,
+            },
+        });
+        const userMap = {};
+        for (const user of users) {
+            userMap[user.uuid] = user;
+        }
+        res.status(200).json(userMap);
+    }
+    catch (err) {
+        console.error("Error retrieving users by UUIDs:", err);
+        res.status(500).json({ message: "Internal server error." });
+    }
+};
 // Update user by UUID
 const updateUserByUUID = async (req, res) => {
     try {
         const { uuid } = req.params;
-        const { username, email, password, elo, wins, draws, losses } = req.body;
+        const { username, email, password, elo, wins, draws, losses, note, avatarColor, isAdmin, isBanned, updatedAt, } = req.body;
         const user = await User.findByPk(uuid);
         if (!user) {
             res.status(404).json({ message: "User not found." });
             return;
         }
+        console.log(avatarColor);
         await user.update({
             username,
             email,
@@ -271,6 +314,11 @@ const updateUserByUUID = async (req, res) => {
             wins,
             draws,
             losses,
+            note,
+            AvatarColor: avatarColor,
+            isAdmin,
+            isBanned,
+            updatedAt,
         });
         res.status(200).json(user);
     }
@@ -340,6 +388,6 @@ const googleCallback = (req, res) => {
             .json({ message: "Login successful!", accessToken, refreshToken });
     })(req, res);
 };
-export { register, login, refreshToken, logout, getAllUsers, getUserByUUID, updateUserByUUID, deleteUserByUUID, verifyToken, googleLogin, googleCallback, forgotPassword, banUser, // Export the new banUser function 
+export { register, login, refreshToken, logout, getAllUsers, getUserByUUID, getUsersByUUIDs, updateUserByUUID, deleteUserByUUID, verifyToken, googleLogin, googleCallback, forgotPassword, banUser, // Export the new banUser function
 getGameHistoryByUUID, };
 //# sourceMappingURL=userController.js.map

@@ -1,5 +1,5 @@
-import { DataTypes, Model } from 'sequelize';
-import { sequelize } from './database.js';
+import { DataTypes, Model } from "sequelize";
+import { sequelize } from "./database.js";
 // Define the Game model
 class Game extends Model {
     uuid;
@@ -28,12 +28,14 @@ Game.init({
     board: {
         type: DataTypes.JSON, // Store the board as a JSON array
         allowNull: false,
-        defaultValue: () => Array(15).fill(null).map(() => Array(15).fill(null)), // Ensures unique rows
+        defaultValue: () => Array(15)
+            .fill(null)
+            .map(() => Array(15).fill(null)), // Ensures unique rows
     },
     gameState: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: 'ongoing',
+        defaultValue: "ongoing",
     },
     bitmap: {
         type: DataTypes.TEXT, // Store the bitmap as a string
@@ -49,57 +51,57 @@ Game.init({
     },
 }, {
     sequelize,
-    tableName: 'Games',
+    tableName: "Games",
     timestamps: true, // createdAt and updatedAt are automatically handled
 });
 class User extends Model {
     get uuid() {
-        return this.getDataValue('uuid');
+        return this.getDataValue("uuid");
     }
     get username() {
-        return this.getDataValue('username');
+        return this.getDataValue("username");
     }
     get email() {
-        return this.getDataValue('email');
+        return this.getDataValue("email");
     }
     get password() {
-        return this.getDataValue('password');
+        return this.getDataValue("password");
     }
     get googleId() {
-        return this.getDataValue('googleId');
+        return this.getDataValue("googleId");
     }
     get elo() {
-        return this.getDataValue('elo');
+        return this.getDataValue("elo");
     }
     get wins() {
-        return this.getDataValue('wins');
+        return this.getDataValue("wins");
     }
     get draws() {
-        return this.getDataValue('draws');
+        return this.getDataValue("draws");
     }
     get losses() {
-        return this.getDataValue('losses');
+        return this.getDataValue("losses");
     }
     get refreshToken() {
-        return this.getDataValue('refreshToken');
+        return this.getDataValue("refreshToken");
     }
     get createdAt() {
-        return this.getDataValue('createdAt');
+        return this.getDataValue("createdAt");
     }
     get updatedAt() {
-        return this.getDataValue('updatedAt');
+        return this.getDataValue("updatedAt");
     }
     get isAdmin() {
-        return this.getDataValue('isAdmin');
+        return this.getDataValue("isAdmin");
     }
     get isBanned() {
-        return this.getDataValue('isBanned');
+        return this.getDataValue("isBanned");
     }
     get note() {
-        return this.getDataValue('note');
+        return this.getDataValue("note");
     }
     get AvatarColor() {
-        return this.getDataValue('AvatarColor');
+        return this.getDataValue("AvatarColor");
     }
 }
 User.init({
@@ -195,6 +197,7 @@ User.init({
 });
 // Define the MatchmakingGame model
 class MatchmakingGame extends Model {
+    uuid;
     playerX;
     playerO;
     winner;
@@ -206,22 +209,24 @@ class MatchmakingGame extends Model {
     endedAt;
 }
 MatchmakingGame.init({
+    uuid: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+    },
     playerX: {
         type: DataTypes.UUID,
         allowNull: false,
-        primaryKey: true,
         references: { model: "Users", key: "uuid" },
     },
     playerO: {
         type: DataTypes.UUID,
         allowNull: false,
-        primaryKey: true,
         references: { model: "Users", key: "uuid" },
     },
     endedAt: {
         type: DataTypes.DATE,
         allowNull: false,
-        primaryKey: true,
     },
     winner: {
         type: DataTypes.UUID,
