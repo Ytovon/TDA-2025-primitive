@@ -74,20 +74,6 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
   }, [socket]);
 
   useEffect(() => {
-    if (!isConnected) {
-      setWaitingForMatch(false);
-      waitingRef.current = false;
-      setSocket(null);
-      setStatus("");
-      setGameID("");
-      setMultiplayerBoard(Array.from({ length: 15 }, () => Array(15).fill("")));
-      setWinner(null);
-      setOpponnentUUID(null);
-      setTimer(0);
-    }
-  }, [isConnected]);
-
-  useEffect(() => {
     if (waitingForMatch || !socket || status === "") return;
 
     const timeout = setTimeout(() => {
@@ -105,7 +91,23 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
   }, [timer, minutesLeft, waitingForMatch]);
 
   useEffect(() => {
-    console.log("connected " + isConnected);
+    if (!isConnected) {
+      if (
+        socketRef.current &&
+        socketRef.current.readyState === WebSocket.OPEN
+      ) {
+        socketRef.current.close(1000, "Cleanup on disconnect");
+      }
+
+      setWaitingForMatch(false);
+      setGameID("");
+      setMultiplayerBoard(Array.from({ length: 15 }, () => Array(15).fill("")));
+      setWinner(null);
+      setOpponnentUUID(null);
+      setStatus("");
+      setTimer(0);
+      setMinutesLeft(0);
+    }
   }, [isConnected]);
 
   // Časovač pro čekání na soupeře
@@ -163,10 +165,8 @@ export const WebSocketProviderMultiplayer: React.FC<WebSocketProviderProps> = ({
           setStatus("Soupeř nalezen!");
           setGameID(data.gameId);
           setOpponnentUUID(data.opponnentUUID);
+          setWaitingForMatch(false);
 
-          setTimeout(() => {
-            setWaitingForMatch(false);
-          }, 3000);
           break;
 
         case "update":

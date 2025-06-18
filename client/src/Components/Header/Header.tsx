@@ -88,10 +88,16 @@ const Header = forwardRef<HeaderHandle, HeaderProps>(
     }, [menuIsOpen]);
 
     useEffect(() => {
-      if (waitingForMatch === false && isConnected !== false) {
-        navigate("/freeplay");
-      }
-    }, [waitingForMatch]);
+      const timeout = setTimeout(() => {
+        console.log("isConnected in timeout:", isConnected);
+        console.log("waitingForMatch in timeout:", waitingForMatch);
+        if (!waitingForMatch && isConnected) {
+          navigate("/freeplay");
+        }
+      }, 3000);
+
+      return () => clearTimeout(timeout); // bezpečné čištění
+    }, [waitingForMatch, isConnected]);
 
     const colorMap: Record<number, string> = {
       1: "var(--color1)",

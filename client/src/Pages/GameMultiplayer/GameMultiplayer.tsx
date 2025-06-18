@@ -15,7 +15,6 @@ import { UserModel } from "../../Model/UserModel";
 import { useAuth } from "../../Context/AuthContext";
 import { UserApiClient } from "../../API/UserApi";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useLocation } from "react-router-dom";
 import {
   faCircleExclamation,
   faChevronLeft,
@@ -78,8 +77,10 @@ export const GameMultiplayer = ({ uuid = "" }) => {
   const [opponent, setOpponent] = useState<UserModel | string>("");
 
   useEffect(() => {
-    setIsConnected(false);
-  }, [useLocation()]);
+    return () => {
+      setIsConnected(false); // Or your logic
+    };
+  }, []);
 
   useEffect(() => {
     const fetchGame = async () => {
